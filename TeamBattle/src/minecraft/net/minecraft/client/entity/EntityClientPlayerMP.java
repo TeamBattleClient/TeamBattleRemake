@@ -1,5 +1,8 @@
 package net.minecraft.client.entity;
 
+import me.client.events.EventPostMotion;
+import me.client.events.EventPreMotion;
+import me.client.events.EventUpdate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -18,7 +21,6 @@ import net.minecraft.network.play.client.C13PacketPlayerAbilities;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatFileWriter;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Session;
@@ -96,6 +98,8 @@ public class EntityClientPlayerMP extends EntityPlayerSP
         if (this.worldObj.blockExists(MathHelper.floor_double(this.posX), 0, MathHelper.floor_double(this.posZ)))
         {
             super.onUpdate();
+            EventUpdate updateEvent = new EventUpdate(this);
+            updateEvent.call();
 
             if (this.isRiding())
             {
@@ -114,6 +118,11 @@ public class EntityClientPlayerMP extends EntityPlayerSP
      */
     public void sendMotionUpdates()
     {
+    	EventPreMotion preEvent = new EventPreMotion(this);
+    	preEvent.call();
+    	if(preEvent.isCancelled())
+    		return;
+    	
         boolean var1 = this.isSprinting();
 
         if (var1 != this.wasSneaking)
@@ -193,6 +202,9 @@ public class EntityClientPlayerMP extends EntityPlayerSP
             this.oldRotationYaw = this.rotationYaw;
             this.oldRotationPitch = this.rotationPitch;
         }
+        
+        EventPostMotion postEvent = new EventPostMotion(this);
+        postEvent.call();
     }
 
     /**

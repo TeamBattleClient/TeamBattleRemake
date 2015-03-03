@@ -25,6 +25,9 @@ import java.util.concurrent.FutureTask;
 
 import javax.imageio.ImageIO;
 
+import me.client.Client;
+import me.client.modules.Module;
+import me.client.modules.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -634,6 +637,11 @@ public class Minecraft implements IPlayerUsage
         {
             this.toggleFullscreen();
         }
+        
+        /**
+         * TODO: Client
+         */
+        Client.instance.startClient();
         
         try
         {
@@ -1635,7 +1643,7 @@ public class Minecraft implements IPlayerUsage
     /**
      * Called to resize the current screen.
      */
-    private void resize(int p_71370_1_, int p_71370_2_)
+    public void resize(int p_71370_1_, int p_71370_2_)
     {
         this.displayWidth = p_71370_1_ <= 0 ? 1 : p_71370_1_;
         this.displayHeight = p_71370_2_ <= 0 ? 1 : p_71370_2_;
@@ -1879,7 +1887,16 @@ public class Minecraft implements IPlayerUsage
                         this.currentScreen.handleKeyboardInput();
                     }
                     else
-                    {                    	
+                    {
+                    	/**
+                    	 * TODO: Client
+                    	 */
+                    	for(Module module : ModuleManager.hacks) {
+                    		if(Keyboard.getEventKey() == module.getKeybind()) {
+                    			module.toggle();
+                    		}
+                    	}
+                    	
                         if (Keyboard.getEventKey() == 1)
                         {
                             this.displayInGameMenu();
