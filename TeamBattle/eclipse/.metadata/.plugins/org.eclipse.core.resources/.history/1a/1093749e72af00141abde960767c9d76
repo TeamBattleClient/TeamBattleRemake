@@ -1,0 +1,42 @@
+package me.johny9020.TeamBattle.module.world;
+
+import me.johny9020.TeamBattle.module.Module;
+import me.johny9020.TeamBattle.module.ModuleCategory;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector3f;
+
+import com.darkmagician6.eventapi.EventManager;
+
+public class Nuker extends Module{
+	
+	// Holds our current block's coordinates.
+	private Vector3f blockCoordinates;
+
+	// Our current damage on a block.
+	private float currentBlockDamage;
+
+	// Delay between hitting blocks.
+	private byte blockHitDelay = 0;
+	
+	// Selected block to nuke.
+	private int blockID = 49;
+	
+	private int side;
+
+	public Nuker() {
+		super("Nuker", "Nuker", ModuleCategory.WORLD);
+		setKeybind(Keyboard.KEY_N);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+
+}

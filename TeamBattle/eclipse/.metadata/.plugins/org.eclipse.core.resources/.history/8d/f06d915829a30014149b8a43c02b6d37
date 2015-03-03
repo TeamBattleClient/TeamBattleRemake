@@ -1,0 +1,48 @@
+package me.johny9020.TeamBattle.module;
+
+import java.util.Arrays;
+import java.util.List;
+
+import me.johny9020.TeamBattle.module.combat.*;
+import me.johny9020.TeamBattle.module.misc.*;
+import me.johny9020.TeamBattle.module.movement.*;
+import me.johny9020.TeamBattle.module.render.*;
+import me.johny9020.TeamBattle.module.world.*;
+import me.johny9020.TeamBattle.module.player.*;
+
+
+public class ModuleManager {	
+	
+	public static List<Module> hacks = Arrays.asList(new Module[] {
+		new Flight(),
+		new GUI(),
+		new NoFall(),
+		new KillAura(),
+		new Sprint(),
+		new Fullbright(),
+		new WallHack(),
+		new Day(),
+		new NameTags(),
+		new HealthTags(),
+		new Criticals(),
+		new retard()
+	});
+	
+	public Module[] getModules() {
+		return (Module[])this.hacks.toArray(new Module[this.hacks.size()]);
+	}
+	
+	public static Module findMod (Class < ? extends Module > hax) 
+	{
+		for(Module mod : hacks)
+		{
+			if(mod.getClass() == hax)
+			{
+				return mod;
+			}
+		}
+		
+		return null;
+	}
+
+}

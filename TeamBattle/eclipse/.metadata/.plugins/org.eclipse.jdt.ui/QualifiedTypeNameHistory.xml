@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.Utils.Logger"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.Utils.TextureUtils"/>
+<fullyQualifiedTypeName name="java.awt.Font"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.Utils.Logger.LogTypes"/>
+<fullyQualifiedTypeName name="net.minecraft.client.Minecraft"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.Utils.TeamBattleUtils"/>
+<fullyQualifiedTypeName name="net.minecraft.client.gui.GuiChat"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.Gui.utils.TeamWindow"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.TeamBattle"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="java.awt.List"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.render.WallHack"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.ModuleManager"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.Module"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.ModuleCategory"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.combat.KillAura"/>
+<fullyQualifiedTypeName name="me.johny9020.TeamBattle.irc.TeamBattleIrcBot"/>
+<fullyQualifiedTypeName name="net.minecraft.util.EnumChatFormatting"/>
+<fullyQualifiedTypeName name="org.lwjgl.input.Keyboard"/>
+<fullyQualifiedTypeName name="org.lwjgl.util.vector.Vector3f"/>
+<fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventManager"/>
+<fullyQualifiedTypeName name="com.darkmagician6.eventapi.types.Priority"/>
+<fullyQualifiedTypeName name="net.minecraft.block.Block"/>
+</qualifiedTypeNameHistroy>

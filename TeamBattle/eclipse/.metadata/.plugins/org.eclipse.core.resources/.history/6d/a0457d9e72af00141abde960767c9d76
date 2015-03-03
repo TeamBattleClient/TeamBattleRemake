@@ -1,0 +1,148 @@
+package me.johny9020.TeamBattle.module.world;
+
+import me.johny9020.TeamBattle.events.game.EventPostMotionUpdate;
+import me.johny9020.TeamBattle.events.game.EventPreMotionUpdate;
+import me.johny9020.TeamBattle.module.Module;
+import me.johny9020.TeamBattle.module.ModuleCategory;
+import net.minecraft.block.Block;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector3f;
+
+import com.darkmagician6.eventapi.EventManager;
+import com.darkmagician6.eventapi.EventTarget;
+import com.darkmagician6.eventapi.types.Priority;
+
+public class Nuker extends Module{
+	
+	// Holds our current block's coordinates.
+	private Vector3f blockCoordinates;
+
+	// Our current damage on a block.
+	private float currentBlockDamage;
+
+	// Delay between hitting blocks.
+	private byte blockHitDelay = 0;
+	
+	// Selected block to nuke.
+	private int blockID = 49;
+	
+	private int side;
+
+	public Nuker() {
+		super("Nuker", "Nuker", ModuleCategory.WORLD);
+		setKeybind(Keyboard.KEY_N);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	
+	@EventTarget(Priority.LOW)
+	public void onPreMotionUpdate(EventPreMotionUpdate event) {
+		// Defined up here so we're not accessing stuff too much.
+		// --
+		int radius = 5;
+		int wantedBlockID = blockID;
+		int shouldSkip = shouldSkipCurrentBlock(blockCoordinates, wantedBlockID);
+		// --
+
+		// If we're not supposed to be nuking the current block
+		if (shouldSkip != 0) {
+			// If we also need to notify the server about us no longer breaking the block. (This sends the stop-in-the-middle break packet.)
+			if (shouldSkip == 3 && currentBlockDamage != 0 && !mc.playerController.isInCreativeMode()) {
+				sendBreakPacket(blockCoordinates, 1, -1);
+				blockCoordinates = null;
+			}
+			// Find a new block.
+			this.blockCoordinates = find(wantedBlockID);
+			currentBlockDamage = 0;
+		} else {
+			// Face the block!
+			blockHelper.faceBlock(blockCoordinates.x + 0.5F, blockCoordinates.y + 0.5F, blockCoordinates.z + 0.5F);
+		}
+	}
+	
+	@EventTarget
+	public void onPostMotionUpdate(EventPostMotionUpdate event) {
+		// Stop us from nuking TOO much..
+		if (blockHitDelay > 0) {
+			blockHitDelay--;
+			return;
+		}
+		int shouldSkip = shouldSkipCurrentBlock(blockCoordinates, blockID);
+		if (shouldSkip == 0) {
+			//mc.thePlayer.sendQueue.addToSendQueue(new Packet18Animation(mc.thePlayer, 1));
+			nukeSelectedBlock(blockCoordinates, mc.playerController.isInCreativeMode());
+		}
+	}
+	
+	private void nukeSelectedBlock(Vector3f selectedBlock, boolean isCreativeMode) {
+		if (currentBlockDamage == 0) {
+			sendBreakPacket(selectedBlock, 0, side);
+			if (isCreativeMode || Block.blocksList[getBlockIDFromVector(selectedBlock)].getPlayerRelativeBlockHardness(mc.thePlayer, mc.theWorld, (int) selectedBlock.x, (int) selectedBlock.y, (int) selectedBlock.z) >= 1) {
+				mc.playerController.onPlayerDestroyBlock((int) selectedBlock.x, (int) selectedBlock.y, (int) selectedBlock.z, side);
+				currentBlockDamage = 0;
+				if (isCreativeMode)
+					blockHitDelay = (byte) (5 - getSpeed());
+				return;
+			}
+		}
+
+		// Add onto the damage
+		//currentBlockDamage += Block.blocksList[getBlockIDFromVector(selectedBlock)].getPlayerRelativeBlockHardness(mc.thePlayer, mc.theWorld, (int) selectedBlock.x, (int) selectedBlock.y, (int) selectedBlock.z);
+		mc.theWorld.destroyBlockInWorldPartially(this.mc.thePlayer.getEntityId(), (int) selectedBlock.x, (int) selectedBlock.y, (int) selectedBlock.z, (int)(this.currentBlockDamage * 10.0F) - 1);
+
+		// If we've broken the block
+		if (currentBlockDamage >= 1) {
+			// FINISH HIM
+			sendBreakPacket(selectedBlock, 2, side);
+			mc.playerController.onPlayerDestroyBlock((int) selectedBlock.x, (int) selectedBlock.y, (int) selectedBlock.z, side);
+			blockHitDelay = (byte) (5 - 5);
+		}
+	}
+	
+	/**
+	 * Finds blocks around the player that have the block ID.
+	 * */
+	private Vector3f find(int wantedBlockID) {
+		int radius = 5;
+		Vector3f finalVector = null;
+		side = 0;
+		// 3D Loop.
+		for (int i = radius; i >= -radius; i--) {
+			for (int j = -radius; j <= radius; j++) {
+				for (int k = radius; k >= -radius; k--) {
+					int possibleX = (int) (mc.thePlayer.posX + i),
+						possibleY = (int) (mc.thePlayer.posY + j),
+						possibleZ = (int) (mc.thePlayer.posZ + k);
+					int blockID = mc.theWorld.getBlock(possibleX, possibleY, possibleZ);
+					Vector3f blockVector = new Vector3f(possibleX, possibleY, possibleZ);
+
+					// If the block at the position is not air
+					if (blockID != 0 && canReach(blockVector, radius)) {
+						if (blockID == wantedBlockID) {
+							MovingObjectPosition result = rayTrace(blockVector);
+							// We'll compare the vectors and find the closest vector to the player.
+							if (finalVector == null) {
+								finalVector = blockVector;
+								side = result != null ? result.sideHit : 1;
+							} else if (blockHelper.getDistance(blockVector) < blockHelper.getDistance(finalVector)) {
+								finalVector = blockVector;
+								side = result != null ? result.sideHit : 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		return finalVector;
+	}
+
+}
