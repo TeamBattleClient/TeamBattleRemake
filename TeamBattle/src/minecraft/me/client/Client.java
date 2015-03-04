@@ -37,7 +37,7 @@ public class Client implements MinecraftHelper{
 	public void startClient() {
 		try {
 			this.getLogger().log("Starting up the client!", Logger.LogType.NORMAL);
-			this.getModuleManager();
+			this.moduleManager = new ModuleManager();
 			
 			this.getLogger().log("Setting resolution to: 1280x720", Logger.LogType.NORMAL);
 			mc.resize(1280, 720);
@@ -56,13 +56,6 @@ public class Client implements MinecraftHelper{
 		
 		return logger;
 	}
-	
-	public ModuleManager getModuleManager() {
-		if(this.moduleManager == null)
-			this.moduleManager = new ModuleManager();
-		
-		return this.moduleManager;
-	}
 
 	@Override
 	public boolean isCancelled() {
@@ -71,10 +64,7 @@ public class Client implements MinecraftHelper{
 	}
 
 	@Override
-	public void setCancelled(boolean cancel) {
-		
-		
-	}
+	public void setCancelled(boolean cancel) {}
 	
 	
 	

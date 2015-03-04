@@ -1,6 +1,9 @@
 package net.minecraft.block;
 
 import java.util.Random;
+
+import me.client.modules.ModuleManager;
+import me.client.modules.movement.Jesus;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -125,7 +128,7 @@ public abstract class BlockLiquid extends Block
      */
     public boolean canCollideCheck(int p_149678_1_, boolean p_149678_2_)
     {
-        return p_149678_2_ && p_149678_1_ == 0;
+    	return ModuleManager.findMod(Jesus.class).isEnabled() ? true : p_149678_2_ && p_149678_1_ == 0;
     }
 
     public boolean isBlockSolid(IBlockAccess p_149747_1_, int p_149747_2_, int p_149747_3_, int p_149747_4_, int p_149747_5_)
@@ -146,7 +149,7 @@ public abstract class BlockLiquid extends Block
      */
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
     {
-        return null;
+        return ModuleManager.findMod(Jesus.class).isEnabled() ? AxisAlignedBB.getBoundingBox((double)p_149668_2_ + this.field_149759_B, (double)p_149668_3_ + this.field_149760_C, (double)p_149668_4_ + this.field_149754_D, (double)p_149668_2_ + this.field_149755_E, (double)p_149668_3_ + this.field_149756_F - 0.3D, (double)p_149668_4_ + this.field_149757_G) : null;
     }
 
     /**

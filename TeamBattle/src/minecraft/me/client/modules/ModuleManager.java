@@ -3,18 +3,23 @@ package me.client.modules;
 import java.util.ArrayList;
 
 import me.client.modules.movement.*;
+import me.client.modules.player.Sneak;
 
 public class ModuleManager {
 
 	public static ArrayList<Module> hacks = new ArrayList<Module>();
 	
 	public ModuleManager() {
-		hacks.clear();
+		/*this.hacks.add(new Jesus());
+		this.hacks.add(new FastIce());
+		this.hacks.add(new Sprint());
+		this.hacks.add(new Flight());
+		this.hacks.add(new Glide());
+		this.hacks.add(new Dolphin());
+		this.hacks.add(new Speed());*/
+		hacks.add(new Speed());
 		hacks.add(new Flight());
-		hacks.add(new Jesus());
-		hacks.add(new FastIce());
-		hacks.add(new Sprint());
-		hacks.add(new Glide());
+		hacks.add(new Dolphin());
 	}
 	
 	public static Module getModName(String modName) {

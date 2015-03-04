@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 
 import me.client.Client;
 import me.client.hooks.FontRendererHook;
+import me.client.hooks.GuiIngameHook;
 import me.client.modules.Module;
 import me.client.modules.ModuleManager;
 import net.minecraft.block.Block;
@@ -38,7 +39,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
@@ -204,7 +204,7 @@ public class Minecraft implements IPlayerUsage
     private CrashReport crashReporter;
     public int displayWidth;
     public int displayHeight;
-    private Timer timer = new Timer(20.0F);
+    public Timer timer = new Timer(20.0F);
 
     /** Instance of PlayerUsageSnooper. */
     private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getSystemTimeMillis());
@@ -247,7 +247,7 @@ public class Minecraft implements IPlayerUsage
 
     /** Gui achievement */
     public GuiAchievement guiAchievement;
-    public GuiIngame ingameGUI;
+    public GuiIngameHook ingameGUI;
 
     /** Skip render world */
     public boolean skipRenderWorld;
@@ -619,7 +619,7 @@ public class Minecraft implements IPlayerUsage
         GL11.glViewport(0, 0, this.displayWidth, this.displayHeight);
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
         this.checkGLError("Post startup");
-        this.ingameGUI = new GuiIngame(this);
+        this.ingameGUI = new GuiIngameHook(this);
 
         if (this.serverName != null)
         {

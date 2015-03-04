@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import me.client.alts.GuiAlts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -261,7 +262,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
 
         if (p_146284_1_.id == 14)
         {
-            this.func_140005_i();
+            //this.func_140005_i();
+        	mc.displayGuiScreen(new GuiAlts(this));
         }
 
         if (p_146284_1_.id == 4)

@@ -68,6 +68,10 @@ public class Module implements MinecraftHelper{
 		return this.modCategory;
 	}
 	
+	public boolean isEnabled() {
+		return enabled;
+	} 	
+	
 	/**
 	 * Setters
 	 */
