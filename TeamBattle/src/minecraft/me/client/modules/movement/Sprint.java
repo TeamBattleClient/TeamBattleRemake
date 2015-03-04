@@ -1,32 +1,34 @@
 package me.client.modules.movement;
 
-import org.lwjgl.input.Keyboard;
-
-import net.minecraft.client.Minecraft;
+import me.client.events.EventPreMotion;
 import me.client.modules.Module;
 import me.client.modules.ModuleCategory;
 
+import org.lwjgl.input.Keyboard;
+
+import com.darkmagician6.eventapi.EventTarget;
+
 public class Sprint extends Module {
-	static String modName = "Sprint";
-	static String listName = "Sprint (NCP+ Bypasses)";
-	static ModuleCategory category = ModuleCategory.MOVEMENT;
+	
 	public Sprint() {
-		super(modName, listName, category);	
+		super("Sprint", "Sprint", ModuleCategory.MOVEMENT);	
 		this.setKeybind(Keyboard.KEY_C);
 	}
-	public void onPreMotion()
-	{
-		if(SprintChecks()){
+	
+	@EventTarget
+	public void onPreMotion(EventPreMotion event) {
+		if(SprintChecks()) {
 			mc.thePlayer.setSprinting(true);
-		}else
-		{
+		}
+		else{
 			mc.thePlayer.setSprinting(false);
 		}
 	}
+	
 	boolean check = mc.thePlayer.getFoodStats().getFoodLevel() > 6F && !mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isDead;
+	
 	public boolean SprintChecks(){
 		return check;
-		
 	}
 
 }

@@ -6,6 +6,7 @@ import me.client.modules.ModuleCategory;
 
 import org.lwjgl.input.Keyboard;
 
+import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
 
 public class Flight extends Module{
@@ -15,14 +16,20 @@ public class Flight extends Module{
 		this.setKeybind(Keyboard.KEY_F);
 	}
 	
-	@EventTarget
-	public void onPreMotionEvent(EventPreMotion event) {
-		event.player.capabilities.isFlying = true;
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
 	}
 	
 	@Override
 	public void onDisable() {
+		EventManager.unregister(this);
 		mc.thePlayer.capabilities.isFlying = false;
+	}
+	
+	@EventTarget
+	public void onPreMotionEvent(EventPreMotion event) {
+		event.player.capabilities.isFlying = true;
 	}
 
 }

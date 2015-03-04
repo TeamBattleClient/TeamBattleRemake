@@ -8,6 +8,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 
 import org.lwjgl.input.Keyboard;
 
+import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
 
 public class Dolphin extends Module{
@@ -15,6 +16,16 @@ public class Dolphin extends Module{
 	public Dolphin() {
 		super("Dolphin", "Dolphin", ModuleCategory.MOVEMENT);
 		setKeybind(Keyboard.KEY_O);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
 	}
 
 	@EventTarget

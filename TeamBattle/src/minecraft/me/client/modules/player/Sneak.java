@@ -1,18 +1,25 @@
 package me.client.modules.player;
 
-import me.client.events.EventPostMotion;
-import me.client.events.EventPreMotion;
+import com.darkmagician6.eventapi.EventManager;
+
 import me.client.modules.Module;
 import me.client.modules.ModuleCategory;
-import me.client.utils.Utils;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
 
-import org.lwjgl.input.Keyboard;
+public class Sneak extends Module{
 
-import com.darkmagician6.eventapi.EventTarget;
-
-public class Sneak {
+	public Sneak() {
+		super("Sneak", "Sneak", ModuleCategory.MOVEMENT);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
 	/**
 	 * Needs fixing the Bypass!
 	 */

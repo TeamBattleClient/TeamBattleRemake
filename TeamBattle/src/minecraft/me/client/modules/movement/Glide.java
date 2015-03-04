@@ -2,18 +2,29 @@ package me.client.modules.movement;
 
 import org.lwjgl.input.Keyboard;
 
+import com.darkmagician6.eventapi.EventManager;
+
 import me.client.events.EventPreMotion;
 import me.client.modules.Module;
 import me.client.modules.ModuleCategory;
 
 public class Glide extends Module {
-	static String modName = "Glide";
-	static String listName = "Glide (NCP+ Bypasses)";
-	static ModuleCategory category = ModuleCategory.MOVEMENT;
+	
 	public Glide() {
-		super(modName, listName, category);
+		super("Glide", "Glide", ModuleCategory.MOVEMENT);
 		this.setKeybind(Keyboard.KEY_G);
 	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	
 	public void onPreSkidMotion(EventPreMotion event) {
 		
 		 {

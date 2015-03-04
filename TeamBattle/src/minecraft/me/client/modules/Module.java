@@ -11,7 +11,7 @@ public class Module implements MinecraftHelper{
 	private String modName;
 	private String modListName;
 	private String modDesc;
-	private int modKey = 0;
+	private int modKey;
 	private ModuleCategory modCategory;
 	private boolean enabled;
 	
@@ -19,8 +19,6 @@ public class Module implements MinecraftHelper{
 		this.modName = modName;
 		this.modListName = listName;
 		this.modCategory = category;
-		if(modDesc == null)
-			modDesc = "No description available.";
 		Client.instance.getLogger().log("Setting up mod: " + this.modName, Logger.LogType.NORMAL);
 	}
 	
@@ -31,12 +29,10 @@ public class Module implements MinecraftHelper{
 	public void setEnabled(boolean state) {
 		this.enabled = state;
 		
-		if(state) {
+		if(this.isEnabled()) {
 			this.onEnable();
-			EventManager.register(this);
 		}else {
 			this.onDisable();
-			EventManager.unregister(this);
 		}
 	}
 	

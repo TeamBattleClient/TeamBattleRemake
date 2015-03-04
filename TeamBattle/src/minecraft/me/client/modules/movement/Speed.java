@@ -15,9 +15,6 @@ import org.lwjgl.input.Keyboard;
 import com.darkmagician6.eventapi.EventTarget;
 
 public class Speed extends Module {
-	static String modName = "Speed";
-	static String listName = "Speed (NCP+ Bypassed)";
-	static ModuleCategory category = ModuleCategory.MOVEMENT;
 	
     public static int speedUpdate;
     public static int speedUpdate2;
@@ -28,7 +25,7 @@ public class Speed extends Module {
     private static int ongroundtick;
 	
 	public Speed() {
-		super(modName, listName, category);
+		super("Speed (NCP+)", "Speed (NCP+)", ModuleCategory.MOVEMENT);
 		this.setKeybind(Keyboard.KEY_X);
 	}
 

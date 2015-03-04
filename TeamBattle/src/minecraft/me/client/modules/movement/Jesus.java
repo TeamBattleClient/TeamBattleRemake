@@ -13,16 +13,26 @@ import net.minecraft.util.AxisAlignedBB;
 
 import org.lwjgl.input.Keyboard;
 
+import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
 
 public class Jesus extends Module {
-static String modName = "Jesus";
-static String listName = "Jesus (NCP+ Bypasses)";
-static ModuleCategory category = ModuleCategory.MOVEMENT;
+
 	public Jesus() {
-		super(modName, listName, category);
+		super("Waterwalk", "Waterwalk", ModuleCategory.MOVEMENT);
 		this.setKeybind(Keyboard.KEY_J);
 	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	
 	private boolean nextTick;
 	
 

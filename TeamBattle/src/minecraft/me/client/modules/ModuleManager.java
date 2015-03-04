@@ -10,16 +10,15 @@ public class ModuleManager {
 	public static ArrayList<Module> hacks = new ArrayList<Module>();
 	
 	public ModuleManager() {
-		/*this.hacks.add(new Jesus());
-		this.hacks.add(new FastIce());
-		this.hacks.add(new Sprint());
-		this.hacks.add(new Flight());
-		this.hacks.add(new Glide());
-		this.hacks.add(new Dolphin());
-		this.hacks.add(new Speed());*/
-		hacks.add(new Speed());
-		hacks.add(new Flight());
+		hacks.clear();
 		hacks.add(new Dolphin());
+		hacks.add(new Flight());
+		hacks.add(new Glide());
+		hacks.add(new Jesus());
+		hacks.add(new Sneak());
+		hacks.add(new FastIce());
+		hacks.add(new Speed());
+		hacks.add(new Sprint());
 	}
 	
 	public static Module getModName(String modName) {
