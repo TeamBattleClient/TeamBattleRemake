@@ -1,13 +1,13 @@
-ofRenderDistanceChunks:16
+ofRenderDistanceChunks:4
 ofFogType:1
 ofFogStart:0.8
 ofMipmapType:0
 ofLoadFar:false
 ofPreloadedChunks:0
-ofOcclusionFancy:true
+ofOcclusionFancy:false
 ofSmoothFps:false
 ofSmoothWorld:true
-ofAoLevel:1.0
+ofAoLevel:0.0
 ofClouds:0
 ofCloudsHeight:0.0
 ofTrees:0
@@ -41,7 +41,7 @@ ofSky:true
 ofStars:true
 ofSunMoon:true
 ofChunkUpdates:1
-ofChunkLoading:2
+ofChunkLoading:1
 ofChunkUpdatesDynamic:false
 ofTime:0
 ofClearWater:false

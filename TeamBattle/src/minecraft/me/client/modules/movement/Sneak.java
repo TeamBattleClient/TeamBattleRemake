@@ -1,0 +1,7 @@
+package me.client.modules.movement;
+
+public class Sneak {
+	/*
+	 *  Comment : Later
+	 */
+}

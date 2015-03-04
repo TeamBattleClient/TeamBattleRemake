@@ -1,24 +1,26 @@
-[22:39:56] [main/INFO]: Setting user: Player756
-[22:39:56] [main/INFO]: (Session ID is token:0:Player756)
-[22:39:57] [Client thread/INFO]: LWJGL Version: 2.9.1
-[22:39:57] [Client thread/INFO]: Reloading ResourceManager: Default, Legendary Resource Pack by Bwow.zip
-[22:39:58] [Sound Library Loader/INFO]: Sound engine started
-[22:39:59] [Client thread/INFO]: Created: 2048x2048 textures/blocks-atlas
-[22:40:00] [Client thread/INFO]: Created: 2048x2048 textures/items-atlas
-[22:40:08] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
-[22:40:08] [Server thread/INFO]: Generating keypair
-[22:40:08] [Server thread/INFO]: Preparing start region for level 0
-[22:40:09] [Server thread/INFO]: Changing view distance to 16, from 10
-[22:40:10] [Server thread/INFO]: Player756[local:E:52c16250] logged in with entity id 12 at (511.3448503626547, 74.0, -594.7480564677033)
-[22:40:10] [Server thread/INFO]: Player756 joined the game
-[22:40:14] [Server thread/INFO]: Saving and pausing game...
-[22:40:14] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[22:40:14] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[22:40:14] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[22:40:15] [Client thread/INFO]: Stopping!
-[22:40:15] [Server thread/INFO]: Stopping server
-[22:40:15] [Server thread/INFO]: Saving players
-[22:40:15] [Server thread/INFO]: Saving worlds
-[22:40:15] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[22:40:15] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[22:40:15] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:16:43] [main/INFO]: Setting user: Player249
+[14:16:43] [main/INFO]: (Session ID is token:0:Player249)
+[14:16:44] [Client thread/INFO]: LWJGL Version: 2.9.1
+[14:16:44] [Client thread/ERROR]: Couldn't initialize twitch stream
+[14:16:44] [Client thread/INFO]: Reloading ResourceManager: Default
+[14:16:45] [Sound Library Loader/INFO]: Sound engine started
+[14:16:45] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
+[14:16:46] [Client thread/INFO]: Created: 256x256 textures/items-atlas
+[14:16:54] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
+[14:16:54] [Server thread/INFO]: Generating keypair
+[14:16:54] [Server thread/INFO]: Preparing start region for level 0
+[14:16:55] [Server thread/INFO]: Changing view distance to 4, from 10
+[14:16:55] [Server thread/INFO]: Player249[local:E:685cc450] logged in with entity id 12 at (510.22738629525725, 74.0, -596.2841763644328)
+[14:16:55] [Server thread/INFO]: Player249 joined the game
+[14:17:06] [Server thread/INFO]: Saving and pausing game...
+[14:17:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:17:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:17:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:17:38] [Server thread/INFO]: Saving and pausing game...
+[14:17:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:17:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:17:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:17:41] [Server thread/INFO]: Saving and pausing game...
+[14:17:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:17:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:17:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End

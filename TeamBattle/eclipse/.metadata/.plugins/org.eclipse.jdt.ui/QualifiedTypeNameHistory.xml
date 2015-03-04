@@ -24,5 +24,17 @@
 <fullyQualifiedTypeName name="org.lwjgl.util.vector.Vector3f"/>
 <fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventManager"/>
 <fullyQualifiedTypeName name="com.darkmagician6.eventapi.types.Priority"/>
+<fullyQualifiedTypeName name="java.awt.Event"/>
+<fullyQualifiedTypeName name="net.minecraft.util.AxisAlignedBB"/>
+<fullyQualifiedTypeName name="net.minecraft.util.MathHelper"/>
+<fullyQualifiedTypeName name="net.minecraft.block.BlockAir"/>
 <fullyQualifiedTypeName name="net.minecraft.block.Block"/>
+<fullyQualifiedTypeName name="me.client.modules.Module"/>
+<fullyQualifiedTypeName name="me.client.modules.ModuleCategory"/>
+<fullyQualifiedTypeName name="me.client.events.EventBoundingBox"/>
+<fullyQualifiedTypeName name="me.client.helpers.MinecraftHelper"/>
+<fullyQualifiedTypeName name="net.minecraft.network.Packet"/>
+<fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventPacketSent"/>
+<fullyQualifiedTypeName name="me.client.events.EventPreMotion"/>
+<fullyQualifiedTypeName name="me.client.events.EventPacketSent"/>
 </qualifiedTypeNameHistroy>

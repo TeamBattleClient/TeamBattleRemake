@@ -82,4 +82,16 @@ public class Module implements MinecraftHelper{
 	public void setKeybind(int newKey) {
 		this.modKey = newKey;
 	}
+
+	@Override
+	public boolean isCancelled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+		// TODO Auto-generated method stub
+		
+	}
 }
