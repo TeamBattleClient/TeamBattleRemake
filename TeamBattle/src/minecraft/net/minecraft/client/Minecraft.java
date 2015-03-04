@@ -26,6 +26,7 @@ import java.util.concurrent.FutureTask;
 import javax.imageio.ImageIO;
 
 import me.client.Client;
+import me.client.hooks.FontRendererHook;
 import me.client.modules.Module;
 import me.client.modules.ModuleManager;
 import net.minecraft.block.Block;
@@ -224,7 +225,7 @@ public class Minecraft implements IPlayerUsage
     private boolean isGamePaused;
 
     /** The font renderer used for displaying and measuring text. */
-    public FontRenderer fontRenderer;
+    public FontRendererHook fontRenderer;
     public FontRenderer standardGalacticFontRenderer;
 
     /** The GuiScreen that's being displayed at the moment. */
@@ -564,7 +565,7 @@ public class Minecraft implements IPlayerUsage
         this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
         this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
         this.mcMusicTicker = new MusicTicker(this);
-        this.fontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
+        this.fontRenderer = new FontRendererHook(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
 
         if (this.gameSettings.language != null)
         {

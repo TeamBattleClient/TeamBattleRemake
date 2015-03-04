@@ -1,11 +1,14 @@
 package me.client;
 
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import java.awt.Font;
 
+import me.client.font.CFontRenderer;
 import me.client.helpers.MinecraftHelper;
 import me.client.modules.ModuleManager;
 import me.client.utils.Logger;
+
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 public class Client implements MinecraftHelper{
 
@@ -18,6 +21,11 @@ public class Client implements MinecraftHelper{
 	 * Clients instance so that we can access this file in different classes
 	 */
 	public static Client instance = new Client();
+	
+	/**
+	 * Fonts
+	 */
+	public CFontRenderer tahoma = new CFontRenderer(new Font("Tahoma", Font.TRUETYPE_FONT, 18), true, 8);
 	
 	
 	private Logger logger;
