@@ -1,0 +1,68 @@
+package down.TeamBattle.mod.mods;
+
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventBlockBreaking;
+import down.TeamBattle.event.events.EventPacketSent;
+import net.minecraft.block.material.Material;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.potion.Potion;
+
+public class Criticals extends Mod {
+	private double fallDist;
+
+	public Criticals() {
+		super("Criticals", 0xFF808080);
+	}
+
+	public boolean isSafe() {
+		return mc.thePlayer.isInWater()
+				|| mc.thePlayer.isInsideOfMaterial(Material.lava)
+				|| mc.thePlayer.isOnLadder()
+				|| mc.thePlayer.getActivePotionEffects().contains(
+						Potion.blindness) || mc.thePlayer.ridingEntity != null;
+	}
+
+	@Override
+	public void onDisabled() {
+		super.onDisabled();
+		setColor(0xFF808080);
+		fallDist = 0.0F;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPacketSent) {
+			final EventPacketSent sent = (EventPacketSent) event;
+			if (sent.getPacket() instanceof C03PacketPlayer) {
+				final C03PacketPlayer player = (C03PacketPlayer) sent
+						.getPacket();
+				if (!isSafe()) {
+					fallDist += (float) mc.thePlayer.fallDistance;
+				}
+
+				if (fallDist >= 4.0D || isSafe()) {
+					player.setOnGround(true);
+					fallDist = 0.0D;
+					mc.thePlayer.fallDistance = 0.0F;
+					setColor(0xFF808080);
+				} else if (fallDist > 0.0D) {
+					player.setOnGround(false);
+					setColor(0xFFB226CE);
+				} else {
+					setColor(0xFF808080);
+				}
+			}
+		} else if (event instanceof EventBlockBreaking) {
+			fallDist = 4.0D;
+		}
+	}
+
+	public double getFallDistance() {
+		return fallDist;
+	}
+
+	public void setFallDistance(double fallDist) {
+		this.fallDist = fallDist;
+	}
+}

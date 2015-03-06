@@ -1,0 +1,60 @@
+package down.TeamBattle.mod.mods;
+
+import utils.Logger;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventTick;
+import down.TeamBattle.mod.Mod;
+import moduleValues.Value;
+import net.minecraft.network.play.client.C03PacketPlayer;
+
+public final class Revive extends Mod {
+	private final Value<Float> health = new Value<Float>("revive_health", 6.0F);
+
+	public Revive() {
+		super("Revive", 0xFF46607C);
+		setEnabled(false);
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("revivehealth", "<health>", "rh") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							health.setValue(health.getDefaultValue());
+						} else {
+							health.setValue(Float.parseFloat(message.split(" ")[1]));
+						}
+
+						if (health.getValue() < 1.0F) {
+							health.setValue(1.0F);
+						}
+						Logger.logChat("Revive Health set to: "
+								+ health.getValue());
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventTick) {
+			if (mc.thePlayer != null) {
+				if (health.getValue() >= mc.thePlayer.getHealth()) {
+
+					mc.getNetHandler().addToSendQueue(
+							new C03PacketPlayer.C04PacketPlayerPosition(
+									mc.thePlayer.posX,
+									mc.thePlayer.boundingBox.minY + 1.0D,
+									mc.thePlayer.posY + 1.0D,
+									mc.thePlayer.posZ, mc.thePlayer.onGround));
+					mc.getNetHandler().addToSendQueue(
+							new C03PacketPlayer.C04PacketPlayerPosition(
+									mc.thePlayer.posX,
+									mc.thePlayer.boundingBox.minY - 2.0D - 999,
+									mc.thePlayer.posY - 2.0D - 999,
+									mc.thePlayer.posZ, mc.thePlayer.onGround));
+				}
+			}
+		}
+	}
+}

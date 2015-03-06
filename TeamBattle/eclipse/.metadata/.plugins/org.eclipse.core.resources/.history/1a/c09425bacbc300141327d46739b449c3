@@ -1,0 +1,55 @@
+package ml.balen.Balen.file.files;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import down.TeamBattle.file.CustomFile;
+import down.TeamBattle.mod.mods.Spammer;
+import me.teambattle.TeamBattle.LateMod;
+
+public final class SpamMessages extends CustomFile {
+	public SpamMessages() {
+		super("spam");
+	}
+
+	@Override
+	public void loadFile() {
+		try {
+			final Spammer spammer = (Spammer) LateMod.getModManager()
+					.getModByName("spammer");
+			if (spammer == null)
+				return;
+			final BufferedReader reader = new BufferedReader(new FileReader(
+					getFile()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.equals("")) {
+					continue;
+				}
+				line.replaceAll("\r", "");
+				line.replaceAll("\n", "");
+				spammer.getMessages().add(line);
+			}
+			reader.close();
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void saveFile() {
+		try {
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(
+					getFile()));
+			writer.close();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

@@ -1,0 +1,110 @@
+package down.TeamBattle.Modules.mods;
+
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Pattern;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventTick;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.Utils.TimeHelper;
+import down.TeamBattle.command.Command;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+
+public final class Spammer extends Mod {
+	public Value<Long> delay = new Value<Long>("spammer_delay", 2000L);
+	public Value<Boolean> filemode = new Value<Boolean>("spammer_file", false);
+	public Value<String> message = new Value<String>("spammer_message", "");
+	public List<String> messages = new CopyOnWriteArrayList<String>();
+	public Random rand = new Random();
+	public TimeHelper time = new TimeHelper();
+
+	public Spammer() {
+		super("Spammer", 0xFF848593);
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("spam", "<message/file/delay>", "s") {
+					@Override
+					public void run(String message) {
+						final String[] arguments = message.split(" ");
+						final String arg = arguments[1];
+						if (arg.equalsIgnoreCase("message")) {
+							Spammer.this.message.setValue(message
+									.substring((".spam " + arg + " ").length()));
+							Logger.logChat("Spammer Message set to: \""
+									+ Spammer.this.message.getValue() + "\"");
+						} else if (arg.equalsIgnoreCase("file")) {
+							filemode.setValue(!filemode.getValue());
+							Logger.logChat("Spammer will "
+									+ (filemode.getValue() ? "now"
+											: "no longer")
+									+ " use messages in the \"spam.txt\" file.");
+						} else if (arg.equalsIgnoreCase("delay")) {
+							if (message.split(" ")[2].equalsIgnoreCase("-d")) {
+								delay.setValue(delay.getDefaultValue());
+							} else {
+								delay.setValue(Long.parseLong(arguments[2]));
+							}
+
+							if (delay.getValue() < 500) {
+								delay.setValue(500L);
+							}
+							Logger.logChat("Spammer Delay set to: "
+									+ delay.getValue());
+						} else {
+							Logger.logChat("Invalid option! Valid options: message, file, delay");
+						}
+					}
+				});
+	}
+
+	public List<String> getMessages() {
+		return messages;
+	}
+
+	@Override
+	public void onEnabled() {
+		super.onEnabled();
+		if (messages.isEmpty()) {
+			TeamBattleClient.getFileManager().getFileByName("spam").loadFile();
+		}
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventTick) {
+			if (mc.thePlayer == null || mc.theWorld == null)
+				return;
+			if (time.hasReached(delay.getValue())) {
+				String msg = "";
+				if (filemode.getValue()) {
+					if (messages.isEmpty()) {
+						Logger.logChat("There are no messages to spam! File is either empty, or file spammer has complete.");
+						toggle();
+						return;
+					}
+
+					if (!messages.isEmpty()) {
+						msg = messages.get(0);
+						messages.remove(messages.get(0));
+					}
+				} else {
+					if (message.getValue().equals("")) {
+						Logger.logChat("You need to set a spam message! Type \".spam message <message>\"");
+						toggle();
+						return;
+					}
+					msg = message.getValue();
+				}
+				mc.getNetHandler().addToSendQueue(
+						new C01PacketChatMessage(msg.replaceAll(
+								Pattern.quote("$r"), "" + rand.nextInt(9999))));
+				time.reset();
+			}
+		}
+	}
+}

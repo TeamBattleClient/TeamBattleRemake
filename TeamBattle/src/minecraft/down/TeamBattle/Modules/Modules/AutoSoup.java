@@ -1,0 +1,192 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.CommandSystem.Command;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.Utils.TimeHelper;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemSoup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
+
+public final class AutoSoup extends ModuleBase {
+	private final Value<Long> delay = new Value<Long>("autosoup_delay", 500L);
+	private final Value<Float> health = new Value<Float>("autosoup_health",
+			13.0F);
+	private final TimeHelper time = new TimeHelper();
+
+	public AutoSoup() {
+		super("AutoSoup", 0xFF6C4D96);
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("autosoupdelay", "<milliseconds>",
+						"soupdelay", "asd") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							delay.setValue(delay.getDefaultValue());
+						} else {
+							delay.setValue(Long.parseLong(message.split(" ")[1]));
+						}
+
+						if (delay.getValue() > 1000L) {
+							delay.setValue(1000L);
+						} else if (delay.getValue() < 1L) {
+							delay.setValue(1L);
+						}
+						Logger.logChat("AutoSoup Delay set to: "
+								+ delay.getValue());
+					}
+				});
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("autosouphealth", "<health>", "souphealth",
+						"ash") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							health.setValue(health.getDefaultValue());
+						} else {
+							health.setValue(Float.parseFloat(message.split(" ")[1]));
+						}
+
+						if (health.getValue() < 1.0F) {
+							health.setValue(1.0F);
+						}
+						Logger.logChat("AutoSoup Health set to: "
+								+ health.getValue());
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("autosoup", "none", "soup") {
+					@Override
+					public void run(String message) {
+						if (doesHotbarHaveSoups()) {
+							eatSoup();
+						} else {
+							getSoupFromInventory();
+							eatSoup();
+						}
+					}
+				});
+	}
+
+	private boolean doesHotbarHaveSoups() {
+		for (int index = 36; index < 45; index++) {
+			final ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(
+					index).getStack();
+			if (stack == null) {
+				continue;
+			}
+			if (isStackSoup(stack))
+				return true;
+		}
+		return false;
+	}
+
+	private void eatSoup() {
+		for (int index = 36; index < 45; index++) {
+			final ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(
+					index).getStack();
+			if (stack == null) {
+				continue;
+			}
+			if (isStackSoup(stack)) {
+				stackBowls();
+				final int oldslot = mc.thePlayer.inventory.currentItem;
+				mc.getNetHandler().addToSendQueue(
+						new C09PacketHeldItemChange(index - 36));
+				mc.playerController.updateController();
+				mc.getNetHandler().addToSendQueue(
+						new C08PacketPlayerBlockPlacement(-1, -1, -1, -1,
+								stack, 0, 0, 0));
+				mc.getNetHandler().addToSendQueue(
+						new C09PacketHeldItemChange(oldslot));
+				break;
+			}
+		}
+	}
+
+	private void getSoupFromInventory() {
+		if (mc.currentScreen instanceof GuiChest)
+			return;
+		stackBowls();
+		for (int index = 9; index < 36; index++) {
+			final ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(
+					index).getStack();
+			if (stack == null) {
+				continue;
+			}
+
+			if (isStackSoup(stack)) {
+				mc.playerController.windowClick(0, index, 0, 1, mc.thePlayer);
+				break;
+			}
+		}
+	}
+
+	private boolean isStackSoup(ItemStack stack) {
+		if (stack == null)
+			return false;
+		return stack.getItem() instanceof ItemSoup;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPostSendMotionUpdates) {
+			if (updateCounter() == 0)
+				return;
+			if (mc.thePlayer.getHealth() <= health.getValue()
+					&& time.hasReached(delay.getValue())) {
+				if (doesHotbarHaveSoups()) {
+					eatSoup();
+				} else {
+					getSoupFromInventory();
+				}
+				time.reset();
+			}
+		}
+	}
+
+	private void stackBowls() {
+		if (mc.currentScreen instanceof GuiChest)
+			return;
+		for (int index = 9; index < 45; index++) {
+			final ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(
+					index).getStack();
+			if (stack == null) {
+				continue;
+			}
+
+			if (stack.getItem() == Items.bowl) {
+				mc.playerController.windowClick(0, index, 0, 0, mc.thePlayer);
+				mc.playerController.windowClick(0, 9, 0, 0, mc.thePlayer);
+				break;
+			}
+		}
+	}
+
+	private int updateCounter() {
+		int counter = 0;
+		for (int index = 9; index < 45; index++) {
+			final ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(
+					index).getStack();
+			if (stack == null) {
+				continue;
+			}
+			if (isStackSoup(stack)) {
+				counter += stack.stackSize;
+			}
+		}
+
+		setTag(getName() + "\247f: \2477" + counter);
+		return counter;
+	}
+}

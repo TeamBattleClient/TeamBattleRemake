@@ -1,0 +1,36 @@
+package down.TeamBattle.Modules.mods;
+
+import java.util.Collection;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+import net.minecraft.potion.PotionEffect;
+
+public final class PotionSaver extends ModuleBase {
+	public PotionSaver() {
+		super("PotionSaver", 0xFF8BEA00);
+	}
+
+	private boolean isMoving() {
+		return (mc.thePlayer.motionX != 0.0F && mc.thePlayer.motionZ != 0.0F)
+				|| !mc.thePlayer.onGround;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			final EventPreSendMotionUpdates pre = (EventPreSendMotionUpdates) event;
+			if (!isMoving()) {
+				pre.setCancelled(true);
+				for (final PotionEffect effect : (Collection<PotionEffect>) mc.thePlayer
+						.getActivePotionEffects()) {
+					effect.incrementDuration();
+				}
+				setColor(0xFF8BEA00);
+			} else {
+				setColor(0xFF888888);
+			}
+		}
+	}
+}

@@ -1,0 +1,34 @@
+package ml.balen.Balen.mod.mods;
+
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventPreSendMotionUpdates;
+import ml.balen.Balen.event.events.EventTick;
+import ml.balen.Balen.mod.Mod;
+
+public class Crit2 extends Mod{
+
+	public Crit2() {
+		super("FUCKNCP", 0x25FF33FF);
+		
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventTick){
+		if(!mc.thePlayer.isInWater()){
+			 double x = mc.thePlayer.posX;
+			 double y = mc.thePlayer.posY;
+			 double z = mc.thePlayer.posZ;
+			 for(int index = 0;index < 4000;index++){
+			mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, mc.thePlayer.boundingBox.minY + 1.0E-013D, y + 1.0E-013D, z, false));
+			mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(z, mc.thePlayer.boundingBox.minY, y, z, false));
+		}
+			
+		
+		}
+		
+	}
+	}
+}

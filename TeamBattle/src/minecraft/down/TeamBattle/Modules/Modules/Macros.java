@@ -1,0 +1,106 @@
+package down.TeamBattle.Modules.Modules;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.CommandSystem.Command;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventChatSent;
+import down.TeamBattle.EventSystem.events.EventKeyPressed;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Modules.Modules.addons.Macro;
+import down.TeamBattle.Utils.Logger;
+
+public final class Macros extends ModuleBase {
+	private final List<Macro> macros = new CopyOnWriteArrayList<Macro>();
+
+	public Macros() {
+		super("Macros");
+		setEnabled(true);
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("macroadd", "<key> <command>", "madd", "ma") {
+					@Override
+					public void run(String message) {
+						final String[] arguments = message.split(" ");
+						final int key = Keyboard.getKeyIndex(arguments[1]
+								.toUpperCase());
+						if (key == 0) {
+							Logger.logChat("You can't macro the key \"NONE\".");
+							return;
+						}
+						String command = message.substring((arguments[0] + " "
+								+ arguments[1] + " ").length());
+						if (command.startsWith(".")) {
+							command = command.substring(1);
+						}
+
+						for (final Macro macro : macros) {
+							if (macro.getKey() == key) {
+								macros.remove(macro);
+							}
+						}
+						macros.add(new Macro(command, key));
+						TeamBattleClient.getFileManager().getFileByName("macros")
+								.saveFile();
+						Logger.logChat("Macro \"" + Keyboard.getKeyName(key)
+								+ "\" added with command \"" + command + "\".");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("macrodel", "<key>", "mdel", "md") {
+					@Override
+					public void run(String message) {
+						final int key = Keyboard.getKeyIndex(message.split(" ")[1]
+								.toUpperCase());
+						if (key == 0) {
+							Logger.logChat("You can't macro the key \"NONE\".");
+							return;
+						}
+						boolean found = false;
+						for (final Macro macro : macros) {
+							if (key == macro.getKey()) {
+								macros.remove(macro);
+								Logger.logChat("Macro \""
+										+ Keyboard.getKeyName(key)
+										+ "\" removed.");
+								TeamBattleClient.getFileManager()
+										.getFileByName("macros").saveFile();
+								found = true;
+								break;
+							}
+						}
+
+						if (!found) {
+							Logger.logChat("Macro \""
+									+ Keyboard.getKeyName(key)
+									+ "\" not found.");
+						}
+					}
+				});
+	}
+
+	public final List<Macro> getMacros() {
+		return macros;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventKeyPressed) {
+			final EventKeyPressed pressed = (EventKeyPressed) event;
+			for (final Macro macro : macros) {
+				if (pressed.getKey() == macro.getKey()) {
+					final EventChatSent sent = new EventChatSent("."
+							+ macro.getCommand());
+					TeamBattleClient.getEventManager().call(sent);
+					sent.checkForCommands();
+				}
+			}
+		}
+	}
+
+}

@@ -1,0 +1,7 @@
+package down.TeamBattle.event.events;
+
+import down.TeamBattle.EventSystem.Event;
+
+public final class EventPostSendMotionUpdates extends Event {
+
+}

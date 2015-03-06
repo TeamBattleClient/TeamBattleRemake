@@ -1,0 +1,71 @@
+package ml.balen.Balen.mod.mods;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import me.teambattle.TeamBattle.LateMod;
+import net.minecraft.client.gui.GuiPlayerInfo;
+import net.minecraft.util.StringUtils;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPreSendMotionUpdates;
+import down.TeamBattle.mod.Mod;
+import down.TeamBattle.util.Logger;
+
+public class Admin extends Mod {
+
+	private final List<String> checked = new ArrayList<String>();
+
+	public Admin() {
+		super("Admin", Keyboard.KEY_NONE, 0xFF0000);
+		setVisible(false);
+		setEnabled(true);
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("addadmin", "<name>", "aadmin") {
+					@Override
+					public void run(String message) {
+
+						LateMod.getAdminManager().addAdmin(
+								message.split(" ")[1]);
+						Logger.logChat("Admin " + message.split(" ")[1]
+								+ " added.");
+
+					}
+				});
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("removeadmin", "<name>", "radmin") {
+					@Override
+					public void run(String message) {
+
+						LateMod.getAdminManager().removeAdmin(
+								message.split(" ")[1]);
+						Logger.logChat("Admin " + message.split(" ")[1]
+								+ " removed.");
+
+					}
+
+				});
+
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			for (Object a : mc.getNetHandler().playerInfoList) {
+				GuiPlayerInfo plyadmin = (GuiPlayerInfo) a;
+				String adminname = StringUtils.stripControlCodes(plyadmin.name);
+				if (LateMod.getAdminManager().isAdmin(plyadmin.name)
+						&& !checked.contains(adminname)) {
+					Logger.logChat("\247cAdmin " + adminname + " is online!");
+					checked.add(adminname);
+				}
+			}
+
+		}
+	}
+}

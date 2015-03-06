@@ -1,0 +1,16 @@
+package down.TeamBattle.event.events;
+
+import down.TeamBattle.event.Cancellable;
+import down.TeamBattle.event.Event;
+
+public final class EventInsideBlock extends Event implements Cancellable {
+	@Override
+	public boolean isCancelled() {
+		return true;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+	}
+
+}

@@ -1,0 +1,87 @@
+package down.TeamBattle.mod.mods;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.BlockHelper;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventBlockBreaking;
+import down.TeamBattle.event.events.EventBlockClicked;
+
+public final class Speedmine extends Mod {
+	private final Value<Integer> delay = new Value<Integer>("speedmine_delay",
+			1);
+	private final Value<Boolean> instant = new Value<Boolean>(
+			"speedmine_instant", false);
+	private final Value<Float> multiplier = new Value<Float>(
+			"speedmine_multiplier", 1.337F);
+
+	public Speedmine() {
+		super("Speedmine", Keyboard.KEY_G, 0xFF5A921D);
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("speedminemultiplier", "<multiplier>", "smm") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							multiplier.setValue(multiplier.getDefaultValue());
+							Logger.logChat("Speedmine Multiplier set to: "
+									+ multiplier.getValue());
+							return;
+						}
+						Float newSpeed = Float.parseFloat(message.split(" ")[1]);
+						if (newSpeed > 10.0F) {
+							newSpeed = 10.0F;
+						} else if (newSpeed < 1.0F) {
+							newSpeed = 1.0F;
+						}
+						multiplier.setValue(newSpeed);
+						Logger.logChat("Speedmine Multiplier set to: "
+								+ multiplier.getValue());
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("speedminedelay", "<delay>", "smd") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							delay.setValue(delay.getDefaultValue());
+							Logger.logChat("Speedmine Delay set to: "
+									+ delay.getValue());
+							return;
+						}
+						Integer newDelay = Integer.parseInt(message.split(" ")[1]);
+						if (newDelay > 5) {
+							newDelay = 5;
+						} else if (newDelay < 1) {
+							newDelay = 1;
+						}
+						delay.setValue(newDelay);
+						Logger.logChat("Speedmine Delay set to: "
+								+ delay.getValue());
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventBlockBreaking) {
+			final EventBlockBreaking block = (EventBlockBreaking) event;
+			block.setDamage(multiplier.getValue());
+			block.setDelay(delay.getValue());
+		} else if (event instanceof EventBlockClicked) {
+			final EventBlockClicked block = (EventBlockClicked) event;
+			mc.thePlayer.inventory.currentItem = BlockHelper.getBestTool(
+					block.getX(), block.getY(), block.getZ());
+			mc.playerController.updateController();
+
+			if (instant.getValue()) {
+				// will eventually put something here once i find it
+			}
+		}
+	}
+}

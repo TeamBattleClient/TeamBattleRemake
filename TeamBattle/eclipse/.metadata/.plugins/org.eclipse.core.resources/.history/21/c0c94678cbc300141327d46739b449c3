@@ -1,0 +1,141 @@
+package ml.balen.Balen;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
+
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.management.managers.AdminManager;
+import ml.balen.Balen.management.managers.AltManager;
+import ml.balen.Balen.management.managers.CommandManager;
+import ml.balen.Balen.management.managers.EventManager;
+import ml.balen.Balen.management.managers.FileManager;
+import ml.balen.Balen.management.managers.FriendManager;
+import ml.balen.Balen.management.managers.ModManager;
+import ml.balen.Balen.management.managers.ValueManager;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.threads.UpdateCheckThread;
+import ml.balen.Balen.util.Logger;
+import net.minecraft.client.Minecraft;
+
+import org.lwjgl.opengl.Display;
+
+
+public final class LateMod {
+
+	private static final AdminManager adminManager = new AdminManager();
+	private static final AltManager altManager = new AltManager();
+	private static final int build = 48;
+	private static final CommandManager commandManager = new CommandManager();
+	private static final File directory = new File(
+			Minecraft.getMinecraft().mcDataDir, "latemod");
+	private static final EventManager eventManager = new EventManager();
+	private static final FileManager fileManager = new FileManager();
+	private static final FriendManager friendManager = new FriendManager();
+	private static final ModManager modManager = new ModManager();
+	private static boolean newerVersionAvailable;
+	private static final ValueManager valueManager = new ValueManager();
+
+	
+
+	public static AdminManager getAdminManager() {
+		return adminManager;
+	}
+
+	public static AltManager getAltManager() {
+		return altManager;
+	}
+
+	public static int getBuild() {
+		return build;
+	}
+
+	public static CommandManager getCommandManager() {
+		return commandManager;
+	}
+
+	public static File getDirectory() {
+		return directory;
+	}
+
+	public static EventManager getEventManager() {
+		return eventManager;
+	}
+
+	public static FileManager getFileManager() {
+		return fileManager;
+	}
+
+	public static FriendManager getFriendManager() {
+		return friendManager;
+	}
+
+	public static ModManager getModManager() {
+		return modManager;
+	}
+
+	public static ValueManager getValueManager() {
+		return valueManager;
+	}
+
+	public static boolean isNewerVersionAvailable() {
+		return newerVersionAvailable;
+	}
+
+	public static void onStartup() {
+		Display.setTitle("/247Balen : not a hacked client nigga.");
+		Logger.logConsole("Started loading BaLen");
+		Logger.logConsole("Build #" + build);
+		new UpdateCheckThread().start();
+		if (!directory.isDirectory()) {
+			directory.mkdirs();
+		}
+		eventManager.setup();
+		valueManager.setup();
+		friendManager.setup();
+		adminManager.setup();
+		commandManager.setup();
+		modManager.setup();
+		altManager.setup();
+		fileManager.setup();
+		
+		Collections.sort(commandManager.getContents(),
+				new Comparator<Command>() {
+					@Override
+					public int compare(Command cmd1, Command cmd2) {
+						return cmd1.getCommand().compareTo(cmd2.getCommand());
+					}
+				});
+
+		// then sort mods so they are alphabetical
+		Collections.sort(modManager.getContents(), new Comparator<Mod>() {
+			@Override
+			public int compare(Mod mod1, Mod mod2) {
+				return mod1.getName().compareTo(mod2.getName());
+			}
+		});
+		Logger.logConsole("Successfully loaded LateMod");
+		
+	}
+
+	
+
+	public static void setNewerVersionAvailable(boolean newerVersionAvailable) {
+		LateMod.newerVersionAvailable = newerVersionAvailable;
+	}
+}
+
+/*
+ * Nice memes
+ * 
+ * if ((event instanceof EventPostUpdate)) { if (isInLiquid()) {
+ * Wrapper.getPlayer().motionY = 0.12D; return; } if
+ * (isOnLiquid(Wrapper.getPlayer())) { Wrapper.getPlayer().noClip = true;
+ * 
+ * 
+ * long currentMS = System.nanoTime() / 1000000L;
+ * Minecraft.getMinecraft().thePlayer.onGround = false; if ((currentMS -
+ * this.lastMS >= 250L) || (this.lastMS == -1L)) {
+ * Wrapper.getPlayer().boundingBox.expand(0.0D, 2.0D, 0.0D); this.lastMS =
+ * currentMS; } } else { Wrapper.getPlayer().noClip = false; } }
+ */

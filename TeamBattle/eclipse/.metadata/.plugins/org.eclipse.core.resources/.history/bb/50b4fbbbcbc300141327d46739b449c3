@@ -1,0 +1,47 @@
+package ml.balen.Balen.mod.mods;
+
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPostSendMotionUpdates;
+import down.TeamBattle.mod.Mod;
+import down.TeamBattle.util.BlockHelper;
+import down.TeamBattle.util.TimeHelper;
+import me.teambattle.TeamBattle.LateMod;
+
+public class Dolphin extends Mod {
+	private final TimeHelper time = new TimeHelper();
+
+	public Dolphin() {
+		super("Dolphin", 0xFF3966DF);
+	}
+
+	public void onDisabled() {
+		super.onDisabled();
+		if (mc.thePlayer != null) {
+			mc.thePlayer.noClip = false;
+		}
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPostSendMotionUpdates) {
+			if (BlockHelper.isInLiquid()) {
+				if (!mc.thePlayer.isSneaking())
+					mc.thePlayer.motionY = 0.134D;
+				return;
+			}
+
+			if (BlockHelper.isOnLiquid()) {
+				mc.thePlayer.noClip = true;
+				if (time.hasReached(250)) {
+					mc.thePlayer.boundingBox.expand(0.0D, 2.30D, 0.0D);
+					time.reset();
+				}
+			} else {
+				if (LateMod.getModManager().getModByName("Freecam").isEnabled()) {
+					return;
+				}
+				mc.thePlayer.noClip = false;
+			}
+		}
+	}
+}

@@ -1,0 +1,30 @@
+package down.TeamBattle.command.commands;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.command.Command;
+
+public final class Bind extends Command {
+	public Bind() {
+		super("bind", "<mod name> <key>");
+	}
+
+	@Override
+	public void run(String message) {
+		final Mod mod = TeamBattleClient.getModManager().getModByName(
+				message.split(" ")[1]);
+		if (mod == null) {
+			Logger.logChat("Mod \"" + message.split(" ")[1]
+					+ "\" was not found!");
+		} else {
+			mod.setKeybind(Keyboard.getKeyIndex(message.split(" ")[2]
+					.toUpperCase()));
+			Logger.logChat("Mod \"" + mod.getName() + "\" is now bound to: "
+					+ Keyboard.getKeyName(mod.getKeybind()));
+		}
+	}
+
+}

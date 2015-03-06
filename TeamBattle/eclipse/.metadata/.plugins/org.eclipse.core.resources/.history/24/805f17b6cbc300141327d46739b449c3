@@ -1,0 +1,18 @@
+package ml.balen.Balen.command.commands;
+
+import ml.balen.Balen.command.Command;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+
+public class Disconnect extends Command {
+
+	public Disconnect() {
+		super("disconnect", "<none>", "discon");
+	}
+
+	@Override
+	public void run(String message) {
+		Minecraft.getMinecraft().displayGuiScreen(new GuiMainMenu());
+	}
+
+}

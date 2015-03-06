@@ -1,0 +1,112 @@
+package ml.balen.Balen.ui.screens;
+
+import ml.balen.Balen.protection.Account;
+import ml.balen.Balen.threads.LateModLoginThread;
+import ml.balen.Balen.ui.GuiPasswordField;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+
+import org.lwjgl.input.Keyboard;
+
+public final class GuiLateModLogin extends GuiScreen {
+	private GuiPasswordField password;
+	private LateModLoginThread thread;
+	private GuiTextField username;
+
+	public GuiLateModLogin(Account account) {
+		if (account != null) {
+			thread = new LateModLoginThread(account);
+			thread.start();
+		}
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		switch (button.id) {
+		case 0:
+			thread = new LateModLoginThread(username.getText(),
+					password.getText());
+			thread.start();
+			break;
+		case 1:
+			mc.shutdown();
+			break;
+		}
+	}
+
+	@Override
+	public void drawScreen(int x, int y, float z) {
+		if (thread != null && thread.getStatus().equals("\247aLogged in.")) {
+			mc.displayGuiScreen(new GuiMainMenu());
+		}
+		drawDefaultBackground();
+		username.drawTextBox();
+		password.drawTextBox();
+		drawCenteredString(mc.fontRenderer, "LateMod Login", width / 2, 20,
+				0xFFFFFFFF);
+		drawCenteredString(
+				mc.fontRenderer,
+				thread == null ? "\247cYou need to login in order to use LateMod."
+						: thread.getStatus(), width / 2, 29, 0xFFFFFFFF);
+		if (username.getText().isEmpty()) {
+			drawString(mc.fontRenderer, "Username", width / 2 - 96, 66,
+					0xFF888888);
+		}
+		if (password.getText().isEmpty()) {
+			drawString(mc.fontRenderer, "Password", width / 2 - 96, 106,
+					0xFF888888);
+		}
+		super.drawScreen(x, y, z);
+	}
+
+	@Override
+	public void initGui() {
+		final int var3 = height / 4 + 24;
+		buttons.add(new GuiButton(0, width / 2 - 100, var3 + 72 + 12, "Login"));
+		buttons.add(new GuiButton(1, width / 2 - 100, var3 + 72 + 36, "Quit"));
+		username = new GuiTextField(mc.fontRenderer, width / 2 - 100, 60, 200,
+				20);
+		password = new GuiPasswordField(mc.fontRenderer, width / 2 - 100, 100,
+				200, 20);
+		username.setFocused(true);
+		Keyboard.enableRepeatEvents(true);
+	}
+
+	@Override
+	protected void keyTyped(char character, int key) {
+		if (character == '\t') {
+			if (!username.isFocused() && !password.isFocused()) {
+				username.setFocused(true);
+			} else {
+				username.setFocused(password.isFocused());
+				password.setFocused(!username.isFocused());
+			}
+		}
+
+		if (character == '\r') {
+			actionPerformed((GuiButton) buttons.get(0));
+		}
+		username.textboxKeyTyped(character, key);
+		password.textboxKeyTyped(character, key);
+	}
+
+	@Override
+	protected void mouseClicked(int x, int y, int button) {
+		super.mouseClicked(x, y, button);
+		username.mouseClicked(x, y, button);
+		password.mouseClicked(x, y, button);
+	}
+
+	@Override
+	public void onGuiClosed() {
+		Keyboard.enableRepeatEvents(false);
+	}
+
+	@Override
+	public void updateScreen() {
+		username.updateCursorCounter();
+		password.updateCursorCounter();
+	}
+}

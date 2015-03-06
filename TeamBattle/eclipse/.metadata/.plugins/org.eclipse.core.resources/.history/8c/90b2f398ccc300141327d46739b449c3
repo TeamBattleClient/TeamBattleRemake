@@ -1,0 +1,274 @@
+package down.TeamBattle.mod.mods;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.entity.RenderManager;
+
+import org.lwjgl.opengl.GL11;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.Utils.RenderHelper;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventBlockRender;
+import down.TeamBattle.event.events.EventRender3D;
+
+public final class BlockESP extends Mod {
+	private final List<Block> blocks = new ArrayList<Block>();
+	private final List<Integer[]> cache = new CopyOnWriteArrayList<Integer[]>();
+	private final Value<Integer> limit = new Value<Integer>("blockesp_limit",
+			2500);
+	private final Value<Integer> range = new Value<Integer>("blockesp_range",
+			256);
+	private final Value<Boolean> redchest = new Value<Boolean>(
+			"blockesp_redchest", false);
+
+	public BlockESP() {
+		super("BlockESP");
+		setEnabled(true);
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("blockesplimit", "<block limit>", "besplimit",
+						"bel") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							limit.setValue(limit.getDefaultValue());
+						} else {
+							limit.setValue(Integer.parseInt(message.split(" ")[1]));
+						}
+
+						if (limit.getValue() > 100000) {
+							limit.setValue(100000);
+						} else if (limit.getValue() < 10) {
+							limit.setValue(10);
+						}
+						Logger.logChat("BlockESP Limit set to: "
+								+ limit.getValue());
+					}
+				});
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("blockesprange", "<block range>", "besprange",
+						"ber") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							range.setValue(range.getDefaultValue());
+						} else {
+							range.setValue(Integer.parseInt(message.split(" ")[1]));
+						}
+
+						if (range.getValue() > 512) {
+							range.setValue(512);
+						} else if (range.getValue() < 10) {
+							range.setValue(10);
+						}
+						Logger.logChat("BlockESP Range set to: "
+								+ range.getValue());
+					}
+				});
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("blockespredchest", "none", "beredchest",
+						"berc", "redchest") {
+					@Override
+					public void run(String message) {
+						redchest.setValue(redchest.getValue());
+						Logger.logChat("BlockESP "
+								+ (redchest.getValue() ? "now" : "no longer")
+								+ " renders chests red.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("blockesp", "<block name/id>", "besp", "be") {
+					public boolean isInteger(String string) {
+						try {
+							Integer.parseInt(string);
+						} catch (final Exception e) {
+							return false;
+						}
+						return true;
+					}
+
+					@Override
+					public void run(String message) {
+						final String[] arguments = message.split(" ");
+						if (arguments.length == 1) {
+							blocks.clear();
+							cache.clear();
+							Logger.logChat("BlockESP cleared.");
+							return;
+						}
+						final String input = message
+								.substring((arguments[0] + " ").length());
+						Block block = null;
+						if (isInteger(input)) {
+							block = Block.getBlockById(Integer.parseInt(input));
+						} else {
+							for (final Object o : Block.blockRegistry) {
+								final Block blockk = (Block) o;
+								final String name = blockk.getLocalizedName()
+										.replaceAll("tile.", "")
+										.replaceAll(".name", "");
+								if (name.toLowerCase().startsWith(
+										input.toLowerCase())) {
+									block = blockk;
+									break;
+								}
+							}
+						}
+						if (block == null) {
+							Logger.logChat("No such block.");
+							return;
+						}
+						if (blocks.contains(block)) {
+							blocks.remove(blocks.indexOf(block));
+							cache.clear();
+						} else {
+							blocks.add(block);
+							cache.clear();
+						}
+						mc.renderGlobal.loadRenderers();
+						Logger.logChat("Searching for " + blocks.size()
+								+ " block type(s)");
+					}
+				});
+	}
+
+	private int getBlockColor(Block block) {
+		int color = block.getMaterial().getMaterialMapColor().colorValue;
+		switch (Block.getIdFromBlock(block)) {
+		case 56:
+		case 57:
+		case 116:
+			color = 6155509;
+			break;
+		case 129:
+		case 133:
+			color = 1564002;
+			break;
+		case 14:
+		case 41:
+			color = 16576075;
+			break;
+		case 16:
+		case 173:
+			color = 3618615;
+			break;
+		case 21:
+		case 22:
+			color = 1525445;
+			break;
+		case 73:
+		case 74:
+		case 152:
+			color = 16711680;
+			break;
+		case 61:
+		case 62:
+			color = 16658167;
+			break;
+		case 49:
+			color = 3944534;
+			break;
+		case 146:
+			color = 13474867;
+			break;
+		case 54:
+			color = redchest.getValue() ? 0xFE4B03 : 0xFFBF00;
+			break;
+		case 130:
+			color = 14614999;
+			break;
+		}
+		return color == 0 ? 1216104 : color;
+	}
+
+	private boolean isCached(double x, double y, double z) {
+		for (final Integer[] block : cache) {
+			if (block[0] == x && block[1] == y && block[2] == z)
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventRender3D) {
+			GL11.glPushMatrix();
+			mc.entityRenderer.disableLightmap(1.0D);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LINE_SMOOTH);
+			GL11.glDepthMask(false);
+			GL11.glLineWidth(1.0F);
+			for (final Integer[] block : cache) {
+				final Block block1 = mc.theWorld.getBlock(block[0], block[1],
+						block[2]);
+				if (mc.thePlayer.getDistance(block[0], block[1], block[2]) > range
+						.getValue() || !blocks.contains(block1)) {
+					cache.remove(block);
+				} else {
+					renderESP(block, block1);
+				}
+			}
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_LINE_SMOOTH);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			mc.entityRenderer.enableLightmap(1.0D);
+			GL11.glPopMatrix();
+		} else if (event instanceof EventBlockRender) {
+			if (blocks.isEmpty())
+				return;
+
+			final EventBlockRender blockRender = (EventBlockRender) event;
+			final int x = blockRender.getX();
+			final int y = blockRender.getY();
+			final int z = blockRender.getZ();
+			final Block block = mc.theWorld.getBlock(x, y, z);
+			if (!isCached(x, y, z) && blocks.contains(block)) {
+				if (cache.size() < limit.getValue()) {
+					cache.add(new Integer[] { x, y, z });
+				}
+			}
+		}
+	}
+
+	private void renderESP(Integer[] cache, Block block) {
+		if (!blocks.contains(block))
+			return;
+		final double x = cache[0] - RenderManager.renderPosX;
+		final double y = cache[1] - RenderManager.renderPosY;
+		final double z = cache[2] - RenderManager.renderPosZ;
+		final int color = getBlockColor(block);
+		final float red = (color >> 16 & 0xFF) / 255.0F;
+		final float green = (color >> 8 & 0xFF) / 255.0F;
+		final float blue = (color & 0xFF) / 255.0F;
+		GL11.glColor4f(red, green, blue, 0.20F);
+		RenderHelper.drawFilledBox(block.getSelectedBoundingBoxFromPool(
+				mc.theWorld, x, y, z));
+		GL11.glColor4f(red, green, blue, 0.40F);
+		RenderHelper.drawLines(block.getSelectedBoundingBoxFromPool(
+				mc.theWorld, x, y, z));
+		GL11.glColor4f(red, green, blue, 0.60F);
+		RenderHelper.drawOutlinedBoundingBox(block
+				.getSelectedBoundingBoxFromPool(mc.theWorld, x, y, z));
+	}
+}

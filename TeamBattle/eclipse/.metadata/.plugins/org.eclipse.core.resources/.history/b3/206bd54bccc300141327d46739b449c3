@@ -1,0 +1,281 @@
+package down.TeamBattle.mod.mods;
+
+import java.util.List;
+
+import moduleValues.Value;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IAnimals;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
+
+import org.lwjgl.opengl.GL11;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventRender3D;
+import down.TeamBattle.mod.Mod;
+import down.TeamBattle.util.Logger;
+import down.TeamBattle.util.RenderHelper;
+
+public final class ESP extends Mod {
+	private final Value<Boolean> animals = new Value<Boolean>("esp_animals",
+			false);
+	private final Value<Boolean> box = new Value<Boolean>("esp_box", true);
+	private final Value<Boolean> enderpearls = new Value<Boolean>(
+			"esp_enderpearls", false);
+	private final Value<Boolean> invisibles = new Value<Boolean>(
+			"esp_invisibles", true);
+	private final Value<Boolean> items = new Value<Boolean>("esp_items", false);
+	private final Value<Boolean> mobs = new Value<Boolean>("esp_mobs", false);
+	private final Value<Boolean> players = new Value<Boolean>("esp_players",
+			true);
+	private final Value<Boolean> tracer = new Value<Boolean>("esp_tracer", true);
+
+	public ESP() {
+		super("ESP", "I");
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espplayers", "none", "eplayers") {
+					@Override
+					public void run(String message) {
+						players.setValue(!players.getValue());
+						Logger.logChat("ESP will "
+								+ (players.getValue() ? "now" : "no longer")
+								+ " show players.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espinvisibles", "none", "einvisibles") {
+					@Override
+					public void run(String message) {
+						invisibles.setValue(!invisibles.getValue());
+						Logger.logChat("ESP will "
+								+ (invisibles.getValue() ? "now" : "no longer")
+								+ " show invisibles.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espmobs", "none", "emobs") {
+					@Override
+					public void run(String message) {
+						mobs.setValue(!mobs.getValue());
+						Logger.logChat("ESP will "
+								+ (mobs.getValue() ? "now" : "no longer")
+								+ " show mobs.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espanimals", "none", "eanimals") {
+					@Override
+					public void run(String message) {
+						animals.setValue(!animals.getValue());
+						Logger.logChat("ESP will "
+								+ (animals.getValue() ? "now" : "no longer")
+								+ " show animals.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espitems", "none", "eitems") {
+					@Override
+					public void run(String message) {
+						items.setValue(!items.getValue());
+						Logger.logChat("ESP will "
+								+ (items.getValue() ? "now" : "no longer")
+								+ " show items.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("espenderpearls", "none", "eenderpearls",
+						"epearls") {
+					@Override
+					public void run(String message) {
+						enderpearls.setValue(!enderpearls.getValue());
+						Logger.logChat("ESP will "
+								+ (enderpearls.getValue() ? "now" : "no longer")
+								+ " show ender pearls.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("esptracers", "none", "etracers", "etrace") {
+					@Override
+					public void run(String message) {
+						tracer.setValue(!tracer.getValue());
+						Logger.logChat("ESP will "
+								+ (tracer.getValue() ? "now" : "no longer")
+								+ " draw tracers.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("espbox", "none", "ebox", "box") {
+					@Override
+					public void run(String message) {
+						box.setValue(!box.getValue());
+						Logger.logChat("ESP will "
+								+ (box.getValue() ? "now" : "no longer")
+								+ " draw 3D boxes.");
+					}
+				});
+	}
+
+	private boolean isValidTarget(Entity entity) {
+		boolean valid = false;
+		final String ignore = ((KillAura) TeamBattleClient.getModManager().getModByName(
+				"killaura")).getIgnore().getValue();
+		if (!ignore.equals("")
+				&& entity.func_145748_c_().getFormattedText()
+						.startsWith("\247" + ignore)
+				&& entity instanceof EntityPlayer
+				&& !TeamBattleClient.getFriendManager().isFriend(
+						entity.getCommandSenderName()))
+			return false;
+		if (entity.isInvisible() && !invisibles.getValue())
+			return false;
+		if (entity instanceof EntityPlayer && players.getValue()) {
+			valid = entity != null && entity != mc.thePlayer
+					&& entity.isEntityAlive() && entity.ticksExisted > 20;
+		} else if (entity instanceof IMob && mobs.getValue()) {
+			valid = entity != null && entity.isEntityAlive()
+					&& mc.thePlayer.getDistanceToEntity(entity) <= 30
+					&& entity.ticksExisted > 20;
+		} else if (entity instanceof IAnimals && !(entity instanceof IMob)
+				&& animals.getValue()) {
+			valid = entity != null && entity.isEntityAlive()
+					&& mc.thePlayer.getDistanceToEntity(entity) <= 30
+					&& entity.ticksExisted > 20;
+		} else if (entity instanceof EntityEnderPearl && enderpearls.getValue()) {
+			valid = entity != null && entity.isEntityAlive();
+		} else if (entity instanceof EntityItem && items.getValue()) {
+			valid = entity != null && entity.isEntityAlive()
+					&& mc.thePlayer.getDistanceToEntity(entity) <= 30;
+		}
+		return valid;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventRender3D) {
+			if (!Minecraft.isGuiEnabled())
+				return;
+			final EventRender3D render = (EventRender3D) event;
+			GL11.glPushMatrix();
+			mc.entityRenderer.disableLightmap(1.0D);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LINE_SMOOTH);
+			GL11.glDepthMask(false);
+			GL11.glLineWidth(1.0F);
+			for (final Entity entity : (List<Entity>) mc.theWorld.loadedEntityList) {
+				if (!isValidTarget(entity)) {
+					continue;
+				}
+				final double posX = entity.lastTickPosX
+						+ (entity.posX - entity.lastTickPosX)
+						* render.getPartialTicks() - RenderManager.renderPosX;
+				final double posY = entity.lastTickPosY
+						+ (entity.posY - entity.lastTickPosY)
+						* render.getPartialTicks() - RenderManager.renderPosY;
+				final double posZ = entity.lastTickPosZ
+						+ (entity.posZ - entity.lastTickPosZ)
+						* render.getPartialTicks() - RenderManager.renderPosZ;
+				if (box.getValue()) {
+					GL11.glPushMatrix();
+					GL11.glTranslated(posX, posY, posZ);
+					GL11.glRotatef(-entity.rotationYaw, 0.0F, entity.height,
+							0.0F);
+					GL11.glTranslated(-posX, -posY, -posZ);
+					renderBox(entity, posX, posY, posZ);
+					GL11.glPopMatrix();
+				}
+
+				if (tracer.getValue()) {
+					renderTracer(entity, posX, posY, posZ);
+				}
+			}
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_LINE_SMOOTH);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			mc.entityRenderer.enableLightmap(1.0D);
+			GL11.glPopMatrix();
+		}
+	}
+
+	private void renderBox(Entity entity, double x, double y, double z) {
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x - entity.width, y, z
+				- entity.width, x + entity.width, y + entity.height + 0.2D, z
+				+ entity.width);
+		if (entity instanceof EntityLivingBase) {
+			box = AxisAlignedBB.getBoundingBox(x - entity.width + 0.2D, y, z
+					- entity.width + 0.2D, x + entity.width - 0.2D, y
+					+ entity.height + (entity.isSneaking() ? 0.02D : 0.2D), z
+					+ entity.width - 0.2D);
+		}
+		float[] color;
+		final float distance = mc.thePlayer.getDistanceToEntity(entity);
+		if (entity instanceof EntityPlayer
+				&& TeamBattleClient.getFriendManager().isFriend(
+						entity.getCommandSenderName())) {
+			color = new float[] { 0.3F, 0.7F, 1.0F };
+		} else if (TeamBattleClient.getAdminManager().isAdmin(
+				entity.getCommandSenderName())) {
+			color = new float[] { 1.0F, 0.9F, 0.0F };
+		} else if (entity.isInvisibleToPlayer(mc.thePlayer)) {
+			color = new float[] { 1.0F, 0.9F, 0.0F };
+		} else if (entity instanceof EntityLivingBase
+				&& ((EntityLivingBase) entity).hurtTime > 0) {
+			color = new float[] { 1.0F, 0.66F, 0.0F };
+		} else if (distance <= 4.25F) {
+			color = new float[] { 0.9F, 0.0F, 0.0F };
+		} else {
+			color = new float[] { 0.0F, 0.9F, 0.0F };
+		}
+		GL11.glColor4f(color[0], color[1], color[2], 0.6F);
+		RenderHelper.drawLines(box);
+		GL11.glColor4f(color[0], color[1], color[2], 0.8F);
+		RenderHelper.drawOutlinedBoundingBox(box);
+	}
+
+	private void renderTracer(Entity entity, double x, double y, double z) {
+		final float distance = mc.thePlayer.getDistanceToEntity(entity);
+		float[] color;
+		if (entity instanceof EntityPlayer
+				&& TeamBattleClient.getFriendManager().isFriend(
+						entity.getCommandSenderName())) {
+			color = new float[] { 0.30F, 0.7F, 1.0F };
+		} else if (TeamBattleClient.getAdminManager().isAdmin(
+				entity.getCommandSenderName())) {
+			color = new float[] { 1.0F, 0.9F, 0.0F };
+		} else if (entity.isInvisibleToPlayer(mc.thePlayer)) {
+			color = new float[] { 1.0F, 0.9F, 0.0F };
+		} else if (distance <= 64.0F) {
+			color = new float[] { 0.9F, distance / 64.0F, 0.0F };
+		} else {
+			color = new float[] { 0.0F, 0.90F, 0.0F };
+		}
+		GL11.glColor4f(color[0], color[1], color[2], 1.0F);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex3d(0.0D, 0.0D, 0.0D);
+		GL11.glVertex3d(x, y, z);
+		GL11.glEnd();
+	}
+}

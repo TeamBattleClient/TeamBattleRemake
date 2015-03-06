@@ -1,0 +1,77 @@
+package down.TeamBattle.mod.mods;
+
+import down.TeamBattle.LateMod;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPreSendMotionUpdates;
+import down.TeamBattle.mod.Mod;
+import down.TeamBattle.util.Logger;
+import down.TeamBattle.value.Value;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+
+public final class Zoot extends Mod {
+	private final Value<Boolean> fire = new Value<Boolean>("zoot_antifire",
+			true);
+	private final Value<Boolean> potion = new Value<Boolean>("zoot_antipotion",
+			true);
+
+	public Zoot() {
+		super("Zoot", 0xFFD298ED);
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("zootantifire", "none", "zantifire", "zaf") {
+					@Override
+					public void run(String message) {
+						fire.setValue(!fire.getValue());
+						Logger.logChat("Zoot will "
+								+ (fire.getValue() ? "now" : "no longer")
+								+ " get rid of fire.");
+					}
+				});
+
+		LateMod.getCommandManager()
+				.getContents()
+				.add(new Command("zootantipotion", "none", "zantipotion", "zap") {
+					@Override
+					public void run(String message) {
+						potion.setValue(!potion.getValue());
+						Logger.logChat("Zoot will "
+								+ (potion.getValue() ? "now" : "no longer")
+								+ " get rid of bad potion effects.");
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			if (!mc.thePlayer.onGround)
+				return;
+			if (potion.getValue()) {
+				for (final Potion potion : Potion.potionTypes) {
+					if (potion == null || !potion.isBadEffect()) {
+						continue;
+					}
+					final PotionEffect effect = mc.thePlayer
+							.getActivePotionEffect(potion);
+					if (effect == null) {
+						continue;
+					}
+					for (int index = 0; index < effect.getDuration() / 20; index++) {
+						mc.getNetHandler().addToSendQueue(
+								new C03PacketPlayer(mc.thePlayer.onGround));
+					}
+				}
+			}
+
+			if (fire.getValue() && mc.thePlayer.isBurning()) {
+				for (int index = 0; index < 120; index++) {
+					mc.getNetHandler().addToSendQueue(
+							new C03PacketPlayer(mc.thePlayer.onGround));
+				}
+			}
+		}
+	}
+}

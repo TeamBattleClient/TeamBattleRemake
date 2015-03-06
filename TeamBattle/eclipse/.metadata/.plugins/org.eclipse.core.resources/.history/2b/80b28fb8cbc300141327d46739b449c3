@@ -1,0 +1,21 @@
+package ml.balen.Balen.management.managers;
+
+import java.util.ArrayList;
+
+import ml.balen.Balen.management.ListManager;
+import ml.balen.Balen.value.Value;
+
+public final class ValueManager extends ListManager<Value> {
+	public final Value getValueByName(String name) {
+		for (final Value value : contents) {
+			if (value.getName().equalsIgnoreCase(name))
+				return value;
+		}
+		return null;
+	}
+
+	@Override
+	public void setup() {
+		contents = new ArrayList<Value>();
+	}
+}

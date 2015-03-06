@@ -1,0 +1,30 @@
+package ml.balen.Balen.command.commands;
+
+import ml.balen.Balen.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.util.Logger;
+
+import org.lwjgl.input.Keyboard;
+
+public final class Bind extends Command {
+	public Bind() {
+		super("bind", "<mod name> <key>");
+	}
+
+	@Override
+	public void run(String message) {
+		final Mod mod = LateMod.getModManager().getModByName(
+				message.split(" ")[1]);
+		if (mod == null) {
+			Logger.logChat("Mod \"" + message.split(" ")[1]
+					+ "\" was not found!");
+		} else {
+			mod.setKeybind(Keyboard.getKeyIndex(message.split(" ")[2]
+					.toUpperCase()));
+			Logger.logChat("Mod \"" + mod.getName() + "\" is now bound to: "
+					+ Keyboard.getKeyName(mod.getKeybind()));
+		}
+	}
+
+}

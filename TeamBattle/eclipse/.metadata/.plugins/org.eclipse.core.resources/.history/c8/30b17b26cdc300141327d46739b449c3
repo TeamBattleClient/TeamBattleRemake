@@ -1,0 +1,36 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPacketReceive;
+import down.TeamBattle.Modules.ModuleBase;
+import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.util.StringUtils;
+
+public final class AutoAccept extends ModuleBase {
+	public AutoAccept() {
+		super("AutoAccept");
+		setEnabled(true);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPacketReceive) {
+			final EventPacketReceive receive = (EventPacketReceive) event;
+			if (receive.getPacket() instanceof S02PacketChat) {
+				final S02PacketChat chat = (S02PacketChat) receive.getPacket();
+				final String message = StringUtils.stripControlCodes(chat
+						.func_148915_c().getFormattedText());
+				for (final String name : TeamBattleClient.getFriendManager()
+						.getContents().keySet()) {
+					if (message.contains(name)
+							&& (message
+									.contains("has requested to teleport to you.") || message
+									.contains("has requested you teleport to them."))) {
+						mc.thePlayer.sendChatMessage("/tpaccept " + name);
+					}
+				}
+			}
+		}
+	}
+}

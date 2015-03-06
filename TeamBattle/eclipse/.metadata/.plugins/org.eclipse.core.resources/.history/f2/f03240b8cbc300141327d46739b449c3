@@ -1,0 +1,25 @@
+package ml.balen.Balen.command.commands;
+
+import me.teambattle.TeamBattle.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.util.Logger;
+
+public class Reset extends Command {
+
+	public Reset() {
+		super("reload", "<none>", "rl");
+	}
+
+	@Override
+	public void run(String message) {
+		LateMod.getCommandManager().setup();
+		LateMod.getModManager().setup();
+		LateMod.getFriendManager().setup();
+		LateMod.getAdminManager().setup();
+		LateMod.getEventManager().setup();
+		LateMod.getFriendManager().setup();
+		LateMod.getValueManager().setup();
+		Logger.logChat("Latemod configurations have been reset.");
+	}
+
+}

@@ -1,0 +1,7 @@
+package down.TeamBattle.event.events;
+
+import down.TeamBattle.event.Event;
+
+public final class EventTick extends Event {
+
+}

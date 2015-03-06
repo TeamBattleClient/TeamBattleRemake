@@ -1,0 +1,30 @@
+package ml.balen.Balen.file;
+
+import java.io.File;
+
+import ml.balen.Balen.LateMod;
+
+public abstract class CustomFile {
+	private final File file;
+	private final String name;
+
+	public CustomFile(String name) {
+		this.name = name;
+		file = new File(LateMod.getDirectory(), name + ".txt");
+		if (!file.exists()) {
+			saveFile();
+		}
+	}
+
+	public final File getFile() {
+		return file;
+	}
+
+	public final String getName() {
+		return name;
+	}
+
+	public abstract void loadFile();
+
+	public abstract void saveFile();
+}

@@ -1,0 +1,28 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Modules.Modules.addons.LateModNewChat;
+import net.minecraft.client.gui.GuiNewChat;
+
+public class LateChat extends ModuleBase {
+	public LateChat() {
+		super("LateChat");
+		setEnabled(true);
+	}
+
+	@Override
+	public void onDisabled() {
+		mc.ingameGUI.persistantChatGUI = new GuiNewChat(mc);
+	}
+
+	@Override
+	public void onEnabled() {
+		mc.ingameGUI.persistantChatGUI = new LateModNewChat(mc);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+
+	}
+}

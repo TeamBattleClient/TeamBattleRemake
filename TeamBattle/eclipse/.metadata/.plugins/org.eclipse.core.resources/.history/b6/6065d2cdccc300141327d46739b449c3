@@ -1,0 +1,44 @@
+package down.TeamBattle.Modules.mods;
+
+import org.lwjgl.opengl.GL11;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventHUDDraw;
+import down.TeamBattle.EventSystem.events.EventRenderBurning;
+import down.TeamBattle.EventSystem.events.EventTick;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.TimeHelper;
+
+public class NoBurnEffect extends ModuleBase {
+	private TimeHelper time = new TimeHelper();
+
+	public NoBurnEffect() {
+		super("NoBurnEffect", 0xFFB40404);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventRenderBurning) {
+			EventRenderBurning fire = (EventRenderBurning) event;
+			fire.setCancelled(true);
+		} else if (event instanceof EventHUDDraw) {
+			if (mc.thePlayer.isBurning()) {
+				mc.fontRenderer.drawStringWithShadow("Burning", mc
+						.getScaledResolution().getScaledWidth()
+						- mc.fontRenderer.getStringWidth("Burning") - 2, mc
+						.getScaledResolution().getScaledHeight()
+						- 10
+						- (mc.fontRenderer.FONT_HEIGHT * mc.thePlayer
+								.getActivePotionEffects().size()), color);
+			} else {
+				color = 0xFFB40404;
+				time.reset();
+			}
+		} else if (event instanceof EventTick) {
+			if (time.hasReached(500)) {
+				color = color == 0xFFB40404 ? 0xFFFE9A2E : 0xFFB40404;
+				time.reset();
+			}
+		}
+	}
+}

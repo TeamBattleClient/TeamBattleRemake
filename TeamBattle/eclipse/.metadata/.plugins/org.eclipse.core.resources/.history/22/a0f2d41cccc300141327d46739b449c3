@@ -1,0 +1,77 @@
+package down.TeamBattle.command.commands;
+
+import down.TeamBattle.command.Command;
+import down.TeamBattle.util.Logger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.client.C10PacketCreativeInventoryAction;
+
+public class Potion extends Command {
+	public Potion() {
+		super("potion", "<effectid> <power> <duration>", "p");
+	}
+
+	@Override
+	public void run(String message) {
+		if (Minecraft.getMinecraft().playerController.isNotCreative()) {
+			Logger.logChat("You must be in creative mode to edit a potion!");
+			return;
+		}
+		final ItemStack itemStack = Minecraft.getMinecraft().thePlayer.inventory
+				.getCurrentItem();
+		if (itemStack == null || !(itemStack.getItem() instanceof ItemPotion)) {
+			Logger.logChat("You must be holding a potion to edit it!");
+			return;
+		}
+		final String name = message.split(" ")[1];
+		int power = Integer.parseInt(message.split(" ")[2]);
+		final int duration = Integer.parseInt(message.split(" ")[3]);
+		boolean found = false;
+		if (power > 127) {
+			power = 127;
+		} else if (power < -127) {
+			power = -127;
+		}
+		for (final net.minecraft.potion.Potion potion : net.minecraft.potion.Potion.potionTypes) {
+			if (potion != null) {
+				final String potname = I18n.format(potion.getName(),
+						new Object[0]);
+				if (name.equalsIgnoreCase(potname.replaceAll(" ", ""))
+						|| name.equalsIgnoreCase("*")) {
+					if (itemStack.stackTagCompound == null) {
+						itemStack.setTagCompound(new NBTTagCompound());
+					}
+					if (!itemStack.stackTagCompound.func_150297_b(
+							"CustomPotionEffects", 9)) {
+						itemStack.stackTagCompound.setTag(
+								"CustomPotionEffects", new NBTTagList());
+					}
+					final NBTTagList var3 = itemStack.stackTagCompound
+							.getTagList("CustomPotionEffects", 10);
+					final NBTTagCompound var4 = new NBTTagCompound();
+					var4.setByte("Id", (byte) potion.getId());
+					var4.setByte("Amplifier", (byte) power);
+					var4.setInteger("Duration", duration);
+					var3.appendTag(var4);
+					Minecraft
+							.getMinecraft()
+							.getNetHandler()
+							.addToSendQueue(
+									new C10PacketCreativeInventoryAction(
+											Minecraft.getMinecraft().thePlayer.inventory.currentItem,
+											itemStack));
+					Logger.logChat("Added a \"" + potname
+							+ "\" effect to your current potion.");
+					found = true;
+				}
+			}
+		}
+		if (!found) {
+			Logger.logChat("Invalid potion.");
+		}
+	}
+}

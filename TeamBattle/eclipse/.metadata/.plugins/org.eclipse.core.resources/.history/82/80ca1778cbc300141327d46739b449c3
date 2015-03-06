@@ -1,0 +1,193 @@
+package ml.balen.Balen.mod.mods;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import ml.balen.Balen.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventRender3D;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.mod.mods.addons.Point;
+import ml.balen.Balen.util.Logger;
+import ml.balen.Balen.util.RenderHelper;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.AxisAlignedBB;
+
+import org.lwjgl.opengl.GL11;
+
+public final class Waypoints extends Mod {
+	private float[] pointColor;
+	public List<Point> points = new CopyOnWriteArrayList<Point>();
+
+	public Waypoints() {
+		super("Waypoints");
+		setEnabled(true);
+
+		LateMod.getCommandManager()
+				.getContents()
+				.add(new Command("waypointadd", "<x> <y> <z> <name>",
+						"waypadd", "wpa") {
+					private boolean isInteger(String text) {
+						try {
+							Integer.parseInt(text);
+						} catch (final Exception e) {
+							return false;
+						}
+						return true;
+					}
+
+					@Override
+					public void run(String message) {
+						final String[] arguments = message.split(" ");
+						if (isInteger(arguments[1])) {
+							final int x = Integer.parseInt(arguments[1]);
+							final int y = Integer.parseInt(arguments[2]);
+							final int z = Integer.parseInt(arguments[3]);
+							final String name = message.substring((arguments[0]
+									+ " " + arguments[1] + " " + arguments[2]
+									+ " " + arguments[3] + " ").length());
+							String server;
+							if (mc.func_147104_D() == null) {
+								server = "singleplayer";
+							} else {
+								server = mc.func_147104_D().serverIP;
+							}
+							points.add(new Point(name, server, x, y, z));
+							LateMod.getFileManager().getFileByName("waypoints")
+									.saveFile();
+							Logger.logChat("Waypoint \"" + name
+									+ "\" added at " + x + ", " + y + ", " + z);
+						}
+					}
+				});
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("waypointdel", "<name>", "waypdel", "wpd") {
+					@Override
+					public void run(String message) {
+						final String[] arguments = message.split(" ");
+						final String name = message
+								.substring((arguments[0] + " ").length());
+						boolean found = false;
+						for (final Point point : points) {
+							if (point.getName().toLowerCase()
+									.startsWith(name.toLowerCase())) {
+								points.remove(point);
+								LateMod.getFileManager()
+										.getFileByName("waypoints").saveFile();
+								Logger.logChat("Waypoint \"" + point.getName()
+										+ "\" deleted.");
+								found = true;
+							}
+						}
+
+						if (!found) {
+							Logger.logChat("Waypoint \"" + name
+									+ "\" not found.");
+						}
+					}
+				});
+
+		pointColor = new float[] { 0.68F, 0.45F, 0.76F };
+	}
+
+	public final List<Point> getPoints() {
+		return points;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventRender3D) {
+			GL11.glPushMatrix();
+			mc.entityRenderer.disableLightmap(1.0D);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LINE_SMOOTH);
+			GL11.glDepthMask(false);
+			GL11.glLineWidth(1.0F);
+			for (final Point point : points) {
+				String server;
+				if (mc.func_147104_D() == null) {
+					server = "singleplayer";
+				} else {
+					server = mc.func_147104_D().serverIP;
+				}
+
+				if (point.getServer().equalsIgnoreCase(server)) {
+					renderPoint(point);
+				}
+			}
+			GL11.glDepthMask(true);
+			GL11.glDisable(GL11.GL_LINE_SMOOTH);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			mc.entityRenderer.enableLightmap(1.0D);
+			GL11.glPopMatrix();
+		}
+	}
+
+	private void renderPoint(Point point) {
+		final double x = point.getX() - RenderManager.renderPosX;
+		final double y = point.getY() - RenderManager.renderPosY;
+		final double z = point.getZ() - RenderManager.renderPosZ;
+
+		// 3d box drawn at the location
+		final AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x, y, z,
+				x + 1.0D, y + 1.0D, z + 1.0D);
+		GL11.glColor4f(pointColor[0], pointColor[1], pointColor[2], 0.40F);
+		RenderHelper.drawFilledBox(box);
+		GL11.glColor4f(pointColor[0], pointColor[1], pointColor[2], 0.60F);
+		RenderHelper.drawLines(box);
+		GL11.glColor4f(pointColor[0], pointColor[1], pointColor[2], 0.80F);
+		RenderHelper.drawOutlinedBoundingBox(box);
+
+		// tracer line to the location
+		GL11.glColor4f(pointColor[0], pointColor[1], pointColor[2], 1.00F);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex3d(0.0D, 0.0D, 0.0D);
+		GL11.glVertex3d(x + 0.50D, y, z + 0.50D);
+		GL11.glEnd();
+
+		// name tag of the location
+		final FontRenderer var12 = mc.fontRenderer;
+		final double dist = mc.thePlayer.getDistance(point.getX(),
+				point.getY(), point.getZ()) / 3;
+		final float var13 = (float) (dist <= 3 ? 3 : dist);
+		final float var14 = 0.016666668F * var13;
+		GL11.glPushMatrix();
+		GL11.glTranslatef((float) x + 0.50F, (float) y + 1.5F,
+				(float) z + 0.50F);
+		GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
+		GL11.glScalef(-var14, -var14, var14);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		final Tessellator var15 = Tessellator.instance;
+		final byte var16 = 0;
+		var15.startDrawingQuads();
+		final String text = point.getName()
+				+ " "
+				+ (int) Math.round(mc.thePlayer.getDistance(point.getX(),
+						point.getY(), point.getZ())) + "m";
+		final int var17 = var12.getStringWidth(text) / 2;
+		var15.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
+		var15.addVertex(-var17 - 2, -2 + var16, 0.0D);
+		var15.addVertex(-var17 - 2, 9 + var16, 0.0D);
+		var15.addVertex(var17 + 2, 9 + var16, 0.0D);
+		var15.addVertex(var17 + 2, -2 + var16, 0.0D);
+		var15.draw();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		var12.drawStringWithShadow(text, -var17, var16, 0xFFFFFFFF);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glPopMatrix();
+	}
+}

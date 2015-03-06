@@ -1,0 +1,59 @@
+package ml.balen.Balen.mod.mods;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Drawable;
+
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventPreSendMotionUpdates;
+import ml.balen.Balen.event.events.EventRightClick;
+import ml.balen.Balen.event.events.EventTick;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.util.TimeHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.ResourceLocation;
+
+public class GutZ extends Mod{
+
+	public GutZ() {
+		super("GutZ", 0x1213FF);
+		
+	}
+	
+	
+
+	@Override
+	public void onEvent(Event event) {
+		
+			 if(event instanceof EventPreSendMotionUpdates){
+				 if(Keyboard.isKeyDown(57)){
+					 mc.thePlayer.motionY =+ 5.0F;
+		
+				 
+			 }else if (Keyboard.isKeyDown(56)){
+				 
+				 mc.thePlayer.motionY -= 5.0F;
+			 }
+				 
+	if(!mc.thePlayer.isInWater()){ 
+		
+		mc.thePlayer.motionY *= 0.08;
+		
+	}
+	
+	
+		
+		
+		
+	
+	}
+			
+	
+	}
+	
+	
+}

@@ -1,0 +1,57 @@
+package down.TeamBattle.mod.mods;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.Utils.TimeHelper;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventHUDDraw;
+import down.TeamBattle.event.events.EventPacketReceive;
+import down.TeamBattle.mod.Mod;
+import net.minecraft.network.play.server.S02PacketChat;
+
+/**
+ * Nobody really knew what this did in ix so I thought i'd explain it now.
+ * LagDetector basically just detects when the server is lagging for more than a
+ * second. it does this by checking when the last packet was sent to you by the
+ * server (excluding chat packets since there's some bug where you can still
+ * chat but the server's dead)
+ * 
+ * @author Matthew
+ */
+public final class LagDetector extends Mod {
+	private final TimeHelper time = new TimeHelper();
+
+	public LagDetector() {
+		super("LagDetector");
+		setEnabled(true);
+	}
+
+	public TimeHelper getTime() {
+		return time;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventHUDDraw) {
+			if (time.hasReached(1000L)) {
+				mc.fontRenderer
+						.drawStringWithShadow(
+								"Lag: \2477"
+										+ (time.getCurrentMS() - time
+												.getLastMS()) + " ms", 2,
+								(Boolean) TeamBattleClient.getValueManager()
+										.getValueByName("hud_watermark")
+										.getValue()
+										|| (Boolean) TeamBattleClient.getValueManager()
+												.getValueByName("hud_time")
+												.getValue() ? 12 : 2,
+								0xFFFFFFFF);
+			}
+		} else if (event instanceof EventPacketReceive) {
+			final EventPacketReceive receive = (EventPacketReceive) event;
+			if (!(receive.getPacket() instanceof S02PacketChat)) {
+				time.reset();
+			}
+		}
+	}
+
+}

@@ -1,0 +1,25 @@
+package down.TeamBattle.command.commands;
+
+import down.TeamBattle.LateMod;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.util.Logger;
+
+public final class Add extends Command {
+	public Add() {
+		super("add", "<name> <alias>", "fadd");
+	}
+
+	@Override
+	public void run(String message) {
+		final String name = message.split(" ")[1];
+		final String alias = message.substring((message.split(" ")[0] + " "
+				+ name + " ").length());
+		LateMod.getFriendManager().addFriend(name, alias);
+		Logger.logChat("Friend \""
+				+ LateMod.getFriendManager().replaceNames(name, true)
+				+ "\" added.");
+		if (LateMod.getFileManager().getFileByName("friends") != null) {
+			LateMod.getFileManager().getFileByName("friends").saveFile();
+		}
+	}
+}

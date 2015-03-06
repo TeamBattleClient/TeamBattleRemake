@@ -1,0 +1,85 @@
+package ml.balen.Balen.mod.mods;
+
+import me.teambattle.TeamBattle.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventPacketReceive;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.util.Logger;
+import ml.balen.Balen.value.Value;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.server.S14PacketEntity;
+import net.minecraft.util.MathHelper;
+
+public class Frame extends Mod {
+	private final Value<String> name = new Value<String>("frame_player", "");
+	private EntityPlayer player;
+
+	public Frame() {
+		super("Frame", 0, 0xFF33CB2D);
+		setEnabled(false);
+		setVisible(true);
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("frame", "<name>", "frp") {
+					@Override
+					public void run(String message) {
+						final String[] playerName = message.split(" ");
+						if (playerName.length == 1) {
+							Logger.logChat("Now framing \2474nobody\247f.");
+							name.setValue("");
+							setTag("Frame");
+							player = null;
+							return;
+						}
+
+						boolean found = false;
+						for (Object o : mc.theWorld.playerEntities) {
+							player = (EntityPlayer) o;
+							if (playerName[1].equalsIgnoreCase(player
+									.getCommandSenderName())
+									&& !playerName[1]
+											.equalsIgnoreCase(mc.thePlayer
+													.getCommandSenderName())
+									&& player != mc.thePlayer) {
+								name.setValue(player.getCommandSenderName());
+								Logger.logChat("Now framing \2472"
+										+ player.getCommandSenderName()
+										+ "\247f.");
+								setTag("Frame\247f:\2477 "
+										+ player.getCommandSenderName());
+								if (!isEnabled()) {
+									toggle();
+								}
+								found = true;
+								break;
+							}
+						}
+
+						if (!found) {
+							Logger.logChat("Can't find player \""
+									+ playerName[1] + "\".");
+							player = null;
+						}
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPacketReceive && player != null) {
+			final EventPacketReceive receive = (EventPacketReceive) event;
+			if (receive.getPacket() instanceof S14PacketEntity) {
+				S14PacketEntity entity = (S14PacketEntity) receive.getPacket();
+				if (entity.func_149065_a(mc.theWorld) == player) {
+					float yaw = 0;
+					float pitch = -180;
+					yaw = MathHelper.floor_float(yaw * 256.0F / 360.0F);
+					pitch = MathHelper.floor_float(pitch * 256.0F / 360.0F);
+					entity.field_149068_f = (byte) pitch;
+				}
+			}
+		}
+	}
+
+}

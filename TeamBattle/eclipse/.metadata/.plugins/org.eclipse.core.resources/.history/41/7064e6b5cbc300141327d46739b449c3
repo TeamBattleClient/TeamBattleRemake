@@ -1,0 +1,119 @@
+package ml.balen.Balen.mod.mods;
+
+import me.teambattle.TeamBattle.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventPostEntityRender;
+import ml.balen.Balen.event.events.EventPreEntityRender;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.util.Logger;
+import ml.balen.Balen.value.Value;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IAnimals;
+import net.minecraft.entity.player.EntityPlayer;
+
+import org.lwjgl.opengl.GL11;
+
+public final class Chams extends Mod {
+	private final Value<Boolean> animals = new Value<Boolean>("chams_animals",
+			false);
+	private final Value<Boolean> invisibles = new Value<Boolean>(
+			"chams_invisibles", true);
+	private final Value<Boolean> mobs = new Value<Boolean>("chams_mobs", false);
+	private final Value<Boolean> players = new Value<Boolean>("chams_players",
+			true);
+
+	public Chams() {
+		super("Chams");
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("chamsplayers", "none", "cplayers") {
+					@Override
+					public void run(String message) {
+						players.setValue(!players.getValue());
+						Logger.logChat("Chams will "
+								+ (players.getValue() ? "now" : "no longer")
+								+ " show players.");
+					}
+				});
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("chamsinvisibles", "none", "cinvisibles") {
+					@Override
+					public void run(String message) {
+						invisibles.setValue(!invisibles.getValue());
+						Logger.logChat("Chams will "
+								+ (invisibles.getValue() ? "now" : "no longer")
+								+ " show invisibles.");
+					}
+				});
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("chamsmobs", "none", "cmobs") {
+					@Override
+					public void run(String message) {
+						mobs.setValue(!mobs.getValue());
+						Logger.logChat("Chams will "
+								+ (mobs.getValue() ? "now" : "no longer")
+								+ " show mobs.");
+					}
+				});
+
+		LateMod.getCommandManager().getContents()
+				.add(new Command("chamsanimals", "none", "canimals") {
+					@Override
+					public void run(String message) {
+						animals.setValue(!animals.getValue());
+						Logger.logChat("Chams will "
+								+ (animals.getValue() ? "now" : "no longer")
+								+ " show animals.");
+					}
+				});
+	}
+
+	private boolean isValid(Entity entity) {
+		boolean valid = false;
+		if (entity.isInvisible() && !invisibles.getValue())
+			return false;
+		if (entity instanceof EntityPlayer && players.getValue()) {
+			valid = entity != null && entity != mc.thePlayer
+					&& entity.isEntityAlive() && entity.ticksExisted > 20;
+		} else if (entity instanceof IMob && mobs.getValue()) {
+			valid = entity != null && entity.isEntityAlive()
+					&& mc.thePlayer.getDistanceToEntity(entity) <= 30
+					&& entity.ticksExisted > 20;
+		} else if (entity instanceof IAnimals && !(entity instanceof IMob)
+				&& animals.getValue()) {
+			valid = entity != null && entity.isEntityAlive()
+					&& mc.thePlayer.getDistanceToEntity(entity) <= 30
+					&& entity.ticksExisted > 20;
+		}
+		return valid;
+	}
+
+	private void offsetPolygon() {
+		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		GL11.glPolygonOffset(1.0F, -10000000.0F);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreEntityRender) {
+			final EventPreEntityRender pre = (EventPreEntityRender) event;
+			if (isValid(pre.getEntity())) {
+				offsetPolygon();
+			}
+		} else if (event instanceof EventPostEntityRender) {
+			final EventPostEntityRender post = (EventPostEntityRender) event;
+			if (isValid(post.getEntity())) {
+				resetPolygon();
+			}
+		}
+	}
+
+	private void resetPolygon() {
+		GL11.glPolygonOffset(1.0F, 1000000.0F);
+		GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+	}
+}

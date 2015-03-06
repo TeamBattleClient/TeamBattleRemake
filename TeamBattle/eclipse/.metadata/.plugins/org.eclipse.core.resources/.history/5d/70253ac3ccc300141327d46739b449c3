@@ -1,0 +1,31 @@
+package down.TeamBattle.Modules.mods;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventChatSent;
+import down.TeamBattle.Modules.Mod;
+
+public final class StormSpeak extends Mod {
+	public StormSpeak() {
+		super("StormSpeak", 0xFFCBCB19);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventChatSent) {
+			final EventChatSent sent = (EventChatSent) event;
+			if (sent.getMessage().startsWith("/")
+					|| sent.getMessage().startsWith("."))
+				return;
+			String newmsg = "";
+			sent.setMessage(sent.getMessage().toLowerCase());
+			for (int index = 0; index < sent.getMessage().length(); index++) {
+				final char c = sent.getMessage().charAt(index);
+				final String letter = Character.toString(c);
+				newmsg = newmsg
+						+ (index % 2 == 0 ? letter : letter.toUpperCase());
+			}
+			sent.setMessage(newmsg);
+		}
+	}
+
+}

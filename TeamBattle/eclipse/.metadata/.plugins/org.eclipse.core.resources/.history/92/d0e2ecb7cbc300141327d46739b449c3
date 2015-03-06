@@ -1,0 +1,23 @@
+package ml.balen.Balen.mod.mods;
+
+import ml.balen.Balen.event.Event;
+import ml.balen.Balen.event.events.EventChatSent;
+import ml.balen.Balen.mod.Mod;
+
+public final class RedSpeak extends Mod {
+	public RedSpeak() {
+		super("RedSpeak", 0xFFDB1306);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventChatSent) {
+			final EventChatSent sent = (EventChatSent) event;
+			if (sent.getMessage().startsWith("/")
+					|| sent.getMessage().startsWith("."))
+				return;
+			sent.setMessage(sent.getMessage() + " desu");
+		}
+	}
+
+}

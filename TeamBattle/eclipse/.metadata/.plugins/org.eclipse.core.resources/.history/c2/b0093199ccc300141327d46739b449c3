@@ -1,0 +1,32 @@
+package down.TeamBattle.mod.mods.addons;
+
+public abstract class RetardMode {
+	private final String name;
+	private float pitch, yaw;
+
+	public RetardMode(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public float getPitch() {
+		return pitch;
+	}
+
+	public float getYaw() {
+		return yaw;
+	}
+
+	public abstract void onUpdate();
+
+	public void setPitch(float pitch) {
+		this.pitch = pitch;
+	}
+
+	public void setYaw(float yaw) {
+		this.yaw = yaw;
+	}
+}

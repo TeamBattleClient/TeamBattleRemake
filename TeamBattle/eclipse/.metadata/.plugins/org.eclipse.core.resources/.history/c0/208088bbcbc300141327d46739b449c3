@@ -1,0 +1,28 @@
+package ml.balen.Balen.mod.mods;
+
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPreSendMotionUpdates;
+import down.TeamBattle.mod.Mod;
+import net.minecraft.network.play.client.C03PacketPlayer;
+
+public final class Paralyze extends Mod {
+	public Paralyze() {
+		super("Paralyze", 0xFF888888);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			if (!mc.theWorld.getEntitiesWithinAABBExcludingEntity(mc.thePlayer,
+					mc.thePlayer.boundingBox).isEmpty()) {
+				for (int index = 0; index < 400; index++) {
+					mc.getNetHandler().addToSendQueue(
+							new C03PacketPlayer(mc.thePlayer.onGround));
+				}
+				setColor(0xFFF7FE2E);
+			} else {
+				setColor(0xFF888888);
+			}
+		}
+	}
+}

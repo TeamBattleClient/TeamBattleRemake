@@ -1,0 +1,33 @@
+package down.TeamBattle.value;
+
+import down.TeamBattle.LateMod;
+
+public final class Value<T> {
+	private final T defaultValue;
+	private final String name;
+	private T value;
+
+	public Value(String name, T value) {
+		this.name = name;
+		this.value = value;
+		this.defaultValue = value;
+
+		LateMod.getValueManager().getContents().add(this);
+	}
+
+	public T getDefaultValue() {
+		return defaultValue;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public T getValue() {
+		return value;
+	}
+
+	public void setValue(T value) {
+		this.value = value;
+	}
+}

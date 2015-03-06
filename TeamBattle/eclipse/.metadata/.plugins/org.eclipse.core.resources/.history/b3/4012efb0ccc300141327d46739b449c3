@@ -1,0 +1,113 @@
+package down.TeamBattle.Modules.mods;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventBlockBoundingBox;
+import down.TeamBattle.EventSystem.events.EventPacketSent;
+import down.TeamBattle.EventSystem.events.EventPlayerMovement;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.command.Command;
+
+public final class NoClip extends Mod {
+	private final Value<Double> offset = new Value<Double>("noclip_offset",
+			-1.45D);
+	private int ticks;
+
+	public NoClip() {
+		super("NoClip", Keyboard.KEY_O, 0xFFB79A0E);
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("noclipoffset", "<offset>", "ncoffset", "nco") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							offset.setValue(offset.getDefaultValue());
+						} else {
+							offset.setValue(Double.parseDouble(message
+									.split(" ")[1]));
+						}
+
+						if (offset.getValue() < -1.45D) {
+							offset.setValue(-1.45D);
+						} else if (offset.getValue() > 1.45D) {
+							offset.setValue(1.45D);
+						}
+						Logger.logChat("NoClip Offset set to: "
+								+ offset.getValue());
+					}
+				});
+	}
+
+	private boolean isInsideBlock(EntityPlayer player) {
+		for (int x = MathHelper.floor_double(player.boundingBox.minX); x < MathHelper
+				.floor_double(player.boundingBox.maxX) + 1; x++) {
+			for (int y = MathHelper.floor_double(player.boundingBox.minY); y < MathHelper
+					.floor_double(player.boundingBox.maxY) + 1; y++) {
+				for (int z = MathHelper.floor_double(player.boundingBox.minZ); z < MathHelper
+						.floor_double(player.boundingBox.maxZ) + 1; z++) {
+					final Block block = Minecraft.getMinecraft().theWorld
+							.getBlock(x, y, z);
+					if (block == null || block instanceof BlockAir) {
+						continue;
+					}
+
+					final AxisAlignedBB boundingBox = block
+							.getCollisionBoundingBoxFromPool(
+									Minecraft.getMinecraft().theWorld, x, y, z);
+					if (boundingBox != null
+							&& player.boundingBox.intersectsWith(boundingBox))
+						return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventBlockBoundingBox) {
+			if (mc.thePlayer == null)
+				return;
+			final EventBlockBoundingBox block = (EventBlockBoundingBox) event;
+			if ((int) (mc.thePlayer.boundingBox.minY - 0.5) < block.getY()) {
+				block.setBoundingBox(null);
+			}
+		} else if (event instanceof EventPlayerMovement) {
+			final EventPlayerMovement movement = (EventPlayerMovement) event;
+			if (isInsideBlock(mc.thePlayer)) {
+				movement.setMotionX(movement.getMotionX() / 2);
+				movement.setMotionY(movement.getMotionY() / 2);
+			}
+		} else if (event instanceof EventPreSendMotionUpdates) {
+			if (isInsideBlock(mc.thePlayer)) {
+				ticks++;
+			}
+		} else if (event instanceof EventPacketSent) {
+			final EventPacketSent sent = (EventPacketSent) event;
+			if (sent.getPacket() instanceof C03PacketPlayer) {
+				final C03PacketPlayer player = (C03PacketPlayer) sent
+						.getPacket();
+				if (ticks >= 5) {
+					player.field_149477_b -= offset.getValue();
+					player.field_149475_d -= offset.getValue();
+					ticks = 0;
+				}
+			}
+		}
+	}
+}

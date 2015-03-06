@@ -1,0 +1,21 @@
+package down.TeamBattle.util;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
+
+public final class Logger {
+	private static Minecraft mc = Minecraft.getMinecraft();
+
+	public static void logChat(String message) {
+		if (mc.thePlayer == null) {
+			logConsole(message);
+		} else {
+			mc.thePlayer.addChatMessage(new ChatComponentText("\2473[LM]\247f "
+					+ message));
+		}
+	}
+
+	public static void logConsole(String message) {
+		System.out.println("[LM] " + message);
+	}
+}

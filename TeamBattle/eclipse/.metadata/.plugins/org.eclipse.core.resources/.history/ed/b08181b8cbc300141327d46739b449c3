@@ -1,0 +1,26 @@
+package ml.balen.Balen.command.commands;
+
+import me.teambattle.TeamBattle.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.mod.Mod;
+import ml.balen.Balen.util.Logger;
+
+public final class Toggle extends Command {
+	public Toggle() {
+		super("toggle", "<mod name>", "t");
+	}
+
+	@Override
+	public void run(String message) {
+		final String[] arguments = message.split(" ");
+		final Mod mod = LateMod.getModManager().getModByName(arguments[1]);
+		if (mod == null) {
+			Logger.logChat("Mod \"" + arguments[1] + "\" was not found!");
+		} else {
+			mod.toggle();
+			Logger.logChat("Mod \"" + mod.getName() + "\" was toggled "
+					+ (mod.isEnabled() ? "\2472on" : "\2474off") + "\247f.");
+		}
+	}
+
+}

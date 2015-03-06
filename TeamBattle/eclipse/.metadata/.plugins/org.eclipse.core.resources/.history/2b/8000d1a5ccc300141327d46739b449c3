@@ -1,0 +1,33 @@
+package down.TeamBattle.Modules.mods;
+
+import net.minecraft.block.Block;
+import net.minecraft.network.play.client.C03PacketPlayer;
+
+import org.lwjgl.input.Keyboard;
+
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPacketSent;
+
+public final class NoFall extends Mod {
+	private Block block;
+
+	public NoFall() {
+		super("NoFall", Keyboard.KEY_N, 0xFF8599D9);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPacketSent) {
+			final EventPacketSent sent = (EventPacketSent) event;
+			if (sent.getPacket() instanceof C03PacketPlayer) {
+				final C03PacketPlayer player = (C03PacketPlayer) sent
+						.getPacket();
+				if (mc.thePlayer.fallDistance >= 3) {
+					player.setOnGround(true);
+				}
+			}
+		}
+	}
+
+}

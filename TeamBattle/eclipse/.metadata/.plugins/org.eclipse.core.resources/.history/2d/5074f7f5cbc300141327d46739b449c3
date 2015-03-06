@@ -1,0 +1,21 @@
+package down.TeamBattle.command.commands;
+
+import down.TeamBattle.command.Command;
+import down.TeamBattle.util.Logger;
+import me.teambattle.TeamBattle.LateMod;
+
+public final class Delete extends Command {
+	public Delete() {
+		super("del", "<name>", "fdel", "delete");
+	}
+
+	@Override
+	public void run(String message) {
+		final String name = message.split(" ")[1];
+		LateMod.getFriendManager().removeFriend(name);
+		Logger.logChat("Friend \"" + name + "\" removed.");
+		if (LateMod.getFileManager().getFileByName("friends") != null) {
+			LateMod.getFileManager().getFileByName("friends").saveFile();
+		}
+	}
+}

@@ -1,0 +1,59 @@
+package down.TeamBattle.Modules.mods;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Drawable;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventRightClick;
+import down.TeamBattle.EventSystem.events.EventTick;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.TimeHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.ResourceLocation;
+
+public class GutZ extends ModuleBase{
+
+	public GutZ() {
+		super("GutZ", 0x1213FF);
+		
+	}
+	
+	
+
+	@Override
+	public void onEvent(Event event) {
+		
+			 if(event instanceof EventPreSendMotionUpdates){
+				 if(Keyboard.isKeyDown(57)){
+					 mc.thePlayer.motionY =+ 5.0F;
+		
+				 
+			 }else if (Keyboard.isKeyDown(56)){
+				 
+				 mc.thePlayer.motionY -= 5.0F;
+			 }
+				 
+	if(!mc.thePlayer.isInWater()){ 
+		
+		mc.thePlayer.motionY *= 0.08;
+		
+	}
+	
+	
+		
+		
+		
+	
+	}
+			
+	
+	}
+	
+	
+}

@@ -1,0 +1,56 @@
+package down.TeamBattle.management.managers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
+
+import org.reflections.Reflections;
+
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.management.ListManager;
+import down.TeamBattle.mod.Mod;
+
+public final class ModManager extends ListManager<Mod> {
+	public final Mod getModByName(String name) {
+		if (contents == null)
+			return null;
+		for (final Mod mod : contents) {
+			if (mod.getName().equalsIgnoreCase(name))
+				return mod;
+		}
+		return null;
+	}
+
+	@Override
+	public void setup() {
+		Logger.logConsole("Preparing to load mods...");
+		contents = new ArrayList<Mod>();
+		final Reflections reflect = new Reflections(Mod.class);
+		final Set<Class<? extends Mod>> mods = reflect.getSubTypesOf(Mod.class);
+		for (final Class clazz : mods) {
+			try {
+				final Mod mod = (Mod) clazz.newInstance();
+				getContents().add(mod);
+				Logger.logConsole("Loaded mod \"" + mod.getName() + "\"");
+			} catch (final InstantiationException e) {
+				e.printStackTrace();
+				Logger.logConsole("Failed to load mod \""
+						+ clazz.getSimpleName() + "\" (InstantiationException)");
+			} catch (final IllegalAccessException e) {
+				e.printStackTrace();
+				Logger.logConsole("Failed to load mod \""
+						+ clazz.getSimpleName() + "\" (IllegalAccessException)");
+			}
+		}
+
+		Collections.sort(contents, new Comparator<Mod>() {
+			@Override
+			public int compare(Mod mod1, Mod mod2) {
+				return mod1.getName().compareTo(mod2.getName());
+			}
+		});
+		Logger.logConsole("Successfully loaded " + getContents().size()
+				+ " mods.");
+	}
+}

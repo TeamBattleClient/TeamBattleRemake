@@ -1,0 +1,21 @@
+package ml.balen.Balen.command.commands;
+
+import me.teambattle.TeamBattle.LateMod;
+import ml.balen.Balen.command.Command;
+import ml.balen.Balen.util.Logger;
+
+public final class Delete extends Command {
+	public Delete() {
+		super("del", "<name>", "fdel", "delete");
+	}
+
+	@Override
+	public void run(String message) {
+		final String name = message.split(" ")[1];
+		LateMod.getFriendManager().removeFriend(name);
+		Logger.logChat("Friend \"" + name + "\" removed.");
+		if (LateMod.getFileManager().getFileByName("friends") != null) {
+			LateMod.getFileManager().getFileByName("friends").saveFile();
+		}
+	}
+}

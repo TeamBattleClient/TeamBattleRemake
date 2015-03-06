@@ -1,0 +1,61 @@
+package down.TeamBattle.Modules.mods;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.Utils.Logger;
+import down.TeamBattle.command.Command;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventPreSendMotionUpdates;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+import net.minecraft.network.play.client.C03PacketPlayer;
+
+public final class Glide extends Mod {
+	private final Value<Float> speed = new Value<Float>("glide_speed", 0.01F);
+
+	public Glide() {
+		super("Glide", 0xFF9FD966);
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("glidespeed", "<speed>", "gspeed", "gs") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							speed.setValue(speed.getDefaultValue());
+						} else {
+							speed.setValue(Float.parseFloat(message.split(" ")[1]));
+						}
+
+						if (speed.getValue() < 0.0F) {
+							speed.setValue(0.0F);
+						}
+						Logger.logChat("Glide Speed set to: "
+								+ speed.getValue());
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			if (!mc.thePlayer.capabilities.isFlying
+					&& mc.thePlayer.fallDistance > 0.0F
+					&& !mc.thePlayer.isSneaking()) {
+				mc.thePlayer.motionY = -speed.getValue();
+			}}};
+	
+		
+			
+		
+		
+	
+
+		
+		
+		
+		
+		
+	}
+	

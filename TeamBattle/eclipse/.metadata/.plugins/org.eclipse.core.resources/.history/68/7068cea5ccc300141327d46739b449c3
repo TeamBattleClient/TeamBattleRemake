@@ -1,0 +1,36 @@
+package down.TeamBattle.Modules.mods;
+
+import down.TeamBattle.Modules.Mod;
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventFOVChange;
+import net.minecraft.init.Items;
+
+public final class NoFOV extends Mod {
+	public NoFOV() {
+		super("NoFOV");
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventFOVChange) {
+			final EventFOVChange fov = (EventFOVChange) event;
+			// This is just so that you've got FOV changes when you use a bow.
+			// I only want to get rid of other FOV changes.
+			float newfov = 1.0F;
+			if (mc.thePlayer.isUsingItem()
+					&& mc.thePlayer.getItemInUse().getItem() == Items.bow) {
+				final int duration = mc.thePlayer.getItemInUseDuration();
+				float dd = duration / 20.0F;
+
+				if (dd > 1.0F) {
+					dd = 1.0F;
+				} else {
+					dd *= dd;
+				}
+
+				newfov *= 1.0F - dd * 0.15F;
+			}
+			fov.setFOV(newfov);
+		}
+	}
+}

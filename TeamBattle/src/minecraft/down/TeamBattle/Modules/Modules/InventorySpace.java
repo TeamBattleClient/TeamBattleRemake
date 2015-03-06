@@ -1,0 +1,28 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPacketSent;
+import down.TeamBattle.Modules.ModuleBase;
+import net.minecraft.network.play.client.C0DPacketCloseWindow;
+
+/**
+ * Some people also don't know what this is either. InventorySpace just stops
+ * packets that close your inventory so you can keep stuff in your crafting
+ * table space.
+ * 
+ * @author Matthew
+ */
+public final class InventorySpace extends ModuleBase {
+	public InventorySpace() {
+		super("InventorySpace");
+		setTag("InvSpace");
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPacketSent) {
+			final EventPacketSent sent = (EventPacketSent) event;
+			sent.setCancelled(sent.getPacket() instanceof C0DPacketCloseWindow);
+		}
+	}
+}

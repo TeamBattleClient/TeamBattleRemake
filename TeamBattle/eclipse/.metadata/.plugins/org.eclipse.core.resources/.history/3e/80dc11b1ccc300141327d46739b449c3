@@ -1,0 +1,21 @@
+package down.TeamBattle.command.commands;
+
+import down.TeamBattle.command.Command;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+
+public final class Say extends Command {
+	public Say() {
+		super("say", "<message>", new String[] {});
+	}
+
+	@Override
+	public void run(String message) {
+		Minecraft
+				.getMinecraft()
+				.getNetHandler()
+				.addToSendQueue(
+						new C01PacketChatMessage(message.substring(".say "
+								.length())));
+	}
+}

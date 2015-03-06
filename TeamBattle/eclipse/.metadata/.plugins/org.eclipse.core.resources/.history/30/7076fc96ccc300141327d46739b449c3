@@ -1,0 +1,23 @@
+package down.TeamBattle.mod.mods;
+
+import down.TeamBattle.event.Event;
+import down.TeamBattle.event.events.EventTick;
+import down.TeamBattle.mod.Mod;
+
+public final class Respawn extends Mod {
+	public Respawn() {
+		super("Respawn");
+		setEnabled(true);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventTick) {
+			if (mc.thePlayer == null || mc.theWorld == null)
+				return;
+			if (!mc.thePlayer.isEntityAlive()) {
+				mc.thePlayer.respawnPlayer();
+			}
+		}
+	}
+}

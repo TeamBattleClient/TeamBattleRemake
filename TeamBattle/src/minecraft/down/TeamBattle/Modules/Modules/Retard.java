@@ -1,0 +1,202 @@
+package down.TeamBattle.Modules.Modules;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.CommandSystem.Command;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Modules.Modules.addons.RetardMode;
+import down.TeamBattle.Utils.EntityHelper;
+import down.TeamBattle.Utils.Logger;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C0APacketAnimation;
+
+public final class Retard extends ModuleBase {
+
+	private final RetardMode bop = new RetardMode("Bop") {
+		private final Random random = new Random();
+		private float spin;
+
+		@Override
+		public void onUpdate() {
+			spin -= 5;
+			if (spin > 180) {
+				spin = -180;
+			} else if (spin < -180) {
+				spin = 180;
+			}
+			setYaw(mc.thePlayer.rotationYaw);
+			setPitch(spin);
+		}
+	};
+	private RetardMode currentRetardMode;
+	private final RetardMode exorcist = new RetardMode("Exorcist") {
+		private float spin;
+
+		@Override
+		public void onUpdate() {
+			spin += 20;
+			if (spin > 180) {
+				spin = -180;
+			} else if (spin < -180) {
+				spin = 180;
+			}
+			setYaw(spin);
+			setPitch(-180);
+			mc.getNetHandler().addToSendQueue(
+					new C0APacketAnimation(mc.thePlayer, 1));
+		}
+	};
+	private final RetardMode fakedown = new RetardMode("Fakedown") {
+		@Override
+		public void onUpdate() {
+			setYaw(mc.thePlayer.rotationYaw);
+			setPitch(180);
+		}
+	};
+	private final RetardMode follow = new RetardMode("Follow") {
+		@Override
+		public void onUpdate() {
+			if (!following.getValue().equalsIgnoreCase("")) {
+				mc.thePlayer.rotationYaw = EntityHelper
+						.getEntityRotations(player)[0];
+				KeyBinding.setKeyBindState(
+						mc.gameSettings.keyBindForward.getKeyCode(), true);
+			}
+		}
+	};
+	private final Value<String> following = new Value<String>("follow_player",
+			"");
+
+	private final List<RetardMode> modes = new ArrayList<RetardMode>();
+	private EntityPlayer player;
+	private final RetardMode sperg = new RetardMode("Sperg") {
+		private final Random random = new Random();
+
+		@Override
+		public void onUpdate() {
+			setYaw(random.nextInt(180));
+			setPitch(random.nextInt(180));
+			if (random.nextInt(2) == 0) {
+				setYaw(-getYaw());
+			} else {
+				setPitch(-getPitch());
+			}
+			mc.getNetHandler().addToSendQueue(
+					new C0APacketAnimation(mc.thePlayer, 1));
+		}
+	};
+	private final RetardMode spin = new RetardMode("Spin") {
+		private final Random random = new Random();
+		private float spin;
+
+		@Override
+		public void onUpdate() {
+			spin += 20;
+			if (spin > 180) {
+				spin = -180;
+			} else if (spin < -180) {
+				spin = 180;
+			}
+			setYaw(spin);
+			setPitch(mc.thePlayer.rotationPitch);
+		}
+	};
+
+	public Retard() {
+		super("Retard", 0xFFBB2043);
+		modes.add(sperg);
+		modes.add(fakedown);
+		modes.add(spin);
+		modes.add(bop);
+		modes.add(exorcist);
+		modes.add(follow);
+		currentRetardMode = sperg;
+		setTag("Retard\247f:\2477 " + currentRetardMode.getName());
+
+		TeamBattleClient.getCommandManager()
+				.getContents()
+				.add(new Command("retardmode",
+						"<sperg/fakedown/spin/bop/exorcist/follow>", "rmode",
+						"rm") {
+					@Override
+					public void run(String message) {
+						boolean found = false;
+						for (final RetardMode mode : modes) {
+							if (mode.getName()
+									.toLowerCase()
+									.replaceAll(" ", "")
+									.startsWith(
+											message.substring(
+													(message.split(" ")[0] + " ")
+															.length())
+													.toLowerCase())) {
+								currentRetardMode = mode;
+								setTag("Retard\247f:\2477 "
+										+ currentRetardMode.getName());
+								Logger.logChat("Retard Mode set to: "
+										+ currentRetardMode.getName());
+								found = true;
+							}
+						}
+
+						if (!found) {
+							Logger.logChat("Invalid mode! Valid modes: sperg, fakedown, spin, bop, exorcist");
+						}
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("followplayer", "<name>", "fp") {
+
+					@Override
+					public void run(String message) {
+						final String[] command = message.split(" ");
+						if (command.length == 1) {
+							Logger.logChat("Now following no one");
+							following.setValue("");
+							KeyBinding.setKeyBindState(
+									mc.gameSettings.keyBindForward.getKeyCode(),
+									false);
+							return;
+						}
+						for (Object o : mc.theWorld.playerEntities) {
+							player = (EntityPlayer) o;
+							if (message.split(" ")[1].equalsIgnoreCase(player
+									.getCommandSenderName())
+									&& !message.split(" ")[1]
+											.equalsIgnoreCase(mc.thePlayer
+													.getCommandSenderName())) {
+								following.setValue(player
+										.getCommandSenderName());
+								Logger.logChat("Now following "
+										+ player.getCommandSenderName());
+								break;
+							}
+						}
+
+					}
+				});
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventPreSendMotionUpdates) {
+			final EventPreSendMotionUpdates pre = (EventPreSendMotionUpdates) event;
+			final KillAura aura = (KillAura) TeamBattleClient.getModManager()
+					.getModByName("killaura");
+			if (aura.getTargets().isEmpty()) {
+				currentRetardMode.onUpdate();
+				pre.setYaw(currentRetardMode.getYaw());
+				pre.setPitch(currentRetardMode.getPitch());
+			}
+		}
+	}
+
+}

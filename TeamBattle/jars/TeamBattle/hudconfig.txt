@@ -1,0 +1,9 @@
+hud_watermark:true
+hud_arraylist:true
+hud_coords:true
+hud_fps:true
+hud_in-game_name:false
+hud_potion_effects:true
+hud_time:false
+hud_item_status:false
+hud_armor_status:true
