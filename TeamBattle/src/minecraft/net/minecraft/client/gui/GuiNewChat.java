@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import me.client.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
@@ -18,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
+
+import down.TeamBattle.TeamBattleClient;
 
 public class GuiNewChat extends Gui {
 	private static final Logger logger = LogManager.getLogger();
@@ -132,7 +133,7 @@ public class GuiNewChat extends Gui {
 							if (var14 > 3) {
 								final byte var15 = 2;
 								final int var16 = -var9 * 9;
-								final String var17 = Client.getFriendManager()
+								final String var17 = TeamBattleClient.getFriendManager()
 										.replaceNames(
 												var10.func_151461_a()
 														.getFormattedText(),

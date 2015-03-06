@@ -2,7 +2,6 @@ package net.minecraft.client.renderer.entity;
 
 import java.util.Random;
 
-import me.client.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
@@ -24,8 +23,9 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import event.events.EventPostEntityRender;
-import event.events.EventPreEntityRender;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventPostEntityRender;
+import down.TeamBattle.EventSystem.events.EventPreEntityRender;
 
 public abstract class RendererLivingEntity extends Render {
 	private static final Logger logger = LogManager.getLogger();
@@ -70,7 +70,7 @@ public abstract class RendererLivingEntity extends Render {
 			float p_76986_9_) {
 		final EventPreEntityRender pre = new EventPreEntityRender(p_76986_1_);
 		GL11.glPushMatrix();
-		Client.getEventManager().call(pre);
+		TeamBattleClient.getEventManager().call(pre);
 		Minecraft.getMinecraft().entityRenderer.disableLightmap(1.0);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		mainModel.onGround = renderSwingProgress(p_76986_1_, p_76986_9_);
@@ -279,7 +279,7 @@ public abstract class RendererLivingEntity extends Render {
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		Minecraft.getMinecraft().entityRenderer.enableLightmap(1.0);
 		final EventPostEntityRender post = new EventPostEntityRender(p_76986_1_);
-		Client.getEventManager().call(post);
+		TeamBattleClient.getEventManager().call(post);
 		GL11.glPopMatrix();
 		passSpecialRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_);
 	}
@@ -361,7 +361,7 @@ public abstract class RendererLivingEntity extends Render {
 	 */
 	protected void passSpecialRender(EntityLivingBase p_77033_1_,
 			double p_77033_2_, double p_77033_4_, double p_77033_6_) {
-		if (Client.getModManager().getModByName("nametags").isEnabled()
+		if (TeamBattleClient.getModManager().getModByName("nametags").isEnabled()
 				&& p_77033_1_ instanceof EntityPlayer)
 			return;
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
@@ -500,8 +500,8 @@ public abstract class RendererLivingEntity extends Render {
 			float p_77036_3_, float p_77036_4_, float p_77036_5_,
 			float p_77036_6_, float p_77036_7_) {
 		bindEntityTexture(p_77036_1_);
-		if ((Client.getFriendManager().isFriend(
-				p_77036_1_.getCommandSenderName()) || Client.getAdminManager()
+		if ((TeamBattleClient.getFriendManager().isFriend(
+				p_77036_1_.getCommandSenderName()) || TeamBattleClient.getAdminManager()
 				.isAdmin(p_77036_1_.getCommandSenderName()))
 				&& p_77036_1_.isInvisible()) {
 			GL11.glPushMatrix();

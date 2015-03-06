@@ -23,7 +23,6 @@ import java.util.Queue;
 
 import javax.crypto.SecretKey;
 
-import me.client.Client;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.CryptManager;
 import net.minecraft.util.IChatComponent;
@@ -41,8 +40,9 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import event.events.EventPacketReceive;
-import event.events.EventPacketSent;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventPacketReceive;
+import down.TeamBattle.EventSystem.events.EventPacketSent;
 
 public class NetworkManager extends SimpleChannelInboundHandler {
 	static class InboundHandlerTuplePacketListener {
@@ -210,7 +210,7 @@ public class NetworkManager extends SimpleChannelInboundHandler {
 		if (channel.isOpen()) {
 			final EventPacketReceive event = new EventPacketReceive(
 					p_channelRead0_2_);
-			Client.getEventManager().call(event);
+			TeamBattleClient.getEventManager().call(event);
 			if (event.isCancelled())
 				return;
 			p_channelRead0_2_ = event.getPacket();
@@ -406,7 +406,7 @@ public class NetworkManager extends SimpleChannelInboundHandler {
 	public void scheduleOutboundPacket(Packet p_150725_1_,
 			GenericFutureListener... p_150725_2_) {
 		final EventPacketSent event = new EventPacketSent(p_150725_1_);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		if (event.isCancelled())
 			return;
 		p_150725_1_ = event.getPacket();

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import me.client.Client;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -43,7 +42,8 @@ import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import event.events.EventHUDDraw;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventHUDDraw;
 
 public class GuiIngame extends Gui {
 	public static final RenderItem itemRenderer = new RenderItem();
@@ -455,7 +455,6 @@ public class GuiIngame extends Gui {
 			}
 
 			final String var8 = BossStatus.bossName;
-			//ShadowDrawString
 			var1.drawStringWithShadow(var8,
 					var3 / 2 - var1.getStringWidth(var8) / 2, var7 - 10,
 					16777215);
@@ -922,7 +921,7 @@ public class GuiIngame extends Gui {
 
 		if (!mc.gameSettings.showDebugInfo) {
 			GL11.glEnable(GL11.GL_BLEND);
-			Client.getEventManager().call(new EventHUDDraw());
+			TeamBattleClient.getEventManager().call(new EventHUDDraw());
 			GL11.glDisable(GL11.GL_BLEND);
 		}
 	}

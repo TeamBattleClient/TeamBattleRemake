@@ -9,8 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import me.client.Client;
-import me.client.ui.screens.GuiAltManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -29,6 +27,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.gUI.screens.GuiAltManager;
+import down.TeamBattle.gUI.screens.GuiChangelog;
 
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 	public static final String field_96138_a = "Please click "
@@ -147,7 +149,9 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 			mc.displayGuiScreen(new GuiAltManager());
 		}
 
-		
+		if (p_146284_1_.id == 16) {
+			mc.displayGuiScreen(new GuiChangelog());
+		}
 
 		if (p_146284_1_.id == 4) {
 			mc.shutdown();
@@ -373,11 +377,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 			var9 = var9 + " Demo";
 		}
 
-		drawString(fontRendererObj, "TeamBattle for " + var9, 2, height - 20, -1);
+		drawString(fontRendererObj, "TeamBattleClient for " + var9, 2, height - 20, -1);
 		drawString(fontRendererObj,
 				"Build "
-						+ (Client.isNewerVersionAvailable() ? "\247c"
-								: "\247a") + "#" + Client.getBuild(), 2,
+						+ (TeamBattleClient.isNewerVersionAvailable() ? "\247c"
+								: "\247a") + "#" + TeamBattleClient.getBuild(), 2,
 				height - 10, -1);
 		final String var10 = "Copyright of Mojang AB. Do not distribute!";
 		drawString(fontRendererObj, var10,

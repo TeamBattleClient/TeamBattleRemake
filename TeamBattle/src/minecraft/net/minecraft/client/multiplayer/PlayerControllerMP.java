@@ -1,6 +1,5 @@
 package net.minecraft.client.multiplayer;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -26,8 +25,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import event.events.EventBlockBreaking;
-import event.events.EventBlockClicked;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventBlockBreaking;
+import down.TeamBattle.EventSystem.events.EventBlockClicked;
 
 public class PlayerControllerMP {
 	/**
@@ -107,7 +107,7 @@ public class PlayerControllerMP {
 			int p_78743_4_) {
 		final EventBlockClicked clicked = new EventBlockClicked(p_78743_1_,
 				p_78743_2_, p_78743_3_, p_78743_4_);
-		Client.getEventManager().call(clicked);
+		TeamBattleClient.getEventManager().call(clicked);
 		if (!currentGameType.isAdventure()
 				|| mc.thePlayer.isCurrentToolAdventureModeExempt(p_78743_1_,
 						p_78743_2_, p_78743_3_)) {
@@ -242,7 +242,7 @@ public class PlayerControllerMP {
 		syncCurrentPlayItem();
 		final EventBlockBreaking event = new EventBlockBreaking(p_78759_1_,
 				p_78759_2_, p_78759_3_, p_78759_4_, 5, 1);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 
 		if (blockHitDelay > 0) {
 			--blockHitDelay;

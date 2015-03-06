@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -200,8 +199,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Charsets;
 
-import event.events.EventVelocity;
-import event.events.EventVelocity.Type;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventVelocity;
+import down.TeamBattle.EventSystem.events.EventVelocity.Type;
 
 public class NetHandlerPlayClient implements INetHandlerPlayClient {
 	private static final Logger logger = LogManager.getLogger();
@@ -893,7 +893,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
 		final Entity var2 = clientWorldController.getEntityByID(p_147244_1_
 				.func_149412_c());
 		final EventVelocity event = new EventVelocity(Type.KNOCKBACK, var2);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		if (event.isCancelled())
 			return;
 		if (var2 != null) {

@@ -1,6 +1,5 @@
 package net.minecraft.client.renderer;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -28,7 +27,8 @@ import net.minecraft.world.storage.MapData;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import event.events.EventRenderBurning;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventRenderBurning;
 
 public class ItemRenderer {
 	private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation(
@@ -158,7 +158,7 @@ public class ItemRenderer {
 	 */
 	private void renderFireInFirstPerson(float p_78442_1_) {
 		final EventRenderBurning event = new EventRenderBurning();
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		if(event.isCancelled()) return;
 		final Tessellator var2 = Tessellator.instance;
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F);

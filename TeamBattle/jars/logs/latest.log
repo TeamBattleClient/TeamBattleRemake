@@ -1,8 +1,146 @@
-[15:54:40] [main/INFO]: Setting user: Player31
-[15:54:40] [main/INFO]: (Session ID is token:0:Player31)
-[15:54:41] [Client thread/INFO]: LWJGL Version: 2.9.1
-[15:54:42] [Client thread/ERROR]: Couldn't initialize twitch stream
-[15:54:42] [Client thread/INFO]: Reloading ResourceManager: Default
-[15:54:43] [Sound Library Loader/INFO]: Sound engine started
-[15:54:45] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
-[15:54:46] [Client thread/INFO]: Created: 256x256 textures/items-atlas
+[00:42:49] [main/INFO]: Setting user: Player968
+[00:42:49] [main/INFO]: (Session ID is token:0:Player968)
+[00:42:50] [Client thread/INFO]: LWJGL Version: 2.9.1
+[00:42:51] [Client thread/ERROR]: Couldn't initialize twitch stream
+[00:42:51] [Client thread/INFO]: Reloading ResourceManager: Default
+[00:42:52] [Sound Library Loader/INFO]: Sound engine started
+[00:42:55] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
+[00:42:56] [Client thread/INFO]: Created: 256x256 textures/items-atlas
+[00:43:09] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
+[00:43:09] [Server thread/INFO]: Generating keypair
+[00:43:10] [Server thread/INFO]: Preparing start region for level 0
+[00:43:11] [Server thread/INFO]: Preparing spawn area: 7%
+[00:43:12] [Server thread/INFO]: Preparing spawn area: 72%
+[00:43:13] [Server thread/INFO]: Changing view distance to 2, from 10
+[00:43:13] [Server thread/INFO]: Player968[local:E:1cc2371c] logged in with entity id 12 at (629.3064319748001, 77.78502770378924, -580.9634824424744)
+[00:43:13] [Server thread/INFO]: Player968 joined the game
+[00:43:26] [Texture Downloader #1/ERROR]: Couldn't download http texture
+java.net.UnknownHostException: s.optifine.net
+	at java.net.AbstractPlainSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.PlainSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.SocksSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.Socket.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.Socket.connect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.NetworkClient.doConnect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.openServer(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.openServer(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.<init>(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.New(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.New(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.connect(Unknown Source) ~[?:1.7.0_75]
+	at net.minecraft.client.renderer.ThreadDownloadImageData$1.run(ThreadDownloadImageData.java:78) [bin/:?]
+[00:43:51] [Server thread/INFO]: Saving and pausing game...
+[00:43:51] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:43:51] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:43:51] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[00:43:52] [Server thread/INFO]: Stopping server
+[00:43:52] [Server thread/INFO]: Saving players
+[00:43:52] [Server thread/INFO]: Saving worlds
+[00:43:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:43:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:43:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[00:43:59] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
+[00:43:59] [Server thread/INFO]: Generating keypair
+[00:43:59] [Server thread/INFO]: Preparing start region for level 0
+[00:44:00] [Server thread/INFO]: Preparing spawn area: 40%
+[00:44:01] [Server thread/INFO]: Changing view distance to 2, from 10
+[00:44:01] [Server thread/INFO]: Player968[local:E:d2817513] logged in with entity id 216 at (648.2384340766951, 76.4807108763317, -645.6834965406922)
+[00:44:01] [Server thread/INFO]: Player968 joined the game
+[00:44:04] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:44:05] [Server thread/WARN]: Can't keep up! Did the system time change, or is the server overloaded? Running 2143ms behind, skipping 42 tick(s)
+[00:44:10] [Client thread/INFO]: [CHAT] [TeamBattle] Commands: add, autoarmordelay, autoeatfoodlevel, autologhealth, autopot, autopotdelay, autopothealth, autosoup, autosoupdelay, autosouphealth, bind, blockesp, blockesplimit, blockesprange, blockespredchest, brightness, chamsanimals, chamsinvisibles, chamsmobs, chamsplayers, claimfinderdelay, claimfinderradius, copycoords, damage, del, dg, disconnect, drop, enchant, espanimals, espbox, espenderpearls, espinvisibles, espitems, espmobs, espplayers, esptracers, fastplacespeed, flynocheat, flyspeed, followplayer, getip, help, hud, instantuse, itemsize, killauraanimals, killauraautohit, killauraautosword, killauradelay, killauradirection, killauragcheat, killauraignore, killaurainvisibles, killauramaxtargets, killauramobs, killauraplayers, killaurareach, killaurasilent, killauraticks, listmods, macroadd, macrodel, nametagarmor, nametaghealth, nametagscale, noclipoffset, novelocityknockback, novelocitywater, potion, realname, regenhealth, regenpackets, reload, repotdelay, retardmode, say, stepheight, teleport, toggle, vclip, visible, wallhack, wallhackopacity, waypointadd, waypointdel, zootantifire, zootantipotion
+[00:44:10] [Client thread/INFO]: [CHAT] [TeamBattle] NOTE: Most commands have shorter versions, type .help <command> to see it's aliases.
+[00:44:14] [Texture Downloader #2/ERROR]: Couldn't download http texture
+java.net.UnknownHostException: s.optifine.net
+	at java.net.AbstractPlainSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.PlainSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.SocksSocketImpl.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.Socket.connect(Unknown Source) ~[?:1.7.0_75]
+	at java.net.Socket.connect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.NetworkClient.doConnect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.openServer(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.openServer(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.<init>(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.New(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.http.HttpClient.New(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(Unknown Source) ~[?:1.7.0_75]
+	at sun.net.www.protocol.http.HttpURLConnection.connect(Unknown Source) ~[?:1.7.0_75]
+	at net.minecraft.client.renderer.ThreadDownloadImageData$1.run(ThreadDownloadImageData.java:78) [bin/:?]
+[00:45:08] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "speed" was not found!
+[00:45:30] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "GutZ" is now bound to: G
+[00:45:44] [Client thread/INFO]: [CHAT] [TeamBattle] You can't macro the key "NONE".
+[00:45:48] [Client thread/INFO]: [CHAT] [TeamBattle] You can't macro the key "NONE".
+[00:45:52] [Client thread/INFO]: [CHAT] [TeamBattle] Macro "X" added with command "dg".
+[00:45:53] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:45:54] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:45:54] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:45:54] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:45:59] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "Wallhack" is now bound to: B
+[00:46:02] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:03] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:03] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:03] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:11] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:11] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:20] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:21] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:21] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:21] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:22] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:23] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:23] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:24] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:30] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:37] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[00:46:38] [Server thread/INFO]: Saving and pausing game...
+[00:46:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:46:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:46:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[00:46:43] [Server thread/INFO]: Saving and pausing game...
+[00:46:43] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:46:43] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:46:43] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:53] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:53] [Client thread/ERROR]: @ Post render
+[00:46:53] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:54] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:54] [Client thread/ERROR]: @ Post render
+[00:46:54] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:54] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:54] [Client thread/ERROR]: @ Post render
+[00:46:54] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:46:54] [Client thread/ERROR]: ########## GL ERROR ##########
+[00:46:54] [Client thread/ERROR]: @ Post render
+[00:46:54] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[00:47:31] [Server thread/INFO]: Saving and pausing game...
+[00:47:31] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:47:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:47:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[00:49:26] [Server thread/INFO]: Saving and pausing game...
+[00:49:26] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[00:49:27] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[00:49:27] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End

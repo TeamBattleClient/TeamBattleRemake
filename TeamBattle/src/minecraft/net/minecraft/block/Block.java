@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import me.client.Client;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -29,9 +28,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import event.events.EventBlockBoundingBox;
-import event.events.EventRenderAsNormalBlock;
-import event.events.EventRenderBlockPass;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventBlockBoundingBox;
+import down.TeamBattle.EventSystem.events.EventRenderAsNormalBlock;
+import down.TeamBattle.EventSystem.events.EventRenderBlockPass;
 
 public class Block {
 	public static class SoundType {
@@ -1050,7 +1050,7 @@ public class Block {
 				p_149743_2_, p_149743_3_, p_149743_4_);
 		final EventBlockBoundingBox event = new EventBlockBoundingBox(var8,
 				this, p_149743_2_, p_149743_3_, p_149743_4_);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 
 		var8 = event.getBoundingBox();
 		if (var8 != null && p_149743_5_.intersectsWith(var8)) {
@@ -1602,7 +1602,7 @@ public class Block {
 	 */
 	public int getRenderBlockPass() {
 		final EventRenderBlockPass event = new EventRenderBlockPass(this, 0);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		return event.getRenderBlockPass();
 	}
 
@@ -1885,7 +1885,7 @@ public class Block {
 	public boolean renderAsNormalBlock() {
 		final EventRenderAsNormalBlock event = new EventRenderAsNormalBlock(
 				true);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		return event.shouldRenderAsNormalBlock();
 	}
 

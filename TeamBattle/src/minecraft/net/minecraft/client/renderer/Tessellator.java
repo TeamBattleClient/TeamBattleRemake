@@ -7,7 +7,6 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.PriorityQueue;
 
-import me.client.Client;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.shader.TesselatorVertexState;
 import net.minecraft.client.util.QuadComparator;
@@ -16,7 +15,8 @@ import net.minecraft.src.VertexData;
 
 import org.lwjgl.opengl.GL11;
 
-import event.events.EventBlockOpacity;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventBlockOpacity;
 
 public class Tessellator {
 	/** The static instance of the Tessellator. */
@@ -372,7 +372,7 @@ public class Tessellator {
 	 */
 	public void setColorOpaque(int par1, int par2, int par3) {
 		final EventBlockOpacity event = new EventBlockOpacity(255);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		setColorRGBA(par1, par2, par3, event.getBlockOpacity());
 	}
 

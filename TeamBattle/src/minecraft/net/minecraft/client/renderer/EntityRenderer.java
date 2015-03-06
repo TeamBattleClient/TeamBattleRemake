@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -71,7 +70,8 @@ import org.lwjgl.util.glu.Project;
 
 import com.google.gson.JsonSyntaxException;
 
-import event.events.EventRender3D;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventRender3D;
 
 public class EntityRenderer implements IResourceManagerReloadListener {
 	public static boolean anaglyphEnable;
@@ -1397,7 +1397,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 			mc.gameSettings.viewBobbing = false;
 			mc.entityRenderer.setupCameraTransform(par1, var13);
 			final EventRender3D event = new EventRender3D(par1);
-			Client.getEventManager().call(event);
+			TeamBattleClient.getEventManager().call(event);
 			mc.gameSettings.viewBobbing = viewBobbing;
 			final boolean renderFirstPersonHand = Reflector.callBoolean(
 					Reflector.ForgeHooksClient_renderFirstPersonHand,
@@ -1497,7 +1497,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 		if (var4 > 0.0F) {
 			final byte var7 = 20;
 
-			// Client
+			// TeamBattleClient
 			// if (mc.thePlayer.isPotionActive(Potion.confusion)) {
 			// var7 = 7;
 			// }
@@ -1585,7 +1585,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 			} else {
 				float var6;
 
-				// Client
+				// TeamBattleClient
 				// if (var3.isPotionActive(Potion.blindness)) {
 				// var6 = 5.0F;
 				// final int var101 = var3.getActivePotionEffect(
@@ -2152,7 +2152,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 				* par1)
 				* fogYFactor1;
 
-		// Client
+		// TeamBattleClient
 		// if (var3.isPotionActive(Potion.blindness)) {
 		// final int var23 = var3.getActivePotionEffect(Potion.blindness)
 		// .getDuration();

@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -36,8 +35,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import event.events.EventEntityStep;
-import event.events.EventEntityStepPost;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventEntityStep;
+import down.TeamBattle.EventSystem.events.EventEntityStepPost;
 
 public abstract class Entity {
 	public static enum EnumEntitySize {
@@ -1399,7 +1399,7 @@ public abstract class Entity {
 			if (stepHeight > 0.0F && var37 && (var20 || ySize < 0.05F)
 					&& (var13 != p_70091_1_ || var17 != p_70091_5_)) {
 				final EventEntityStep event = new EventEntityStep(this);
-				Client.getEventManager().call(event);
+				TeamBattleClient.getEventManager().call(event);
 				var38 = p_70091_1_;
 				var25 = p_70091_3_;
 				var27 = p_70091_5_;
@@ -1472,7 +1472,7 @@ public abstract class Entity {
 					p_70091_5_ = var27;
 					boundingBox.setBB(var29);
 					EventEntityStepPost postEvent = new EventEntityStepPost(this);
-					Client.getEventManager().call(postEvent);
+					TeamBattleClient.getEventManager().call(postEvent);
 				}
 			}
 

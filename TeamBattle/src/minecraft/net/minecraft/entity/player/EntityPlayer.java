@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockDirectional;
@@ -76,7 +75,8 @@ import net.minecraft.world.chunk.IChunkProvider;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 
-import event.events.EventInsideBlock;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventInsideBlock;
 
 public abstract class EntityPlayer extends EntityLivingBase implements
 		ICommandSender {
@@ -1392,7 +1392,7 @@ public abstract class EntityPlayer extends EntityLivingBase implements
 	@Override
 	public boolean isEntityInsideOpaqueBlock() {
 		final EventInsideBlock event = new EventInsideBlock();
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		return !sleeping && super.isEntityInsideOpaqueBlock()
 				&& !event.isCancelled();
 	}

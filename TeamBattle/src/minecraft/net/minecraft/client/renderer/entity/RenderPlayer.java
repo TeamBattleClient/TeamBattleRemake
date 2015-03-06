@@ -2,7 +2,6 @@ package net.minecraft.client.renderer.entity;
 
 import java.util.UUID;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -31,6 +30,8 @@ import net.minecraft.util.StringUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.authlib.GameProfile;
+
+import down.TeamBattle.TeamBattleClient;
 
 public class RenderPlayer extends RendererLivingEntity {
 	private static final ResourceLocation steveTextures = new ResourceLocation(
@@ -295,7 +296,7 @@ public class RenderPlayer extends RendererLivingEntity {
 		}
 
 		final boolean var21 = p_77029_1_.func_152122_n();
-		final boolean friend = Client.getFriendManager()
+		final boolean friend = TeamBattleClient.getFriendManager()
 				.isFriend(
 						StringUtils.stripControlCodes(p_77029_1_
 								.getCommandSenderName()));
@@ -308,7 +309,7 @@ public class RenderPlayer extends RendererLivingEntity {
 		if ((friend || localPlayer || var21) && !p_77029_1_.isInvisible()
 				&& !p_77029_1_.getHideCape()) {
 			bindTexture(friend || localPlayer ? new ResourceLocation(
-					"textures/latemod/cape.png") : p_77029_1_.getLocationCape());
+					"textures/TeamBattleClient/cape.png") : p_77029_1_.getLocationCape());
 			GL11.glPushMatrix();
 			GL11.glTranslatef(0.0F, 0.0F, 0.125F);
 			final double var23 = p_77029_1_.field_71091_bM

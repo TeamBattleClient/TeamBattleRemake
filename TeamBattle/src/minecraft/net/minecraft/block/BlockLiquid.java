@@ -2,7 +2,6 @@ package net.minecraft.block;
 
 import java.util.Random;
 
-import me.client.Client;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -13,8 +12,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import event.events.EventVelocity;
-import event.events.EventVelocity.Type;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventVelocity;
+import down.TeamBattle.EventSystem.events.EventVelocity.Type;
 
 public abstract class BlockLiquid extends Block {
 	public static float func_149801_b(int p_149801_0_) {
@@ -604,7 +604,7 @@ public abstract class BlockLiquid extends Block {
 			int p_149640_3_, int p_149640_4_, Entity p_149640_5_,
 			Vec3 p_149640_6_) {
 		final EventVelocity event = new EventVelocity(Type.WATER, p_149640_5_);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		if (event.isCancelled())
 			return;
 		final Vec3 var7 = func_149800_f(p_149640_1_, p_149640_2_, p_149640_3_,

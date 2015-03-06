@@ -1,6 +1,5 @@
 package net.minecraft.client.renderer;
 
-import me.client.Client;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
 import net.minecraft.block.BlockBeacon;
@@ -58,7 +57,8 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import event.events.EventBlockRender;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventBlockRender;
 
 public class RenderBlocks {
 	public static final String __OBFID = "CL_00000940";
@@ -1577,7 +1577,7 @@ public class RenderBlocks {
 			int par4) {
 		final EventBlockRender blockRender = new EventBlockRender(par1Block,
 				par2, par3, par4);
-		Client.getEventManager().call(blockRender);
+		TeamBattleClient.getEventManager().call(blockRender);
 		renderAllFaces = blockRender.shouldRenderAllFaces();
 		final int i = par1Block.getRenderType();
 

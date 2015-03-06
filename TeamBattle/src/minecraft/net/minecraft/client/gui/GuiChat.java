@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import me.client.Client;
 import net.minecraft.client.gui.stream.GuiTwitchUserMode;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -38,6 +37,8 @@ import tv.twitch.chat.ChatUserInfo;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import down.TeamBattle.TeamBattleClient;
 
 public class GuiChat extends GuiScreen implements GuiYesNoCallback {
 	private static final Set field_152175_f = Sets.newHashSet(new String[] {
@@ -383,9 +384,9 @@ public class GuiChat extends GuiScreen implements GuiYesNoCallback {
 	protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
 		mc.ingameGUI.persistantChatGUI.mouseClicked(p_73864_1_, p_73864_2_,
 				p_73864_3_);
-		final boolean latechat = Client.getModManager().getModByName(
+		final boolean latechat = TeamBattleClient.getModManager().getModByName(
 				"LateChat") != null
-				&& Client.getModManager().getModByName("LateChat").isEnabled();
+				&& TeamBattleClient.getModManager().getModByName("LateChat").isEnabled();
 		if (p_73864_3_ == 0 && mc.gameSettings.chatLinks && !latechat) {
 			final IChatComponent var4 = mc.ingameGUI.getChatGUI()
 					.func_146236_a(Mouse.getX(), Mouse.getY());

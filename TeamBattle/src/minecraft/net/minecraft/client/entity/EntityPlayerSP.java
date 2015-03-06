@@ -1,6 +1,5 @@
 package net.minecraft.client.entity;
 
-import me.client.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiCommandBlock;
@@ -49,9 +48,10 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraft.world.World;
-import event.events.EventFOVChange;
-import event.events.EventPlayerMovement;
-import event.events.EventPushOutOfBlocks;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventFOVChange;
+import down.TeamBattle.EventSystem.events.EventPlayerMovement;
+import down.TeamBattle.EventSystem.events.EventPushOutOfBlocks;
 
 public class EntityPlayerSP extends AbstractClientPlayer {
 	private final MouseFilter field_71160_ci = new MouseFilter();
@@ -198,7 +198,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
 	protected boolean func_145771_j(double p_145771_1_, double p_145771_3_,
 			double p_145771_5_) {
 		final EventPushOutOfBlocks event = new EventPushOutOfBlocks();
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		if (event.isCancelled())
 			return false;
 		final int var7 = MathHelper.floor_double(p_145771_1_);
@@ -335,7 +335,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
 		}
 
 		final EventFOVChange event = new EventFOVChange(var1);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		return event.getFOV();
 	}
 
@@ -383,7 +383,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
 	public void moveEntity(double motionX, double motionY, double motionZ) {
 		final EventPlayerMovement event = new EventPlayerMovement(motionX,
 				motionY, motionZ);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		motionX = event.getMotionX();
 		motionY = event.getMotionY();
 		motionZ = event.getMotionZ();
@@ -475,7 +475,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
 				}
 			}
 
-			// Client
+			// TeamBattleClient
 			// } else if (this.isPotionActive(Potion.confusion)
 			// && getActivePotionEffect(Potion.confusion).getDuration() > 60) {
 			// timeInPortal += 0.006666667F;

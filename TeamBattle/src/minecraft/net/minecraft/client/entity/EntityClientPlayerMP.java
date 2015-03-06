@@ -1,6 +1,5 @@
 package net.minecraft.client.entity;
 
-import me.client.Client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -24,9 +23,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Session;
 import net.minecraft.world.World;
-import event.events.EventChatSent;
-import event.events.EventPostSendMotionUpdates;
-import event.events.EventPreSendMotionUpdates;
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.events.EventChatSent;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
 
 public class EntityClientPlayerMP extends EntityPlayerSP {
 	private String field_142022_ce;
@@ -183,7 +183,7 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 			if (isRiding()) {
 				final EventPreSendMotionUpdates pre = new EventPreSendMotionUpdates(
 						rotationYaw, rotationPitch);
-				Client.getEventManager().call(pre);
+				TeamBattleClient.getEventManager().call(pre);
 				if (pre.isCancelled())
 					return;
 				sendQueue
@@ -191,7 +191,7 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 								pre.getYaw(), pre.getPitch(), onGround));
 				sendQueue.addToSendQueue(new C0CPacketInput(moveStrafing,
 						moveForward, movementInput.jump, movementInput.sneak));
-				Client.getEventManager()
+				TeamBattleClient.getEventManager()
 						.call(new EventPostSendMotionUpdates());
 			} else {
 				sendMotionUpdates();
@@ -210,7 +210,7 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 	 */
 	public void sendChatMessage(String p_71165_1_) {
 		final EventChatSent event = new EventChatSent(p_71165_1_);
-		Client.getEventManager().call(event);
+		TeamBattleClient.getEventManager().call(event);
 		event.checkForCommands();
 		if (event.isCancelled())
 			return;
@@ -224,7 +224,7 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 	public void sendMotionUpdates() {
 		final EventPreSendMotionUpdates pre = new EventPreSendMotionUpdates(
 				rotationYaw, rotationPitch);
-		Client.getEventManager().call(pre);
+		TeamBattleClient.getEventManager().call(pre);
 		if (pre.isCancelled())
 			return;
 		if (mc.thePlayer.isBlocking()) {
@@ -271,7 +271,9 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 
 		if (ridingEntity != null) {
 			sendQueue
-					.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(motionX, -999.0D, -999.0D, motionZ, pre.getYaw(),pre.getPitch(), onGround));
+					.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(
+							motionX, -999.0D, -999.0D, motionZ, pre.getYaw(),
+							pre.getPitch(), onGround));
 			var13 = false;
 		} else if (var13 && var14) {
 			sendQueue
@@ -302,7 +304,7 @@ public class EntityClientPlayerMP extends EntityPlayerSP {
 			oldRotationPitch = pre.getPitch();
 		}
 		
-		Client.getEventManager().call(new EventPostSendMotionUpdates());
+		TeamBattleClient.getEventManager().call(new EventPostSendMotionUpdates());
 		if (mc.thePlayer.isBlocking()) {
 			mc.getNetHandler().addToSendQueue(
 					new C07PacketPlayerDigging(5, 0, 0, 0, -255));
