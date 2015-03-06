@@ -1,30 +1,32 @@
 package net.minecraft.src;
 
 import java.util.List;
+
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
-public interface IWrUpdater
-{
-    void initialize();
+public interface IWrUpdater {
+	void clearAllUpdates();
 
-    WorldRenderer makeWorldRenderer(World var1, List var2, int var3, int var4, int var5, int var6);
+	void finishCurrentUpdate();
 
-    void preRender(RenderGlobal var1, EntityLivingBase var2);
+	void initialize();
 
-    void postRender();
+	WorldRenderer makeWorldRenderer(World var1, List var2, int var3, int var4,
+			int var5, int var6);
 
-    boolean updateRenderers(RenderGlobal var1, EntityLivingBase var2, boolean var3);
+	void pauseBackgroundUpdates();
 
-    void resumeBackgroundUpdates();
+	void postRender();
 
-    void pauseBackgroundUpdates();
+	void preRender(RenderGlobal var1, EntityLivingBase var2);
 
-    void finishCurrentUpdate();
+	void resumeBackgroundUpdates();
 
-    void clearAllUpdates();
+	void terminate();
 
-    void terminate();
+	boolean updateRenderers(RenderGlobal var1, EntityLivingBase var2,
+			boolean var3);
 }

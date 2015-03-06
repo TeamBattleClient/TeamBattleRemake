@@ -3,76 +3,91 @@ package net.minecraft.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 
-public abstract class GuiListExtended extends GuiSlot
-{
-    private static final String __OBFID = "CL_00000674";
+public abstract class GuiListExtended extends GuiSlot {
 
-    public GuiListExtended(Minecraft p_i45010_1_, int p_i45010_2_, int p_i45010_3_, int p_i45010_4_, int p_i45010_5_, int p_i45010_6_)
-    {
-        super(p_i45010_1_, p_i45010_2_, p_i45010_3_, p_i45010_4_, p_i45010_5_, p_i45010_6_);
-    }
+	public interface IGuiListEntry {
+		void func_148277_b(int p_148277_1_, int p_148277_2_, int p_148277_3_,
+				int p_148277_4_, int p_148277_5_, int p_148277_6_);
 
-    protected void elementClicked(int p_148144_1_, boolean p_148144_2_, int p_148144_3_, int p_148144_4_) {}
+		boolean func_148278_a(int p_148278_1_, int p_148278_2_,
+				int p_148278_3_, int p_148278_4_, int p_148278_5_,
+				int p_148278_6_);
 
-    protected boolean isSelected(int p_148131_1_)
-    {
-        return false;
-    }
+		void func_148279_a(int p_148279_1_, int p_148279_2_, int p_148279_3_,
+				int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_,
+				int p_148279_7_, int p_148279_8_, boolean p_148279_9_);
+	}
 
-    protected void drawBackground() {}
+	public GuiListExtended(Minecraft p_i45010_1_, int p_i45010_2_,
+			int p_i45010_3_, int p_i45010_4_, int p_i45010_5_, int p_i45010_6_) {
+		super(p_i45010_1_, p_i45010_2_, p_i45010_3_, p_i45010_4_, p_i45010_5_,
+				p_i45010_6_);
+	}
 
-    protected void drawSlot(int p_148126_1_, int p_148126_2_, int p_148126_3_, int p_148126_4_, Tessellator p_148126_5_, int p_148126_6_, int p_148126_7_)
-    {
-        this.func_148180_b(p_148126_1_).func_148279_a(p_148126_1_, p_148126_2_, p_148126_3_, this.func_148139_c(), p_148126_4_, p_148126_5_, p_148126_6_, p_148126_7_, this.func_148124_c(p_148126_6_, p_148126_7_) == p_148126_1_);
-    }
+	@Override
+	protected void drawBackground() {
+	}
 
-    public boolean func_148179_a(int p_148179_1_, int p_148179_2_, int p_148179_3_)
-    {
-        if (this.func_148141_e(p_148179_2_))
-        {
-            int var4 = this.func_148124_c(p_148179_1_, p_148179_2_);
+	@Override
+	protected void drawSlot(int p_148126_1_, int p_148126_2_, int p_148126_3_,
+			int p_148126_4_, Tessellator p_148126_5_, int p_148126_6_,
+			int p_148126_7_) {
+		func_148180_b(p_148126_1_).func_148279_a(p_148126_1_, p_148126_2_,
+				p_148126_3_, func_148139_c(), p_148126_4_, p_148126_5_,
+				p_148126_6_, p_148126_7_,
+				func_148124_c(p_148126_6_, p_148126_7_) == p_148126_1_);
+	}
 
-            if (var4 >= 0)
-            {
-                int var5 = this.field_148152_e + this.field_148155_a / 2 - this.func_148139_c() / 2 + 2;
-                int var6 = this.field_148153_b + 4 - this.func_148148_g() + var4 * this.field_148149_f + this.field_148160_j;
-                int var7 = p_148179_1_ - var5;
-                int var8 = p_148179_2_ - var6;
+	@Override
+	protected void elementClicked(int p_148144_1_, boolean p_148144_2_,
+			int p_148144_3_, int p_148144_4_) {
+	}
 
-                if (this.func_148180_b(var4).func_148278_a(var4, p_148179_1_, p_148179_2_, p_148179_3_, var7, var8))
-                {
-                    this.func_148143_b(false);
-                    return true;
-                }
-            }
-        }
+	public boolean func_148179_a(int p_148179_1_, int p_148179_2_,
+			int p_148179_3_) {
+		if (func_148141_e(p_148179_2_)) {
+			final int var4 = func_148124_c(p_148179_1_, p_148179_2_);
 
-        return false;
-    }
+			if (var4 >= 0) {
+				final int var5 = field_148152_e + field_148155_a / 2
+						- func_148139_c() / 2 + 2;
+				final int var6 = field_148153_b + 4 - func_148148_g() + var4
+						* field_148149_f + field_148160_j;
+				final int var7 = p_148179_1_ - var5;
+				final int var8 = p_148179_2_ - var6;
 
-    public boolean func_148181_b(int p_148181_1_, int p_148181_2_, int p_148181_3_)
-    {
-        for (int var4 = 0; var4 < this.getSize(); ++var4)
-        {
-            int var5 = this.field_148152_e + this.field_148155_a / 2 - this.func_148139_c() / 2 + 2;
-            int var6 = this.field_148153_b + 4 - this.func_148148_g() + var4 * this.field_148149_f + this.field_148160_j;
-            int var7 = p_148181_1_ - var5;
-            int var8 = p_148181_2_ - var6;
-            this.func_148180_b(var4).func_148277_b(var4, p_148181_1_, p_148181_2_, p_148181_3_, var7, var8);
-        }
+				if (func_148180_b(var4).func_148278_a(var4, p_148179_1_,
+						p_148179_2_, p_148179_3_, var7, var8)) {
+					func_148143_b(false);
+					return true;
+				}
+			}
+		}
 
-        this.func_148143_b(true);
-        return false;
-    }
+		return false;
+	}
 
-    public abstract GuiListExtended.IGuiListEntry func_148180_b(int p_148180_1_);
+	public abstract GuiListExtended.IGuiListEntry func_148180_b(int p_148180_1_);
 
-    public interface IGuiListEntry
-    {
-        void func_148279_a(int p_148279_1_, int p_148279_2_, int p_148279_3_, int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_);
+	public boolean func_148181_b(int p_148181_1_, int p_148181_2_,
+			int p_148181_3_) {
+		for (int var4 = 0; var4 < getSize(); ++var4) {
+			final int var5 = field_148152_e + field_148155_a / 2
+					- func_148139_c() / 2 + 2;
+			final int var6 = field_148153_b + 4 - func_148148_g() + var4
+					* field_148149_f + field_148160_j;
+			final int var7 = p_148181_1_ - var5;
+			final int var8 = p_148181_2_ - var6;
+			func_148180_b(var4).func_148277_b(var4, p_148181_1_, p_148181_2_,
+					p_148181_3_, var7, var8);
+		}
 
-        boolean func_148278_a(int p_148278_1_, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_);
+		func_148143_b(true);
+		return false;
+	}
 
-        void func_148277_b(int p_148277_1_, int p_148277_2_, int p_148277_3_, int p_148277_4_, int p_148277_5_, int p_148277_6_);
-    }
+	@Override
+	protected boolean isSelected(int p_148131_1_) {
+		return false;
+	}
 }

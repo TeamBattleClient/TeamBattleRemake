@@ -1,0 +1,55 @@
+package Managers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
+
+import me.client.modules.Module;
+import me.client.utils.Logger;
+
+import org.reflections.Reflections;
+
+public final class ModuleManager extends ListManager<Module> {
+	public final Module getModByName(String name) {
+		if (contents == null)
+			return null;
+		for (final Module mod : contents) {
+			if (mod.getName().equalsIgnoreCase(name))
+				return mod;
+		}
+		return null;
+	}
+
+	@Override
+	public void setup() {
+		Logger.logConsole("Preparing to load mods...");
+		contents = new ArrayList<Module>();
+		final Reflections reflect = new Reflections(Module.class);
+		final Set<Class<? extends Module>> mods = reflect.getSubTypesOf(Module.class);
+		for (final Class clazz : mods) {
+			try {
+				final Module mod = (Module) clazz.newInstance();
+				getContents().add(mod);
+				Logger.logConsole("Loaded mod \"" + mod.getName() + "\"");
+			} catch (final InstantiationException e) {
+				e.printStackTrace();
+				Logger.logConsole("Failed to load mod \""
+						+ clazz.getSimpleName() + "\" (InstantiationException)");
+			} catch (final IllegalAccessException e) {
+				e.printStackTrace();
+				Logger.logConsole("Failed to load mod \""
+						+ clazz.getSimpleName() + "\" (IllegalAccessException)");
+			}
+		}
+
+		Collections.sort(contents, new Comparator<Module>() {
+			@Override
+			public int compare(Module mod1, Module mod2) {
+				return mod1.getName().compareTo(mod2.getName());
+			}
+		});
+		Logger.logConsole("Successfully loaded " + getContents().size()
+				+ " mods.");
+	}
+}

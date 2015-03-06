@@ -1,278 +1,252 @@
 package net.minecraft.src;
 
 import java.util.List;
+
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
-public class WrUpdaterSmooth implements IWrUpdater
-{
-    private long lastUpdateStartTimeNs = 0L;
-    private long updateStartTimeNs = 0L;
-    private long updateTimeNs = 10000000L;
-    private WorldRendererSmooth currentUpdateRenderer = null;
-    private int renderersUpdated = 0;
-    private int renderersFound = 0;
+public class WrUpdaterSmooth implements IWrUpdater {
+	private WorldRendererSmooth currentUpdateRenderer = null;
+	private int renderersFound = 0;
+	private int renderersUpdated = 0;
+	private long updateStartTimeNs = 0L;
+	private long updateTimeNs = 10000000L;
 
-    public void initialize() {}
+	@Override
+	public void clearAllUpdates() {
+		finishCurrentUpdate();
+	}
 
-    public void terminate() {}
+	@Override
+	public void finishCurrentUpdate() {
+		if (currentUpdateRenderer != null) {
+			currentUpdateRenderer.updateRenderer();
+			currentUpdateRenderer = null;
+		}
+	}
 
-    public WorldRenderer makeWorldRenderer(World worldObj, List tileEntities, int x, int y, int z, int glRenderListBase)
-    {
-        return new WorldRendererSmooth(worldObj, tileEntities, x, y, z, glRenderListBase);
-    }
+	@Override
+	public void initialize() {
+	}
 
-    public boolean updateRenderers(RenderGlobal rg, EntityLivingBase entityliving, boolean flag)
-    {
-        this.lastUpdateStartTimeNs = this.updateStartTimeNs;
-        this.updateStartTimeNs = System.nanoTime();
-        long finishTimeNs = this.updateStartTimeNs + this.updateTimeNs;
-        int maxNum = Config.getUpdatesPerFrame();
+	@Override
+	public WorldRenderer makeWorldRenderer(World worldObj, List tileEntities,
+			int x, int y, int z, int glRenderListBase) {
+		return new WorldRendererSmooth(worldObj, tileEntities, x, y, z,
+				glRenderListBase);
+	}
 
-        if (Config.isDynamicUpdates() && !rg.isMoving(entityliving))
-        {
-            maxNum *= 3;
-        }
+	@Override
+	public void pauseBackgroundUpdates() {
+	}
 
-        this.renderersUpdated = 0;
+	@Override
+	public void postRender() {
+	}
 
-        do
-        {
-            this.renderersFound = 0;
-            this.updateRenderersImpl(rg, entityliving, flag);
-        }
-        while (this.renderersFound > 0 && System.nanoTime() - finishTimeNs < 0L);
+	@Override
+	public void preRender(RenderGlobal rg, EntityLivingBase player) {
+	}
 
-        if (this.renderersFound > 0)
-        {
-            maxNum = Math.min(maxNum, this.renderersFound);
-            long diff = 400000L;
+	@Override
+	public void resumeBackgroundUpdates() {
+	}
 
-            if (this.renderersUpdated > maxNum)
-            {
-                this.updateTimeNs -= 2L * diff;
-            }
+	@Override
+	public void terminate() {
+	}
 
-            if (this.renderersUpdated < maxNum)
-            {
-                this.updateTimeNs += diff;
-            }
-        }
-        else
-        {
-            this.updateTimeNs = 0L;
-            this.updateTimeNs -= 200000L;
-        }
+	private boolean updateRenderer(WorldRendererSmooth wr) {
+		final long finishTime = updateStartTimeNs + updateTimeNs;
+		wr.needsUpdate = false;
+		final boolean ready = wr.updateRenderer(finishTime);
 
-        if (this.updateTimeNs < 0L)
-        {
-            this.updateTimeNs = 0L;
-        }
+		if (!ready) {
+			currentUpdateRenderer = wr;
+			return false;
+		} else {
+			wr.finishUpdate();
+			currentUpdateRenderer = null;
+			return true;
+		}
+	}
 
-        return this.renderersUpdated > 0;
-    }
+	@Override
+	public boolean updateRenderers(RenderGlobal rg,
+			EntityLivingBase entityliving, boolean flag) {
+		updateStartTimeNs = System.nanoTime();
+		final long finishTimeNs = updateStartTimeNs + updateTimeNs;
+		int maxNum = Config.getUpdatesPerFrame();
 
-    private void updateRenderersImpl(RenderGlobal rg, EntityLivingBase entityliving, boolean flag)
-    {
-        this.renderersFound = 0;
-        boolean currentUpdateFinished = true;
+		if (Config.isDynamicUpdates() && !rg.isMoving(entityliving)) {
+			maxNum *= 3;
+		}
 
-        if (this.currentUpdateRenderer != null)
-        {
-            ++this.renderersFound;
-            currentUpdateFinished = this.updateRenderer(this.currentUpdateRenderer);
+		renderersUpdated = 0;
 
-            if (currentUpdateFinished)
-            {
-                ++this.renderersUpdated;
-            }
-        }
+		do {
+			renderersFound = 0;
+			updateRenderersImpl(rg, entityliving, flag);
+		} while (renderersFound > 0 && System.nanoTime() - finishTimeNs < 0L);
 
-        if (rg.worldRenderersToUpdate.size() > 0)
-        {
-            byte NOT_IN_FRUSTRUM_MUL = 4;
-            WorldRendererSmooth wrBest = null;
-            float distSqBest = Float.MAX_VALUE;
-            int indexBest = -1;
-            int dstIndex;
+		if (renderersFound > 0) {
+			maxNum = Math.min(maxNum, renderersFound);
+			final long diff = 400000L;
 
-            for (dstIndex = 0; dstIndex < rg.worldRenderersToUpdate.size(); ++dstIndex)
-            {
-                WorldRendererSmooth i = (WorldRendererSmooth)rg.worldRenderersToUpdate.get(dstIndex);
+			if (renderersUpdated > maxNum) {
+				updateTimeNs -= 2L * diff;
+			}
 
-                if (i != null)
-                {
-                    ++this.renderersFound;
+			if (renderersUpdated < maxNum) {
+				updateTimeNs += diff;
+			}
+		} else {
+			updateTimeNs = 0L;
+			updateTimeNs -= 200000L;
+		}
 
-                    if (!i.needsUpdate)
-                    {
-                        rg.worldRenderersToUpdate.set(dstIndex, (Object)null);
-                    }
-                    else
-                    {
-                        float wr = i.distanceToEntitySquared(entityliving);
+		if (updateTimeNs < 0L) {
+			updateTimeNs = 0L;
+		}
 
-                        if (wr <= 256.0F && rg.isActingNow())
-                        {
-                            i.updateRenderer();
-                            i.needsUpdate = false;
-                            rg.worldRenderersToUpdate.set(dstIndex, (Object)null);
-                            ++this.renderersUpdated;
-                        }
-                        else
-                        {
-                            if (!i.isInFrustum)
-                            {
-                                wr *= (float)NOT_IN_FRUSTRUM_MUL;
-                            }
+		return renderersUpdated > 0;
+	}
 
-                            if (wrBest == null)
-                            {
-                                wrBest = i;
-                                distSqBest = wr;
-                                indexBest = dstIndex;
-                            }
-                            else if (wr < distSqBest)
-                            {
-                                wrBest = i;
-                                distSqBest = wr;
-                                indexBest = dstIndex;
-                            }
-                        }
-                    }
-                }
-            }
+	private void updateRenderersImpl(RenderGlobal rg,
+			EntityLivingBase entityliving, boolean flag) {
+		renderersFound = 0;
+		boolean currentUpdateFinished = true;
 
-            if (this.currentUpdateRenderer == null || currentUpdateFinished)
-            {
-                int var15;
+		if (currentUpdateRenderer != null) {
+			++renderersFound;
+			currentUpdateFinished = updateRenderer(currentUpdateRenderer);
 
-                if (wrBest != null)
-                {
-                    rg.worldRenderersToUpdate.set(indexBest, (Object)null);
+			if (currentUpdateFinished) {
+				++renderersUpdated;
+			}
+		}
 
-                    if (!this.updateRenderer(wrBest))
-                    {
-                        return;
-                    }
+		if (rg.worldRenderersToUpdate.size() > 0) {
+			final byte NOT_IN_FRUSTRUM_MUL = 4;
+			WorldRendererSmooth wrBest = null;
+			float distSqBest = Float.MAX_VALUE;
+			int indexBest = -1;
+			int dstIndex;
 
-                    ++this.renderersUpdated;
+			for (dstIndex = 0; dstIndex < rg.worldRenderersToUpdate.size(); ++dstIndex) {
+				final WorldRendererSmooth i = (WorldRendererSmooth) rg.worldRenderersToUpdate
+						.get(dstIndex);
 
-                    if (System.nanoTime() > this.updateStartTimeNs + this.updateTimeNs)
-                    {
-                        return;
-                    }
+				if (i != null) {
+					++renderersFound;
 
-                    float var14 = distSqBest / 5.0F;
+					if (!i.needsUpdate) {
+						rg.worldRenderersToUpdate.set(dstIndex, (Object) null);
+					} else {
+						float wr = i.distanceToEntitySquared(entityliving);
 
-                    for (var15 = 0; var15 < rg.worldRenderersToUpdate.size(); ++var15)
-                    {
-                        WorldRendererSmooth var16 = (WorldRendererSmooth)rg.worldRenderersToUpdate.get(var15);
+						if (wr <= 256.0F && rg.isActingNow()) {
+							i.updateRenderer();
+							i.needsUpdate = false;
+							rg.worldRenderersToUpdate.set(dstIndex,
+									(Object) null);
+							++renderersUpdated;
+						} else {
+							if (!i.isInFrustum) {
+								wr *= NOT_IN_FRUSTRUM_MUL;
+							}
 
-                        if (var16 != null)
-                        {
-                            float distSq = var16.distanceToEntitySquared(entityliving);
+							if (wrBest == null) {
+								wrBest = i;
+								distSqBest = wr;
+								indexBest = dstIndex;
+							} else if (wr < distSqBest) {
+								wrBest = i;
+								distSqBest = wr;
+								indexBest = dstIndex;
+							}
+						}
+					}
+				}
+			}
 
-                            if (!var16.isInFrustum)
-                            {
-                                distSq *= (float)NOT_IN_FRUSTRUM_MUL;
-                            }
+			if (currentUpdateRenderer == null || currentUpdateFinished) {
+				int var15;
 
-                            float diffDistSq = Math.abs(distSq - distSqBest);
+				if (wrBest != null) {
+					rg.worldRenderersToUpdate.set(indexBest, (Object) null);
 
-                            if (diffDistSq < var14)
-                            {
-                                rg.worldRenderersToUpdate.set(var15, (Object)null);
+					if (!updateRenderer(wrBest))
+						return;
 
-                                if (!this.updateRenderer(var16))
-                                {
-                                    return;
-                                }
+					++renderersUpdated;
 
-                                ++this.renderersUpdated;
+					if (System.nanoTime() > updateStartTimeNs + updateTimeNs)
+						return;
 
-                                if (System.nanoTime() > this.updateStartTimeNs + this.updateTimeNs)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+					final float var14 = distSqBest / 5.0F;
 
-                if (this.renderersFound == 0)
-                {
-                    rg.worldRenderersToUpdate.clear();
-                }
+					for (var15 = 0; var15 < rg.worldRenderersToUpdate.size(); ++var15) {
+						final WorldRendererSmooth var16 = (WorldRendererSmooth) rg.worldRenderersToUpdate
+								.get(var15);
 
-                if (rg.worldRenderersToUpdate.size() > 100 && this.renderersFound < rg.worldRenderersToUpdate.size() * 4 / 5)
-                {
-                    dstIndex = 0;
+						if (var16 != null) {
+							float distSq = var16
+									.distanceToEntitySquared(entityliving);
 
-                    for (var15 = 0; var15 < rg.worldRenderersToUpdate.size(); ++var15)
-                    {
-                        Object var17 = rg.worldRenderersToUpdate.get(var15);
+							if (!var16.isInFrustum) {
+								distSq *= NOT_IN_FRUSTRUM_MUL;
+							}
 
-                        if (var17 != null)
-                        {
-                            if (var15 != dstIndex)
-                            {
-                                rg.worldRenderersToUpdate.set(dstIndex, var17);
-                            }
+							final float diffDistSq = Math.abs(distSq
+									- distSqBest);
 
-                            ++dstIndex;
-                        }
-                    }
+							if (diffDistSq < var14) {
+								rg.worldRenderersToUpdate.set(var15,
+										(Object) null);
 
-                    for (var15 = rg.worldRenderersToUpdate.size() - 1; var15 >= dstIndex; --var15)
-                    {
-                        rg.worldRenderersToUpdate.remove(var15);
-                    }
-                }
-            }
-        }
-    }
+								if (!updateRenderer(var16))
+									return;
 
-    private boolean updateRenderer(WorldRendererSmooth wr)
-    {
-        long finishTime = this.updateStartTimeNs + this.updateTimeNs;
-        wr.needsUpdate = false;
-        boolean ready = wr.updateRenderer(finishTime);
+								++renderersUpdated;
 
-        if (!ready)
-        {
-            this.currentUpdateRenderer = wr;
-            return false;
-        }
-        else
-        {
-            wr.finishUpdate();
-            this.currentUpdateRenderer = null;
-            return true;
-        }
-    }
+								if (System.nanoTime() > updateStartTimeNs
+										+ updateTimeNs) {
+									break;
+								}
+							}
+						}
+					}
+				}
 
-    public void finishCurrentUpdate()
-    {
-        if (this.currentUpdateRenderer != null)
-        {
-            this.currentUpdateRenderer.updateRenderer();
-            this.currentUpdateRenderer = null;
-        }
-    }
+				if (renderersFound == 0) {
+					rg.worldRenderersToUpdate.clear();
+				}
 
-    public void resumeBackgroundUpdates() {}
+				if (rg.worldRenderersToUpdate.size() > 100
+						&& renderersFound < rg.worldRenderersToUpdate.size() * 4 / 5) {
+					dstIndex = 0;
 
-    public void pauseBackgroundUpdates() {}
+					for (var15 = 0; var15 < rg.worldRenderersToUpdate.size(); ++var15) {
+						final Object var17 = rg.worldRenderersToUpdate
+								.get(var15);
 
-    public void preRender(RenderGlobal rg, EntityLivingBase player) {}
+						if (var17 != null) {
+							if (var15 != dstIndex) {
+								rg.worldRenderersToUpdate.set(dstIndex, var17);
+							}
 
-    public void postRender() {}
+							++dstIndex;
+						}
+					}
 
-    public void clearAllUpdates()
-    {
-        this.finishCurrentUpdate();
-    }
+					for (var15 = rg.worldRenderersToUpdate.size() - 1; var15 >= dstIndex; --var15) {
+						rg.worldRenderersToUpdate.remove(var15);
+					}
+				}
+			}
+		}
+	}
 }

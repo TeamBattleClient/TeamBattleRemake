@@ -1,0 +1,57 @@
+package me.client.modules.player;
+
+import org.lwjgl.input.Keyboard;
+
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+
+import event.Event;
+import event.events.EventPostSendMotionUpdates;
+import event.events.EventPreSendMotionUpdates;
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+
+public class Sneak extends Module{
+
+	public Sneak() {
+		super("Sneak", 0x55FF5511);
+		this.setKeybind(Keyboard.KEY_Z);
+	}
+	
+	
+	
+	@Override
+	public void onDisabled() {
+		
+		super.onDisabled();
+		if(mc.thePlayer.isSneaking()){
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 2));
+		}
+	}
+	public void onEvent(Event event)
+	{
+		if(event instanceof EventPreSendMotionUpdates)
+	{
+		if(checkSneak())
+		{
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 1));
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 2));
+		}
+		}else if(event instanceof EventPostSendMotionUpdates)
+		{
+			if(!mc.thePlayer.isInWater())
+			{
+			mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 2));
+			mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 1));
+			}
+		}
+	}
+	
+	
+	
+	
+	boolean checks = mc.thePlayer.onGround && !mc.thePlayer.isInWater() && mc.thePlayer.motionX > 0.0F && mc.thePlayer.motionY > 0.0F && mc.thePlayer.motionZ > 0.0F && !mc.thePlayer.isDead && !mc.thePlayer.isSneaking();
+	public boolean checkSneak()
+	{
+		return checks;
+	}
+}

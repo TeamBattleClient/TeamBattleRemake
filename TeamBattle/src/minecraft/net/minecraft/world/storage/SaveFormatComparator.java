@@ -2,94 +2,87 @@ package net.minecraft.world.storage;
 
 import net.minecraft.world.WorldSettings;
 
-public class SaveFormatComparator implements Comparable
-{
-    /** the file name of this save */
-    private final String fileName;
+public class SaveFormatComparator implements Comparable {
+	private final boolean cheatsEnabled;
 
-    /** the displayed name of this save file */
-    private final String displayName;
-    private final long lastTimePlayed;
-    private final long sizeOnDisk;
-    private final boolean requiresConversion;
+	/** the displayed name of this save file */
+	private final String displayName;
+	/** the file name of this save */
+	private final String fileName;
+	private final boolean hardcore;
+	private final long lastTimePlayed;
 
-    /** Instance of EnumGameType. */
-    private final WorldSettings.GameType theEnumGameType;
-    private final boolean hardcore;
-    private final boolean cheatsEnabled;
-    private static final String __OBFID = "CL_00000601";
+	private final boolean requiresConversion;
+	private final long sizeOnDisk;
+	/** Instance of EnumGameType. */
+	private final WorldSettings.GameType theEnumGameType;
 
-    public SaveFormatComparator(String p_i2161_1_, String p_i2161_2_, long p_i2161_3_, long p_i2161_5_, WorldSettings.GameType p_i2161_7_, boolean p_i2161_8_, boolean p_i2161_9_, boolean p_i2161_10_)
-    {
-        this.fileName = p_i2161_1_;
-        this.displayName = p_i2161_2_;
-        this.lastTimePlayed = p_i2161_3_;
-        this.sizeOnDisk = p_i2161_5_;
-        this.theEnumGameType = p_i2161_7_;
-        this.requiresConversion = p_i2161_8_;
-        this.hardcore = p_i2161_9_;
-        this.cheatsEnabled = p_i2161_10_;
-    }
+	public SaveFormatComparator(String p_i2161_1_, String p_i2161_2_,
+			long p_i2161_3_, long p_i2161_5_,
+			WorldSettings.GameType p_i2161_7_, boolean p_i2161_8_,
+			boolean p_i2161_9_, boolean p_i2161_10_) {
+		fileName = p_i2161_1_;
+		displayName = p_i2161_2_;
+		lastTimePlayed = p_i2161_3_;
+		sizeOnDisk = p_i2161_5_;
+		theEnumGameType = p_i2161_7_;
+		requiresConversion = p_i2161_8_;
+		hardcore = p_i2161_9_;
+		cheatsEnabled = p_i2161_10_;
+	}
 
-    /**
-     * return the file name
-     */
-    public String getFileName()
-    {
-        return this.fileName;
-    }
+	@Override
+	public int compareTo(Object p_compareTo_1_) {
+		return this.compareTo((SaveFormatComparator) p_compareTo_1_);
+	}
 
-    /**
-     * return the display name of the save
-     */
-    public String getDisplayName()
-    {
-        return this.displayName;
-    }
+	public int compareTo(SaveFormatComparator p_compareTo_1_) {
+		return lastTimePlayed < p_compareTo_1_.lastTimePlayed ? 1
+				: lastTimePlayed > p_compareTo_1_.lastTimePlayed ? -1
+						: fileName.compareTo(p_compareTo_1_.fileName);
+	}
 
-    public long func_154336_c()
-    {
-        return this.sizeOnDisk;
-    }
+	public long func_154336_c() {
+		return sizeOnDisk;
+	}
 
-    public boolean requiresConversion()
-    {
-        return this.requiresConversion;
-    }
+	/**
+	 * @return {@code true} if cheats are enabled for this world
+	 */
+	public boolean getCheatsEnabled() {
+		return cheatsEnabled;
+	}
 
-    public long getLastTimePlayed()
-    {
-        return this.lastTimePlayed;
-    }
+	/**
+	 * return the display name of the save
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    public int compareTo(SaveFormatComparator p_compareTo_1_)
-    {
-        return this.lastTimePlayed < p_compareTo_1_.lastTimePlayed ? 1 : (this.lastTimePlayed > p_compareTo_1_.lastTimePlayed ? -1 : this.fileName.compareTo(p_compareTo_1_.fileName));
-    }
+	/**
+	 * Gets the EnumGameType.
+	 */
+	public WorldSettings.GameType getEnumGameType() {
+		return theEnumGameType;
+	}
 
-    /**
-     * Gets the EnumGameType.
-     */
-    public WorldSettings.GameType getEnumGameType()
-    {
-        return this.theEnumGameType;
-    }
+	/**
+	 * return the file name
+	 */
+	public String getFileName() {
+		return fileName;
+	}
 
-    public boolean isHardcoreModeEnabled()
-    {
-        return this.hardcore;
-    }
+	public long getLastTimePlayed() {
+		return lastTimePlayed;
+	}
 
-    /**
-     * @return {@code true} if cheats are enabled for this world
-     */
-    public boolean getCheatsEnabled()
-    {
-        return this.cheatsEnabled;
-    }
+	public boolean isHardcoreModeEnabled() {
+		return hardcore;
+	}
 
-    public int compareTo(Object p_compareTo_1_)
-    {
-        return this.compareTo((SaveFormatComparator)p_compareTo_1_);
-    }
+	public boolean requiresConversion() {
+		return requiresConversion;
+	}
 }

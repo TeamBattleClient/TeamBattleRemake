@@ -1,0 +1,5 @@
+package me.client.event;
+
+public abstract class Event {
+
+}

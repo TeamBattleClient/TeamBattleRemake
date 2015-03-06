@@ -1,12 +1,11 @@
 package net.minecraft.src;
 
-public class VertexData
-{
-    public double x;
-    public double y;
-    public double z;
-    public double u;
-    public double v;
-    public int color;
-    public int brightness;
+public class VertexData {
+	public int brightness;
+	public int color;
+	public double u;
+	public double v;
+	public double x;
+	public double y;
+	public double z;
 }

@@ -1,0 +1,82 @@
+package me.client.Threads;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Random;
+
+import net.minecraft.client.Minecraft;
+
+public class TeamBattleLoginThread extends Thread {
+	private final Minecraft mc = Minecraft.getMinecraft();
+	private final String password;
+	private String status;
+	private final String username;
+
+	
+
+	public TeamBattleLoginThread(final String username, final String password) {
+		super("" + new Random().nextInt(999999999));
+		this.username = username;
+		this.password = password;
+		status = "\247cYou need to login in order to use LateMod.";
+	}
+
+	private Account createAccount() {
+		try {
+			URL url = new URL("http://lmao.gq/latemodaccounts/check.php?user="
+					+ username + "&pass=" + password);
+			InetAddress ip = InetAddress.getByName(url.getHost());
+			if (!ip.getHostAddress().equals("104.28.12.36")
+					&& !ip.getHostAddress().equals("104.28.13.36")) {
+				return null;
+			}
+			final HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection
+					.setRequestProperty("User-Agent",
+							"Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0");
+			connection.connect();
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(connection.getInputStream()));
+			String line = reader.readLine();
+			return Boolean.parseBoolean(line) ? new Account(username, password)
+					: null;
+		} catch (MalformedURLException e) {
+			return null;
+		} catch (UnknownHostException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
+	public void run() {
+		status = "\247eLogging in...";
+		final Account account = createAccount();
+		if (account == null) {
+			status = "\247cLogin failed!";
+			if (!(mc.currentScreen instanceof GuiLateModLogin)) {
+				mc.displayGuiScreen(new GuiLateModLogin(null));
+			}
+		} else {
+			LateMod.setAccount(account);
+			status = "\247aLogged in.";
+			LateMod.getFileManager().getFileByName("latemodaccount").saveFile();
+		}
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+}

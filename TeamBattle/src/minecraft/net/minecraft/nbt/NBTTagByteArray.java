@@ -5,71 +5,71 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class NBTTagByteArray extends NBTBase
-{
-    /** The byte array stored in the tag. */
-    private byte[] byteArray;
-    private static final String __OBFID = "CL_00001213";
+public class NBTTagByteArray extends NBTBase {
+	/** The byte array stored in the tag. */
+	private byte[] byteArray;
 
-    NBTTagByteArray() {}
+	NBTTagByteArray() {
+	}
 
-    public NBTTagByteArray(byte[] p_i45128_1_)
-    {
-        this.byteArray = p_i45128_1_;
-    }
+	public NBTTagByteArray(byte[] p_i45128_1_) {
+		byteArray = p_i45128_1_;
+	}
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput p_74734_1_) throws IOException
-    {
-        p_74734_1_.writeInt(this.byteArray.length);
-        p_74734_1_.write(this.byteArray);
-    }
+	/**
+	 * Creates a clone of the tag.
+	 */
+	@Override
+	public NBTBase copy() {
+		final byte[] var1 = new byte[byteArray.length];
+		System.arraycopy(byteArray, 0, var1, 0, byteArray.length);
+		return new NBTTagByteArray(var1);
+	}
 
-    void func_152446_a(DataInput p_152446_1_, int p_152446_2_, NBTSizeTracker p_152446_3_) throws IOException
-    {
-        int var4 = p_152446_1_.readInt();
-        p_152446_3_.func_152450_a((long)(8 * var4));
-        this.byteArray = new byte[var4];
-        p_152446_1_.readFully(this.byteArray);
-    }
+	@Override
+	public boolean equals(Object p_equals_1_) {
+		return super.equals(p_equals_1_) ? Arrays.equals(byteArray,
+				((NBTTagByteArray) p_equals_1_).byteArray) : false;
+	}
 
-    /**
-     * Gets the type byte for the tag.
-     */
-    public byte getId()
-    {
-        return (byte)7;
-    }
+	public byte[] func_150292_c() {
+		return byteArray;
+	}
 
-    public String toString()
-    {
-        return "[" + this.byteArray.length + " bytes]";
-    }
+	@Override
+	void func_152446_a(DataInput p_152446_1_, int p_152446_2_,
+			NBTSizeTracker p_152446_3_) throws IOException {
+		final int var4 = p_152446_1_.readInt();
+		p_152446_3_.func_152450_a(8 * var4);
+		byteArray = new byte[var4];
+		p_152446_1_.readFully(byteArray);
+	}
 
-    /**
-     * Creates a clone of the tag.
-     */
-    public NBTBase copy()
-    {
-        byte[] var1 = new byte[this.byteArray.length];
-        System.arraycopy(this.byteArray, 0, var1, 0, this.byteArray.length);
-        return new NBTTagByteArray(var1);
-    }
+	/**
+	 * Gets the type byte for the tag.
+	 */
+	@Override
+	public byte getId() {
+		return (byte) 7;
+	}
 
-    public boolean equals(Object p_equals_1_)
-    {
-        return super.equals(p_equals_1_) ? Arrays.equals(this.byteArray, ((NBTTagByteArray)p_equals_1_).byteArray) : false;
-    }
+	@Override
+	public int hashCode() {
+		return super.hashCode() ^ Arrays.hashCode(byteArray);
+	}
 
-    public int hashCode()
-    {
-        return super.hashCode() ^ Arrays.hashCode(this.byteArray);
-    }
+	@Override
+	public String toString() {
+		return "[" + byteArray.length + " bytes]";
+	}
 
-    public byte[] func_150292_c()
-    {
-        return this.byteArray;
-    }
+	/**
+	 * Write the actual data contents of the tag, implemented in NBT extension
+	 * classes
+	 */
+	@Override
+	void write(DataOutput p_74734_1_) throws IOException {
+		p_74734_1_.writeInt(byteArray.length);
+		p_74734_1_.write(byteArray);
+	}
 }

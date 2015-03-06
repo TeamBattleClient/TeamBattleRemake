@@ -1,6 +1,6 @@
 package net.minecraft.command;
 
-public interface IAdminCommand
-{
-    void func_152372_a(ICommandSender var1, ICommand var2, int var3, String var4, Object ... var5);
+public interface IAdminCommand {
+	void func_152372_a(ICommandSender var1, ICommand var2, int var3,
+			String var4, Object... var5);
 }

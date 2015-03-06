@@ -6,97 +6,93 @@ import net.minecraft.util.Vec3;
 import net.minecraft.village.Village;
 import net.minecraft.village.VillageDoorInfo;
 
-public class EntityAIMoveIndoors extends EntityAIBase
-{
-    private EntityCreature entityObj;
-    private VillageDoorInfo doorInfo;
-    private int insidePosX = -1;
-    private int insidePosZ = -1;
-    private static final String __OBFID = "CL_00001596";
+public class EntityAIMoveIndoors extends EntityAIBase {
+	private VillageDoorInfo doorInfo;
+	private final EntityCreature entityObj;
+	private int insidePosX = -1;
+	private int insidePosZ = -1;
 
-    public EntityAIMoveIndoors(EntityCreature p_i1637_1_)
-    {
-        this.entityObj = p_i1637_1_;
-        this.setMutexBits(1);
-    }
+	public EntityAIMoveIndoors(EntityCreature p_i1637_1_) {
+		entityObj = p_i1637_1_;
+		setMutexBits(1);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        int var1 = MathHelper.floor_double(this.entityObj.posX);
-        int var2 = MathHelper.floor_double(this.entityObj.posY);
-        int var3 = MathHelper.floor_double(this.entityObj.posZ);
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !entityObj.getNavigator().noPath();
+	}
 
-        if ((!this.entityObj.worldObj.isDaytime() || this.entityObj.worldObj.isRaining() || !this.entityObj.worldObj.getBiomeGenForCoords(var1, var3).canSpawnLightningBolt()) && !this.entityObj.worldObj.provider.hasNoSky)
-        {
-            if (this.entityObj.getRNG().nextInt(50) != 0)
-            {
-                return false;
-            }
-            else if (this.insidePosX != -1 && this.entityObj.getDistanceSq((double)this.insidePosX, this.entityObj.posY, (double)this.insidePosZ) < 4.0D)
-            {
-                return false;
-            }
-            else
-            {
-                Village var4 = this.entityObj.worldObj.villageCollectionObj.findNearestVillage(var1, var2, var3, 14);
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		insidePosX = doorInfo.getInsidePosX();
+		insidePosZ = doorInfo.getInsidePosZ();
+		doorInfo = null;
+	}
 
-                if (var4 == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    this.doorInfo = var4.findNearestDoorUnrestricted(var1, var2, var3);
-                    return this.doorInfo != null;
-                }
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		final int var1 = MathHelper.floor_double(entityObj.posX);
+		final int var2 = MathHelper.floor_double(entityObj.posY);
+		final int var3 = MathHelper.floor_double(entityObj.posZ);
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.entityObj.getNavigator().noPath();
-    }
+		if ((!entityObj.worldObj.isDaytime() || entityObj.worldObj.isRaining() || !entityObj.worldObj
+				.getBiomeGenForCoords(var1, var3).canSpawnLightningBolt())
+				&& !entityObj.worldObj.provider.hasNoSky) {
+			if (entityObj.getRNG().nextInt(50) != 0)
+				return false;
+			else if (insidePosX != -1
+					&& entityObj.getDistanceSq(insidePosX, entityObj.posY,
+							insidePosZ) < 4.0D)
+				return false;
+			else {
+				final Village var4 = entityObj.worldObj.villageCollectionObj
+						.findNearestVillage(var1, var2, var3, 14);
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.insidePosX = -1;
+				if (var4 == null)
+					return false;
+				else {
+					doorInfo = var4.findNearestDoorUnrestricted(var1, var2,
+							var3);
+					return doorInfo != null;
+				}
+			}
+		} else
+			return false;
+	}
 
-        if (this.entityObj.getDistanceSq((double)this.doorInfo.getInsidePosX(), (double)this.doorInfo.posY, (double)this.doorInfo.getInsidePosZ()) > 256.0D)
-        {
-            Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.entityObj, 14, 3, Vec3.createVectorHelper((double)this.doorInfo.getInsidePosX() + 0.5D, (double)this.doorInfo.getInsidePosY(), (double)this.doorInfo.getInsidePosZ() + 0.5D));
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		insidePosX = -1;
 
-            if (var1 != null)
-            {
-                this.entityObj.getNavigator().tryMoveToXYZ(var1.xCoord, var1.yCoord, var1.zCoord, 1.0D);
-            }
-        }
-        else
-        {
-            this.entityObj.getNavigator().tryMoveToXYZ((double)this.doorInfo.getInsidePosX() + 0.5D, (double)this.doorInfo.getInsidePosY(), (double)this.doorInfo.getInsidePosZ() + 0.5D, 1.0D);
-        }
-    }
+		if (entityObj.getDistanceSq(doorInfo.getInsidePosX(), doorInfo.posY,
+				doorInfo.getInsidePosZ()) > 256.0D) {
+			final Vec3 var1 = RandomPositionGenerator
+					.findRandomTargetBlockTowards(entityObj, 14, 3, Vec3
+							.createVectorHelper(
+									doorInfo.getInsidePosX() + 0.5D,
+									doorInfo.getInsidePosY(),
+									doorInfo.getInsidePosZ() + 0.5D));
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.insidePosX = this.doorInfo.getInsidePosX();
-        this.insidePosZ = this.doorInfo.getInsidePosZ();
-        this.doorInfo = null;
-    }
+			if (var1 != null) {
+				entityObj.getNavigator().tryMoveToXYZ(var1.xCoord, var1.yCoord,
+						var1.zCoord, 1.0D);
+			}
+		} else {
+			entityObj.getNavigator().tryMoveToXYZ(
+					doorInfo.getInsidePosX() + 0.5D, doorInfo.getInsidePosY(),
+					doorInfo.getInsidePosZ() + 0.5D, 1.0D);
+		}
+	}
 }

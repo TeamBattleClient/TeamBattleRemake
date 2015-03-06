@@ -1,0 +1,52 @@
+package me.client.modules;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
+
+
+
+import me.client.helpers.ListManager;
+import me.client.utils.Logger;
+
+public final class ModuleManager extends ListManager<Module> {
+	public final Module getModByName(String name) {
+		if (contents == null)
+			return null;
+		for (final Module mod : contents) {
+			if (mod.getName().equalsIgnoreCase(name))
+				return mod;
+		}
+		return null;
+	}
+
+	@Override
+	public void setup() {
+		
+		contents = new ArrayList<Module>();
+		final Reflections reflect = new Reflections(Mod.class);
+		final Set<Class<? extends Module>> mods = reflect.getSubTypesOf(Mod.class);
+		for (final Class clazz : mods) {
+			try {
+				final Module mod = (Module) clazz.newInstance();
+				getContents().add(mod);
+				
+			} catch (final InstantiationException e) {
+				e.printStackTrace();
+				
+			} catch (final IllegalAccessException e) {
+				e.printStackTrace();
+				
+			}
+		}
+
+		Collections.sort(contents, new Comparator<Module>() {
+			@Override
+			public int compare(Module mod1, Module mod2) {
+				return mod1.getName().compareTo(mod2.getName());
+			}
+		});
+		
+	}
+}

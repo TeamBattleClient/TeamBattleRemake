@@ -6,85 +6,89 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-public abstract class BlockRotatedPillar extends Block
-{
-    protected IIcon field_150164_N;
-    private static final String __OBFID = "CL_00000302";
+public abstract class BlockRotatedPillar extends Block {
+	protected IIcon field_150164_N;
 
-    protected BlockRotatedPillar(Material p_i45425_1_)
-    {
-        super(p_i45425_1_);
-    }
+	protected BlockRotatedPillar(Material p_i45425_1_) {
+		super(p_i45425_1_);
+	}
 
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return 31;
-    }
+	/**
+	 * Returns an item stack containing a single instance of the current block
+	 * type. 'i' is the block's subtype/damage and is ignored for blocks which
+	 * do not support subtypes. Blocks which cannot be harvested should return
+	 * null.
+	 */
+	@Override
+	protected ItemStack createStackedBlock(int p_149644_1_) {
+		return new ItemStack(Item.getItemFromBlock(this), 1,
+				func_150162_k(p_149644_1_));
+	}
 
-    public int onBlockPlaced(World p_149660_1_, int p_149660_2_, int p_149660_3_, int p_149660_4_, int p_149660_5_, float p_149660_6_, float p_149660_7_, float p_149660_8_, int p_149660_9_)
-    {
-        int var10 = p_149660_9_ & 3;
-        byte var11 = 0;
+	/**
+	 * Determines the damage on the item the block drops. Used in cloth and
+	 * wood.
+	 */
+	@Override
+	public int damageDropped(int p_149692_1_) {
+		return p_149692_1_ & 3;
+	}
 
-        switch (p_149660_5_)
-        {
-            case 0:
-            case 1:
-                var11 = 0;
-                break;
+	protected IIcon func_150161_d(int p_150161_1_) {
+		return field_150164_N;
+	}
 
-            case 2:
-            case 3:
-                var11 = 8;
-                break;
+	public int func_150162_k(int p_150162_1_) {
+		return p_150162_1_ & 3;
+	}
 
-            case 4:
-            case 5:
-                var11 = 4;
-        }
+	protected abstract IIcon func_150163_b(int p_150163_1_);
 
-        return var10 | var11;
-    }
+	/**
+	 * Gets the block's texture. Args: side, meta
+	 */
+	@Override
+	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
+		final int var3 = p_149691_2_ & 12;
+		final int var4 = p_149691_2_ & 3;
+		return var3 == 0 && (p_149691_1_ == 1 || p_149691_1_ == 0) ? func_150161_d(var4)
+				: var3 == 4 && (p_149691_1_ == 5 || p_149691_1_ == 4) ? func_150161_d(var4)
+						: var3 == 8 && (p_149691_1_ == 2 || p_149691_1_ == 3) ? func_150161_d(var4)
+								: func_150163_b(var4);
+	}
 
-    /**
-     * Gets the block's texture. Args: side, meta
-     */
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_)
-    {
-        int var3 = p_149691_2_ & 12;
-        int var4 = p_149691_2_ & 3;
-        return var3 == 0 && (p_149691_1_ == 1 || p_149691_1_ == 0) ? this.func_150161_d(var4) : (var3 == 4 && (p_149691_1_ == 5 || p_149691_1_ == 4) ? this.func_150161_d(var4) : (var3 == 8 && (p_149691_1_ == 2 || p_149691_1_ == 3) ? this.func_150161_d(var4) : this.func_150163_b(var4)));
-    }
+	/**
+	 * The type of render function that is called for this block
+	 */
+	@Override
+	public int getRenderType() {
+		return 31;
+	}
 
-    protected abstract IIcon func_150163_b(int p_150163_1_);
+	@Override
+	public int onBlockPlaced(World p_149660_1_, int p_149660_2_,
+			int p_149660_3_, int p_149660_4_, int p_149660_5_,
+			float p_149660_6_, float p_149660_7_, float p_149660_8_,
+			int p_149660_9_) {
+		final int var10 = p_149660_9_ & 3;
+		byte var11 = 0;
 
-    protected IIcon func_150161_d(int p_150161_1_)
-    {
-        return this.field_150164_N;
-    }
+		switch (p_149660_5_) {
+		case 0:
+		case 1:
+			var11 = 0;
+			break;
 
-    /**
-     * Determines the damage on the item the block drops. Used in cloth and wood.
-     */
-    public int damageDropped(int p_149692_1_)
-    {
-        return p_149692_1_ & 3;
-    }
+		case 2:
+		case 3:
+			var11 = 8;
+			break;
 
-    public int func_150162_k(int p_150162_1_)
-    {
-        return p_150162_1_ & 3;
-    }
+		case 4:
+		case 5:
+			var11 = 4;
+		}
 
-    /**
-     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
-     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
-     */
-    protected ItemStack createStackedBlock(int p_149644_1_)
-    {
-        return new ItemStack(Item.getItemFromBlock(this), 1, this.func_150162_k(p_149644_1_));
-    }
+		return var10 | var11;
+	}
 }

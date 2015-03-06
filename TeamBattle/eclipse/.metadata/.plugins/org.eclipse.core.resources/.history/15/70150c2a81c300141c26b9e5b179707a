@@ -1,0 +1,31 @@
+package me.client.modules.movement;
+
+import org.lwjgl.input.Keyboard;
+
+import com.darkmagician6.eventapi.EventManager;
+
+import net.minecraft.init.Blocks;
+import me.client.events.EventPreMotion;
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+
+public class FastIce extends Module {
+
+	public FastIce() {
+		super("Fast Ice", "Fast Ice", ModuleCategory.MOVEMENT);
+		this.setKeybind(Keyboard.KEY_O);
+	}
+
+	public void onEnable() {
+		super.onEnable();
+		Blocks.ice.slipperiness =0.400F;
+		Blocks.packed_ice.slipperiness =0.400F;
+		
+	}
+	public void onDisable() {
+		super.onDisable();
+		Blocks.ice.slipperiness =0.98F;
+		Blocks.packed_ice.slipperiness =0.98F;
+		
+	}
+}

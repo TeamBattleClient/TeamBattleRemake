@@ -8,160 +8,165 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 
-public class Achievement extends StatBase
-{
-    /**
-     * Is the column (related to center of achievement gui, in 24 pixels unit) that the achievement will be displayed.
-     */
-    public final int displayColumn;
+public class Achievement extends StatBase {
+	/**
+	 * Holds the description of the achievement, ready to be formatted and/or
+	 * displayed.
+	 */
+	private final String achievementDescription;
 
-    /**
-     * Is the row (related to center of achievement gui, in 24 pixels unit) that the achievement will be displayed.
-     */
-    public final int displayRow;
+	/**
+	 * Is the column (related to center of achievement gui, in 24 pixels unit)
+	 * that the achievement will be displayed.
+	 */
+	public final int displayColumn;
 
-    /**
-     * Holds the parent achievement, that must be taken before this achievement is avaiable.
-     */
-    public final Achievement parentAchievement;
+	/**
+	 * Is the row (related to center of achievement gui, in 24 pixels unit) that
+	 * the achievement will be displayed.
+	 */
+	public final int displayRow;
 
-    /**
-     * Holds the description of the achievement, ready to be formatted and/or displayed.
-     */
-    private final String achievementDescription;
+	/**
+	 * Special achievements have a 'spiked' (on normal texture pack) frame,
+	 * special achievements are the hardest ones to achieve.
+	 */
+	private boolean isSpecial;
 
-    /**
-     * Holds a string formatter for the achievement, some of then needs extra dynamic info - like the key used to open
-     * the inventory.
-     */
-    private IStatStringFormat statStringFormatter;
+	/**
+	 * Holds the parent achievement, that must be taken before this achievement
+	 * is avaiable.
+	 */
+	public final Achievement parentAchievement;
 
-    /**
-     * Holds the ItemStack that will be used to draw the achievement into the GUI.
-     */
-    public final ItemStack theItemStack;
+	/**
+	 * Holds a string formatter for the achievement, some of then needs extra
+	 * dynamic info - like the key used to open the inventory.
+	 */
+	private IStatStringFormat statStringFormatter;
 
-    /**
-     * Special achievements have a 'spiked' (on normal texture pack) frame, special achievements are the hardest ones to
-     * achieve.
-     */
-    private boolean isSpecial;
-    private static final String __OBFID = "CL_00001466";
+	/**
+	 * Holds the ItemStack that will be used to draw the achievement into the
+	 * GUI.
+	 */
+	public final ItemStack theItemStack;
 
-    public Achievement(String p_i45300_1_, String p_i45300_2_, int p_i45300_3_, int p_i45300_4_, Item p_i45300_5_, Achievement p_i45300_6_)
-    {
-        this(p_i45300_1_, p_i45300_2_, p_i45300_3_, p_i45300_4_, new ItemStack(p_i45300_5_), p_i45300_6_);
-    }
+	public Achievement(String p_i45301_1_, String p_i45301_2_, int p_i45301_3_,
+			int p_i45301_4_, Block p_i45301_5_, Achievement p_i45301_6_) {
+		this(p_i45301_1_, p_i45301_2_, p_i45301_3_, p_i45301_4_, new ItemStack(
+				p_i45301_5_), p_i45301_6_);
+	}
 
-    public Achievement(String p_i45301_1_, String p_i45301_2_, int p_i45301_3_, int p_i45301_4_, Block p_i45301_5_, Achievement p_i45301_6_)
-    {
-        this(p_i45301_1_, p_i45301_2_, p_i45301_3_, p_i45301_4_, new ItemStack(p_i45301_5_), p_i45301_6_);
-    }
+	public Achievement(String p_i45300_1_, String p_i45300_2_, int p_i45300_3_,
+			int p_i45300_4_, Item p_i45300_5_, Achievement p_i45300_6_) {
+		this(p_i45300_1_, p_i45300_2_, p_i45300_3_, p_i45300_4_, new ItemStack(
+				p_i45300_5_), p_i45300_6_);
+	}
 
-    public Achievement(String p_i45302_1_, String p_i45302_2_, int p_i45302_3_, int p_i45302_4_, ItemStack p_i45302_5_, Achievement p_i45302_6_)
-    {
-        super(p_i45302_1_, new ChatComponentTranslation("achievement." + p_i45302_2_, new Object[0]));
-        this.theItemStack = p_i45302_5_;
-        this.achievementDescription = "achievement." + p_i45302_2_ + ".desc";
-        this.displayColumn = p_i45302_3_;
-        this.displayRow = p_i45302_4_;
+	public Achievement(String p_i45302_1_, String p_i45302_2_, int p_i45302_3_,
+			int p_i45302_4_, ItemStack p_i45302_5_, Achievement p_i45302_6_) {
+		super(p_i45302_1_, new ChatComponentTranslation("achievement."
+				+ p_i45302_2_, new Object[0]));
+		theItemStack = p_i45302_5_;
+		achievementDescription = "achievement." + p_i45302_2_ + ".desc";
+		displayColumn = p_i45302_3_;
+		displayRow = p_i45302_4_;
 
-        if (p_i45302_3_ < AchievementList.minDisplayColumn)
-        {
-            AchievementList.minDisplayColumn = p_i45302_3_;
-        }
+		if (p_i45302_3_ < AchievementList.minDisplayColumn) {
+			AchievementList.minDisplayColumn = p_i45302_3_;
+		}
 
-        if (p_i45302_4_ < AchievementList.minDisplayRow)
-        {
-            AchievementList.minDisplayRow = p_i45302_4_;
-        }
+		if (p_i45302_4_ < AchievementList.minDisplayRow) {
+			AchievementList.minDisplayRow = p_i45302_4_;
+		}
 
-        if (p_i45302_3_ > AchievementList.maxDisplayColumn)
-        {
-            AchievementList.maxDisplayColumn = p_i45302_3_;
-        }
+		if (p_i45302_3_ > AchievementList.maxDisplayColumn) {
+			AchievementList.maxDisplayColumn = p_i45302_3_;
+		}
 
-        if (p_i45302_4_ > AchievementList.maxDisplayRow)
-        {
-            AchievementList.maxDisplayRow = p_i45302_4_;
-        }
+		if (p_i45302_4_ > AchievementList.maxDisplayRow) {
+			AchievementList.maxDisplayRow = p_i45302_4_;
+		}
 
-        this.parentAchievement = p_i45302_6_;
-    }
+		parentAchievement = p_i45302_6_;
+	}
 
-    /**
-     * Initializes the current stat as independent (i.e., lacking prerequisites for being updated) and returns the
-     * current instance.
-     */
-    public Achievement initIndependentStat()
-    {
-        this.isIndependent = true;
-        return this;
-    }
+	@Override
+	public IChatComponent func_150951_e() {
+		final IChatComponent var1 = super.func_150951_e();
+		var1.getChatStyle().setColor(
+				getSpecial() ? EnumChatFormatting.DARK_PURPLE
+						: EnumChatFormatting.GREEN);
+		return var1;
+	}
 
-    /**
-     * Special achievements have a 'spiked' (on normal texture pack) frame, special achievements are the hardest ones to
-     * achieve.
-     */
-    public Achievement setSpecial()
-    {
-        this.isSpecial = true;
-        return this;
-    }
+	@Override
+	public Achievement func_150953_b(Class p_150953_1_) {
+		return (Achievement) super.func_150953_b(p_150953_1_);
+	}
 
-    /**
-     * Register the stat into StatList.
-     */
-    public Achievement registerStat()
-    {
-        super.registerStat();
-        AchievementList.achievementList.add(this);
-        return this;
-    }
+	/**
+	 * Returns the fully description of the achievement - ready to be displayed
+	 * on screen.
+	 */
+	public String getDescription() {
+		return statStringFormatter != null ? statStringFormatter
+				.formatString(StatCollector
+						.translateToLocal(achievementDescription))
+				: StatCollector.translateToLocal(achievementDescription);
+	}
 
-    /**
-     * Returns whether or not the StatBase-derived class is a statistic (running counter) or an achievement (one-shot).
-     */
-    public boolean isAchievement()
-    {
-        return true;
-    }
+	/**
+	 * Special achievements have a 'spiked' (on normal texture pack) frame,
+	 * special achievements are the hardest ones to achieve.
+	 */
+	public boolean getSpecial() {
+		return isSpecial;
+	}
 
-    public IChatComponent func_150951_e()
-    {
-        IChatComponent var1 = super.func_150951_e();
-        var1.getChatStyle().setColor(this.getSpecial() ? EnumChatFormatting.DARK_PURPLE : EnumChatFormatting.GREEN);
-        return var1;
-    }
+	/**
+	 * Initializes the current stat as independent (i.e., lacking prerequisites
+	 * for being updated) and returns the current instance.
+	 */
+	@Override
+	public Achievement initIndependentStat() {
+		isIndependent = true;
+		return this;
+	}
 
-    public Achievement func_150953_b(Class p_150953_1_)
-    {
-        return (Achievement)super.func_150953_b(p_150953_1_);
-    }
+	/**
+	 * Returns whether or not the StatBase-derived class is a statistic (running
+	 * counter) or an achievement (one-shot).
+	 */
+	@Override
+	public boolean isAchievement() {
+		return true;
+	}
 
-    /**
-     * Returns the fully description of the achievement - ready to be displayed on screen.
-     */
-    public String getDescription()
-    {
-        return this.statStringFormatter != null ? this.statStringFormatter.formatString(StatCollector.translateToLocal(this.achievementDescription)) : StatCollector.translateToLocal(this.achievementDescription);
-    }
+	/**
+	 * Register the stat into StatList.
+	 */
+	@Override
+	public Achievement registerStat() {
+		super.registerStat();
+		AchievementList.achievementList.add(this);
+		return this;
+	}
 
-    /**
-     * Defines a string formatter for the achievement.
-     */
-    public Achievement setStatStringFormatter(IStatStringFormat p_75988_1_)
-    {
-        this.statStringFormatter = p_75988_1_;
-        return this;
-    }
+	/**
+	 * Special achievements have a 'spiked' (on normal texture pack) frame,
+	 * special achievements are the hardest ones to achieve.
+	 */
+	public Achievement setSpecial() {
+		isSpecial = true;
+		return this;
+	}
 
-    /**
-     * Special achievements have a 'spiked' (on normal texture pack) frame, special achievements are the hardest ones to
-     * achieve.
-     */
-    public boolean getSpecial()
-    {
-        return this.isSpecial;
-    }
+	/**
+	 * Defines a string formatter for the achievement.
+	 */
+	public Achievement setStatStringFormatter(IStatStringFormat p_75988_1_) {
+		statStringFormatter = p_75988_1_;
+		return this;
+	}
 }

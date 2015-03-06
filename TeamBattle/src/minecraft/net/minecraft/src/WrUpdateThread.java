@@ -2,435 +2,336 @@ package net.minecraft.src;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+
 import org.lwjgl.opengl.Pbuffer;
 
-public class WrUpdateThread extends Thread
-{
-    private Pbuffer pbuffer = null;
-    private Object lock = new Object();
-    private List updateList = new LinkedList();
-    private List updatedList = new LinkedList();
-    private int updateCount = 0;
-    private Tessellator mainTessellator;
-    private Tessellator threadTessellator;
-    private boolean working;
-    private WorldRendererThreaded currentRenderer;
-    private boolean canWork;
-    private boolean canWorkToEndOfUpdate;
-    private boolean terminated;
-    private static final int MAX_UPDATE_CAPACITY = 10;
-
-    public WrUpdateThread(Pbuffer pbuffer)
-    {
-        super("WrUpdateThread");
-        this.mainTessellator = Tessellator.instance;
-        this.threadTessellator = new Tessellator(2097152);
-        this.working = false;
-        this.currentRenderer = null;
-        this.canWork = false;
-        this.canWorkToEndOfUpdate = false;
-        this.terminated = false;
-        this.pbuffer = pbuffer;
-    }
-
-    public void run()
-    {
-        try
-        {
-            this.pbuffer.makeCurrent();
-        }
-        catch (Exception var8)
-        {
-            var8.printStackTrace();
-        }
-
-        WrUpdateThread.ThreadUpdateListener updateListener = new WrUpdateThread.ThreadUpdateListener((WrUpdateThread.NamelessClass294245904)null);
-
-        while (!Thread.interrupted() && !this.terminated)
-        {
-            try
-            {
-                WorldRendererThreaded e = this.getRendererToUpdate();
-
-                if (e == null)
-                {
-                    return;
-                }
-
-                this.checkCanWork((IWrUpdateControl)null);
-
-                try
-                {
-                    this.currentRenderer = e;
-                    Tessellator.instance = this.threadTessellator;
-                    e.updateRenderer(updateListener);
-                }
-                finally
-                {
-                    Tessellator.instance = this.mainTessellator;
-                }
-
-                this.rendererUpdated(e);
-            }
-            catch (Exception var9)
-            {
-                var9.printStackTrace();
-
-                if (this.currentRenderer != null)
-                {
-                    this.currentRenderer.isUpdating = false;
-                    this.currentRenderer.needsUpdate = true;
-                }
-
-                this.currentRenderer = null;
-                this.working = false;
-            }
-        }
-    }
-
-    public void addRendererToUpdate(WorldRenderer wr, boolean first)
-    {
-        Object var3 = this.lock;
-
-        synchronized (this.lock)
-        {
-            if (wr.isUpdating)
-            {
-                throw new IllegalArgumentException("Renderer already updating");
-            }
-            else
-            {
-                if (first)
-                {
-                    this.updateList.add(0, wr);
-                }
-                else
-                {
-                    this.updateList.add(wr);
-                }
-
-                wr.isUpdating = true;
-                this.lock.notifyAll();
-            }
-        }
-    }
-
-    private WorldRendererThreaded getRendererToUpdate()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            while (this.updateList.size() <= 0)
-            {
-                try
-                {
-                    this.lock.wait(2000L);
-
-                    if (this.terminated)
-                    {
-                        Object var10000 = null;
-                        return (WorldRendererThreaded)var10000;
-                    }
-                }
-                catch (InterruptedException var4)
-                {
-                    ;
-                }
-            }
-
-            WorldRendererThreaded wrt = (WorldRendererThreaded)this.updateList.remove(0);
-            this.lock.notifyAll();
-            return wrt;
-        }
-    }
-
-    public boolean hasWorkToDo()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            return this.updateList.size() > 0 ? true : (this.currentRenderer != null ? true : this.working);
-        }
-    }
-
-    public int getUpdateCapacity()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            return this.updateList.size() > 10 ? 0 : 10 - this.updateList.size();
-        }
-    }
-
-    private void rendererUpdated(WorldRenderer wr)
-    {
-        Object var2 = this.lock;
-
-        synchronized (this.lock)
-        {
-            this.updatedList.add(wr);
-            ++this.updateCount;
-            this.currentRenderer = null;
-            this.working = false;
-            this.lock.notifyAll();
-        }
-    }
-
-    private void finishUpdatedRenderers()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            for (int i = 0; i < this.updatedList.size(); ++i)
-            {
-                WorldRendererThreaded wr = (WorldRendererThreaded)this.updatedList.get(i);
-                wr.finishUpdate();
-                wr.isUpdating = false;
-            }
-
-            this.updatedList.clear();
-        }
-    }
-
-    public void pause()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            this.canWork = false;
-            this.canWorkToEndOfUpdate = false;
-            this.lock.notifyAll();
-
-            while (this.working)
-            {
-                try
-                {
-                    this.lock.wait();
-                }
-                catch (InterruptedException var4)
-                {
-                    ;
-                }
-            }
-
-            this.finishUpdatedRenderers();
-        }
-    }
-
-    public void unpause()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            if (this.working)
-            {
-                Config.warn("UpdateThread still working in unpause()!!!");
-            }
-
-            this.canWork = true;
-            this.canWorkToEndOfUpdate = false;
-            this.lock.notifyAll();
-        }
-    }
-
-    public void unpauseToEndOfUpdate()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            if (this.working)
-            {
-                Config.warn("UpdateThread still working in unpause()!!!");
-            }
-
-            if (this.currentRenderer != null)
-            {
-                while (this.currentRenderer != null)
-                {
-                    this.canWork = false;
-                    this.canWorkToEndOfUpdate = true;
-                    this.lock.notifyAll();
-
-                    try
-                    {
-                        this.lock.wait();
-                    }
-                    catch (InterruptedException var4)
-                    {
-                        ;
-                    }
-                }
-
-                this.pause();
-            }
-        }
-    }
-
-    private void checkCanWork(IWrUpdateControl uc)
-    {
-        Thread.yield();
-        Object var2 = this.lock;
-
-        synchronized (this.lock)
-        {
-            while (!this.canWork && (!this.canWorkToEndOfUpdate || this.currentRenderer == null))
-            {
-                if (uc != null)
-                {
-                    uc.pause();
-                }
-
-                this.working = false;
-                this.lock.notifyAll();
-
-                try
-                {
-                    this.lock.wait();
-                }
-                catch (InterruptedException var5)
-                {
-                    ;
-                }
-            }
-
-            this.working = true;
-
-            if (uc != null)
-            {
-                uc.resume();
-            }
-
-            this.lock.notifyAll();
-        }
-    }
-
-    public void clearAllUpdates()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            this.unpauseToEndOfUpdate();
-
-            for (int i = 0; i < this.updateList.size(); ++i)
-            {
-                WorldRenderer wr = (WorldRenderer)this.updateList.get(i);
-                wr.needsUpdate = true;
-                wr.isUpdating = false;
-            }
-
-            this.updateList.clear();
-            this.lock.notifyAll();
-        }
-    }
-
-    public int getPendingUpdatesCount()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            int count = this.updateList.size();
-
-            if (this.currentRenderer != null)
-            {
-                ++count;
-            }
-
-            return count;
-        }
-    }
-
-    public int resetUpdateCount()
-    {
-        Object var1 = this.lock;
-
-        synchronized (this.lock)
-        {
-            int count = this.updateCount;
-            this.updateCount = 0;
-            return count;
-        }
-    }
-
-    public void terminate()
-    {
-        this.terminated = true;
-    }
-
-    static class NamelessClass294245904
-    {
-    }
-
-    private class ThreadUpdateControl implements IWrUpdateControl
-    {
-        private IWrUpdateControl updateControl;
-        private boolean paused;
-
-        private ThreadUpdateControl()
-        {
-            this.updateControl = null;
-            this.paused = false;
-        }
-
-        public void pause()
-        {
-            if (!this.paused)
-            {
-                this.paused = true;
-                this.updateControl.pause();
-                Tessellator.instance = WrUpdateThread.this.mainTessellator;
-            }
-        }
-
-        public void resume()
-        {
-            if (this.paused)
-            {
-                this.paused = false;
-                Tessellator.instance = WrUpdateThread.this.threadTessellator;
-                this.updateControl.resume();
-            }
-        }
-
-        public void setUpdateControl(IWrUpdateControl updateControl)
-        {
-            this.updateControl = updateControl;
-        }
-
-        ThreadUpdateControl(WrUpdateThread.NamelessClass294245904 x1)
-        {
-            this();
-        }
-    }
-
-    private class ThreadUpdateListener implements IWrUpdateListener
-    {
-        private WrUpdateThread.ThreadUpdateControl tuc;
-
-        private ThreadUpdateListener()
-        {
-            this.tuc = WrUpdateThread.this.new ThreadUpdateControl((WrUpdateThread.NamelessClass294245904)null);
-        }
-
-        public void updating(IWrUpdateControl uc)
-        {
-            this.tuc.setUpdateControl(uc);
-            WrUpdateThread.this.checkCanWork(this.tuc);
-        }
-
-        ThreadUpdateListener(WrUpdateThread.NamelessClass294245904 x1)
-        {
-            this();
-        }
-    }
+public class WrUpdateThread extends Thread {
+	static class NamelessClass7794369 {
+	}
+
+	private class ThreadUpdateControl implements IWrUpdateControl {
+		private boolean paused;
+		private IWrUpdateControl updateControl;
+
+		private ThreadUpdateControl() {
+			updateControl = null;
+			paused = false;
+		}
+
+		ThreadUpdateControl(WrUpdateThread.NamelessClass7794369 x1) {
+			this();
+		}
+
+		@Override
+		public void pause() {
+			if (!paused) {
+				paused = true;
+				updateControl.pause();
+				Tessellator.instance = mainTessellator;
+			}
+		}
+
+		@Override
+		public void resume() {
+			if (paused) {
+				paused = false;
+				Tessellator.instance = threadTessellator;
+				updateControl.resume();
+			}
+		}
+
+		public void setUpdateControl(IWrUpdateControl updateControl) {
+			this.updateControl = updateControl;
+		}
+	}
+
+	private class ThreadUpdateListener implements IWrUpdateListener {
+		private final WrUpdateThread.ThreadUpdateControl tuc;
+
+		private ThreadUpdateListener() {
+			tuc = WrUpdateThread.this.new ThreadUpdateControl(
+					(WrUpdateThread.NamelessClass7794369) null);
+		}
+
+		ThreadUpdateListener(WrUpdateThread.NamelessClass7794369 x1) {
+			this();
+		}
+
+		@Override
+		public void updating(IWrUpdateControl uc) {
+			tuc.setUpdateControl(uc);
+			checkCanWork(tuc);
+		}
+	}
+
+	private boolean canWork;
+	private boolean canWorkToEndOfUpdate;
+	private WorldRendererThreaded currentRenderer;
+	private final Object lock = new Object();
+	private final Tessellator mainTessellator;
+	private Pbuffer pbuffer = null;
+	private boolean terminated;
+	private final Tessellator threadTessellator;
+	private int updateCount = 0;
+
+	private final List updatedList = new LinkedList();
+
+	private final List updateList = new LinkedList();
+
+	private boolean working;
+
+	public WrUpdateThread(Pbuffer pbuffer) {
+		super("WrUpdateThread");
+		mainTessellator = Tessellator.instance;
+		threadTessellator = new Tessellator(2097152);
+		working = false;
+		currentRenderer = null;
+		canWork = false;
+		canWorkToEndOfUpdate = false;
+		terminated = false;
+		this.pbuffer = pbuffer;
+	}
+
+	public void addRendererToUpdate(WorldRenderer wr, boolean first) {
+		synchronized (lock) {
+			if (wr.isUpdating)
+				throw new IllegalArgumentException("Renderer already updating");
+			else {
+				if (first) {
+					updateList.add(0, wr);
+				} else {
+					updateList.add(wr);
+				}
+
+				wr.isUpdating = true;
+				lock.notifyAll();
+			}
+		}
+	}
+
+	private void checkCanWork(IWrUpdateControl uc) {
+		Thread.yield();
+		synchronized (lock) {
+			while (!canWork
+					&& (!canWorkToEndOfUpdate || currentRenderer == null)) {
+				if (uc != null) {
+					uc.pause();
+				}
+
+				working = false;
+				lock.notifyAll();
+
+				try {
+					lock.wait();
+				} catch (final InterruptedException var5) {
+					;
+				}
+			}
+
+			working = true;
+
+			if (uc != null) {
+				uc.resume();
+			}
+
+			lock.notifyAll();
+		}
+	}
+
+	public void clearAllUpdates() {
+		synchronized (lock) {
+			unpauseToEndOfUpdate();
+
+			for (int i = 0; i < updateList.size(); ++i) {
+				final WorldRenderer wr = (WorldRenderer) updateList.get(i);
+				wr.needsUpdate = true;
+				wr.isUpdating = false;
+			}
+
+			updateList.clear();
+			lock.notifyAll();
+		}
+	}
+
+	private void finishUpdatedRenderers() {
+		synchronized (lock) {
+			for (int i = 0; i < updatedList.size(); ++i) {
+				final WorldRendererThreaded wr = (WorldRendererThreaded) updatedList
+						.get(i);
+				wr.finishUpdate();
+				wr.isUpdating = false;
+			}
+
+			updatedList.clear();
+		}
+	}
+
+	public int getPendingUpdatesCount() {
+		synchronized (lock) {
+			int count = updateList.size();
+
+			if (currentRenderer != null) {
+				++count;
+			}
+
+			return count;
+		}
+	}
+
+	private WorldRendererThreaded getRendererToUpdate() {
+		synchronized (lock) {
+			while (updateList.size() <= 0) {
+				try {
+					lock.wait(2000L);
+
+					if (terminated) {
+						final Object var10000 = null;
+						return (WorldRendererThreaded) var10000;
+					}
+				} catch (final InterruptedException var4) {
+					;
+				}
+			}
+
+			final WorldRendererThreaded wrt = (WorldRendererThreaded) updateList
+					.remove(0);
+			lock.notifyAll();
+			return wrt;
+		}
+	}
+
+	public int getUpdateCapacity() {
+		synchronized (lock) {
+			return updateList.size() > 10 ? 0 : 10 - updateList.size();
+		}
+	}
+
+	public boolean hasWorkToDo() {
+		synchronized (lock) {
+			return updateList.size() > 0 ? true
+					: currentRenderer != null ? true : working;
+		}
+	}
+
+	public void pause() {
+		synchronized (lock) {
+			canWork = false;
+			canWorkToEndOfUpdate = false;
+			lock.notifyAll();
+
+			while (working) {
+				try {
+					lock.wait();
+				} catch (final InterruptedException var4) {
+					;
+				}
+			}
+
+			finishUpdatedRenderers();
+		}
+	}
+
+	private void rendererUpdated(WorldRenderer wr) {
+		synchronized (lock) {
+			updatedList.add(wr);
+			++updateCount;
+			currentRenderer = null;
+			working = false;
+			lock.notifyAll();
+		}
+	}
+
+	public int resetUpdateCount() {
+		synchronized (lock) {
+			final int count = updateCount;
+			updateCount = 0;
+			return count;
+		}
+	}
+
+	@Override
+	public void run() {
+		try {
+			pbuffer.makeCurrent();
+		} catch (final Exception var8) {
+			var8.printStackTrace();
+		}
+
+		final WrUpdateThread.ThreadUpdateListener updateListener = new WrUpdateThread.ThreadUpdateListener(
+				(WrUpdateThread.NamelessClass7794369) null);
+
+		while (!Thread.interrupted() && !terminated) {
+			try {
+				final WorldRendererThreaded e = getRendererToUpdate();
+
+				if (e == null)
+					return;
+
+				checkCanWork((IWrUpdateControl) null);
+
+				try {
+					currentRenderer = e;
+					Tessellator.instance = threadTessellator;
+					e.updateRenderer(updateListener);
+				} finally {
+					Tessellator.instance = mainTessellator;
+				}
+
+				rendererUpdated(e);
+			} catch (final Exception var9) {
+				var9.printStackTrace();
+
+				if (currentRenderer != null) {
+					currentRenderer.isUpdating = false;
+					currentRenderer.needsUpdate = true;
+				}
+
+				currentRenderer = null;
+				working = false;
+			}
+		}
+	}
+
+	public void terminate() {
+		terminated = true;
+	}
+
+	public void unpause() {
+		synchronized (lock) {
+			if (working) {
+				Config.warn("UpdateThread still working in unpause()!!!");
+			}
+
+			canWork = true;
+			canWorkToEndOfUpdate = false;
+			lock.notifyAll();
+		}
+	}
+
+	public void unpauseToEndOfUpdate() {
+		synchronized (lock) {
+			if (working) {
+				Config.warn("UpdateThread still working in unpause()!!!");
+			}
+
+			if (currentRenderer != null) {
+				while (currentRenderer != null) {
+					canWork = false;
+					canWorkToEndOfUpdate = true;
+					lock.notifyAll();
+
+					try {
+						lock.wait();
+					} catch (final InterruptedException var4) {
+						;
+					}
+				}
+
+				pause();
+			}
+		}
+	}
 }

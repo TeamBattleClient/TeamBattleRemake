@@ -1,121 +1,119 @@
 package net.minecraft.realms;
 
 import net.minecraft.util.MathHelper;
+
 import org.lwjgl.opengl.GL11;
 
-public class RealmsSliderButton extends RealmsButton
-{
-    public float value;
-    public boolean sliding;
-    private final float minValue;
-    private final float maxValue;
-    private int steps;
-    private static final String __OBFID = "CL_00001834";
+public class RealmsSliderButton extends RealmsButton {
+	private final float maxValue;
+	private final float minValue;
+	public boolean sliding;
+	private int steps;
+	public float value;
 
-    public RealmsSliderButton(int p_i1056_1_, int p_i1056_2_, int p_i1056_3_, int p_i1056_4_, int p_i1056_5_, int p_i1056_6_)
-    {
-        this(p_i1056_1_, p_i1056_2_, p_i1056_3_, p_i1056_4_, p_i1056_6_, 0, 1.0F, (float)p_i1056_5_);
-    }
+	public RealmsSliderButton(int p_i1056_1_, int p_i1056_2_, int p_i1056_3_,
+			int p_i1056_4_, int p_i1056_5_, int p_i1056_6_) {
+		this(p_i1056_1_, p_i1056_2_, p_i1056_3_, p_i1056_4_, p_i1056_6_, 0,
+				1.0F, p_i1056_5_);
+	}
 
-    public RealmsSliderButton(int p_i1057_1_, int p_i1057_2_, int p_i1057_3_, int p_i1057_4_, int p_i1057_5_, int p_i1057_6_, float p_i1057_7_, float p_i1057_8_)
-    {
-        super(p_i1057_1_, p_i1057_2_, p_i1057_3_, p_i1057_4_, 20, "");
-        this.value = 1.0F;
-        this.minValue = p_i1057_7_;
-        this.maxValue = p_i1057_8_;
-        this.value = this.toPct((float)p_i1057_6_);
-        this.getProxy().displayString = this.getMessage();
-    }
+	public RealmsSliderButton(int p_i1057_1_, int p_i1057_2_, int p_i1057_3_,
+			int p_i1057_4_, int p_i1057_5_, int p_i1057_6_, float p_i1057_7_,
+			float p_i1057_8_) {
+		super(p_i1057_1_, p_i1057_2_, p_i1057_3_, p_i1057_4_, 20, "");
+		value = 1.0F;
+		minValue = p_i1057_7_;
+		maxValue = p_i1057_8_;
+		value = toPct(p_i1057_6_);
+		getProxy().displayString = getMessage();
+	}
 
-    public String getMessage()
-    {
-        return "";
-    }
+	public float clamp(float p_clamp_1_) {
+		p_clamp_1_ = clampSteps(p_clamp_1_);
+		return MathHelper.clamp_float(p_clamp_1_, minValue, maxValue);
+	}
 
-    public float toPct(float p_toPct_1_)
-    {
-        return MathHelper.clamp_float((this.clamp(p_toPct_1_) - this.minValue) / (this.maxValue - this.minValue), 0.0F, 1.0F);
-    }
+	protected float clampSteps(float p_clampSteps_1_) {
+		if (steps > 0) {
+			p_clampSteps_1_ = steps * Math.round(p_clampSteps_1_ / steps);
+		}
 
-    public float toValue(float p_toValue_1_)
-    {
-        return this.clamp(this.minValue + (this.maxValue - this.minValue) * MathHelper.clamp_float(p_toValue_1_, 0.0F, 1.0F));
-    }
+		return p_clampSteps_1_;
+	}
 
-    public float clamp(float p_clamp_1_)
-    {
-        p_clamp_1_ = this.clampSteps(p_clamp_1_);
-        return MathHelper.clamp_float(p_clamp_1_, this.minValue, this.maxValue);
-    }
+	public void clicked(float p_clicked_1_) {
+	}
 
-    protected float clampSteps(float p_clampSteps_1_)
-    {
-        if (this.steps > 0)
-        {
-            p_clampSteps_1_ = (float)(this.steps * Math.round(p_clampSteps_1_ / (float)this.steps));
-        }
+	@Override
+	public void clicked(int p_clicked_1_, int p_clicked_2_) {
+		value = (float) (p_clicked_1_ - (getProxy().field_146128_h + 4))
+				/ (float) (getProxy().func_146117_b() - 8);
 
-        return p_clampSteps_1_;
-    }
+		if (value < 0.0F) {
+			value = 0.0F;
+		}
 
-    public int getYImage(boolean p_getYImage_1_)
-    {
-        return 0;
-    }
+		if (value > 1.0F) {
+			value = 1.0F;
+		}
 
-    public void renderBg(int p_renderBg_1_, int p_renderBg_2_)
-    {
-        if (this.getProxy().field_146125_m)
-        {
-            if (this.sliding)
-            {
-                this.value = (float)(p_renderBg_1_ - (this.getProxy().field_146128_h + 4)) / (float)(this.getProxy().func_146117_b() - 8);
+		this.clicked(toValue(value));
+		getProxy().displayString = getMessage();
+		sliding = true;
+	}
 
-                if (this.value < 0.0F)
-                {
-                    this.value = 0.0F;
-                }
+	public String getMessage() {
+		return "";
+	}
 
-                if (this.value > 1.0F)
-                {
-                    this.value = 1.0F;
-                }
+	@Override
+	public int getYImage(boolean p_getYImage_1_) {
+		return 0;
+	}
 
-                float var3 = this.toValue(this.value);
-                this.clicked(var3);
-                this.value = this.toPct(var3);
-                this.getProxy().displayString = this.getMessage();
-            }
+	@Override
+	public void released(int p_released_1_, int p_released_2_) {
+		sliding = false;
+	}
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.blit(this.getProxy().field_146128_h + (int)(this.value * (float)(this.getProxy().func_146117_b() - 8)), this.getProxy().field_146129_i, 0, 66, 4, 20);
-            this.blit(this.getProxy().field_146128_h + (int)(this.value * (float)(this.getProxy().func_146117_b() - 8)) + 4, this.getProxy().field_146129_i, 196, 66, 4, 20);
-        }
-    }
+	@Override
+	public void renderBg(int p_renderBg_1_, int p_renderBg_2_) {
+		if (getProxy().field_146125_m) {
+			if (sliding) {
+				value = (float) (p_renderBg_1_ - (getProxy().field_146128_h + 4))
+						/ (float) (getProxy().func_146117_b() - 8);
 
-    public void clicked(int p_clicked_1_, int p_clicked_2_)
-    {
-        this.value = (float)(p_clicked_1_ - (this.getProxy().field_146128_h + 4)) / (float)(this.getProxy().func_146117_b() - 8);
+				if (value < 0.0F) {
+					value = 0.0F;
+				}
 
-        if (this.value < 0.0F)
-        {
-            this.value = 0.0F;
-        }
+				if (value > 1.0F) {
+					value = 1.0F;
+				}
 
-        if (this.value > 1.0F)
-        {
-            this.value = 1.0F;
-        }
+				final float var3 = toValue(value);
+				this.clicked(var3);
+				value = toPct(var3);
+				getProxy().displayString = getMessage();
+			}
 
-        this.clicked(this.toValue(this.value));
-        this.getProxy().displayString = this.getMessage();
-        this.sliding = true;
-    }
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			blit(getProxy().field_146128_h
+					+ (int) (value * (getProxy().func_146117_b() - 8)),
+					getProxy().field_146129_i, 0, 66, 4, 20);
+			blit(getProxy().field_146128_h
+					+ (int) (value * (getProxy().func_146117_b() - 8)) + 4,
+					getProxy().field_146129_i, 196, 66, 4, 20);
+		}
+	}
 
-    public void clicked(float p_clicked_1_) {}
+	public float toPct(float p_toPct_1_) {
+		return MathHelper.clamp_float((clamp(p_toPct_1_) - minValue)
+				/ (maxValue - minValue), 0.0F, 1.0F);
+	}
 
-    public void released(int p_released_1_, int p_released_2_)
-    {
-        this.sliding = false;
-    }
+	public float toValue(float p_toValue_1_) {
+		return clamp(minValue + (maxValue - minValue)
+				* MathHelper.clamp_float(p_toValue_1_, 0.0F, 1.0F));
+	}
 }

@@ -1,71 +1,66 @@
 package net.minecraft.entity.ai.attributes;
 
-import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.minecraft.server.management.LowerStringMap;
 
-public abstract class BaseAttributeMap
-{
-    protected final Map attributes = new HashMap();
-    protected final Map attributesByName = new LowerStringMap();
-    private static final String __OBFID = "CL_00001566";
+import com.google.common.collect.Multimap;
 
-    public IAttributeInstance getAttributeInstance(IAttribute p_111151_1_)
-    {
-        return (IAttributeInstance)this.attributes.get(p_111151_1_);
-    }
+public abstract class BaseAttributeMap {
+	protected final Map attributes = new HashMap();
+	protected final Map attributesByName = new LowerStringMap();
 
-    public IAttributeInstance getAttributeInstanceByName(String p_111152_1_)
-    {
-        return (IAttributeInstance)this.attributesByName.get(p_111152_1_);
-    }
+	public void addAttributeInstance(ModifiableAttributeInstance p_111149_1_) {
+	}
 
-    /**
-     * Registers an attribute with this AttributeMap, returns a modifiable AttributeInstance associated with this map
-     */
-    public abstract IAttributeInstance registerAttribute(IAttribute p_111150_1_);
+	public void applyAttributeModifiers(Multimap p_111147_1_) {
+		final Iterator var2 = p_111147_1_.entries().iterator();
 
-    public Collection getAllAttributes()
-    {
-        return this.attributesByName.values();
-    }
+		while (var2.hasNext()) {
+			final Entry var3 = (Entry) var2.next();
+			final IAttributeInstance var4 = getAttributeInstanceByName((String) var3
+					.getKey());
 
-    public void addAttributeInstance(ModifiableAttributeInstance p_111149_1_) {}
+			if (var4 != null) {
+				var4.removeModifier((AttributeModifier) var3.getValue());
+				var4.applyModifier((AttributeModifier) var3.getValue());
+			}
+		}
+	}
 
-    public void removeAttributeModifiers(Multimap p_111148_1_)
-    {
-        Iterator var2 = p_111148_1_.entries().iterator();
+	public Collection getAllAttributes() {
+		return attributesByName.values();
+	}
 
-        while (var2.hasNext())
-        {
-            Entry var3 = (Entry)var2.next();
-            IAttributeInstance var4 = this.getAttributeInstanceByName((String)var3.getKey());
+	public IAttributeInstance getAttributeInstance(IAttribute p_111151_1_) {
+		return (IAttributeInstance) attributes.get(p_111151_1_);
+	}
 
-            if (var4 != null)
-            {
-                var4.removeModifier((AttributeModifier)var3.getValue());
-            }
-        }
-    }
+	public IAttributeInstance getAttributeInstanceByName(String p_111152_1_) {
+		return (IAttributeInstance) attributesByName.get(p_111152_1_);
+	}
 
-    public void applyAttributeModifiers(Multimap p_111147_1_)
-    {
-        Iterator var2 = p_111147_1_.entries().iterator();
+	/**
+	 * Registers an attribute with this AttributeMap, returns a modifiable
+	 * AttributeInstance associated with this map
+	 */
+	public abstract IAttributeInstance registerAttribute(IAttribute p_111150_1_);
 
-        while (var2.hasNext())
-        {
-            Entry var3 = (Entry)var2.next();
-            IAttributeInstance var4 = this.getAttributeInstanceByName((String)var3.getKey());
+	public void removeAttributeModifiers(Multimap p_111148_1_) {
+		final Iterator var2 = p_111148_1_.entries().iterator();
 
-            if (var4 != null)
-            {
-                var4.removeModifier((AttributeModifier)var3.getValue());
-                var4.applyModifier((AttributeModifier)var3.getValue());
-            }
-        }
-    }
+		while (var2.hasNext()) {
+			final Entry var3 = (Entry) var2.next();
+			final IAttributeInstance var4 = getAttributeInstanceByName((String) var3
+					.getKey());
+
+			if (var4 != null) {
+				var4.removeModifier((AttributeModifier) var3.getValue());
+			}
+		}
+	}
 }

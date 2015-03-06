@@ -6,73 +6,77 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class EntityAIBeg extends EntityAIBase
-{
-    private EntityWolf theWolf;
-    private EntityPlayer thePlayer;
-    private World worldObject;
-    private float minPlayerDistance;
-    private int field_75384_e;
-    private static final String __OBFID = "CL_00001576";
+public class EntityAIBeg extends EntityAIBase {
+	private int field_75384_e;
+	private final float minPlayerDistance;
+	private EntityPlayer thePlayer;
+	private final EntityWolf theWolf;
+	private final World worldObject;
 
-    public EntityAIBeg(EntityWolf p_i1617_1_, float p_i1617_2_)
-    {
-        this.theWolf = p_i1617_1_;
-        this.worldObject = p_i1617_1_.worldObj;
-        this.minPlayerDistance = p_i1617_2_;
-        this.setMutexBits(2);
-    }
+	public EntityAIBeg(EntityWolf p_i1617_1_, float p_i1617_2_) {
+		theWolf = p_i1617_1_;
+		worldObject = p_i1617_1_.worldObj;
+		minPlayerDistance = p_i1617_2_;
+		setMutexBits(2);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        this.thePlayer = this.worldObject.getClosestPlayerToEntity(this.theWolf, (double)this.minPlayerDistance);
-        return this.thePlayer == null ? false : this.hasPlayerGotBoneInHand(this.thePlayer);
-    }
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !thePlayer.isEntityAlive() ? false : theWolf
+				.getDistanceSqToEntity(thePlayer) > minPlayerDistance
+				* minPlayerDistance ? false : field_75384_e > 0
+				&& hasPlayerGotBoneInHand(thePlayer);
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.thePlayer.isEntityAlive() ? false : (this.theWolf.getDistanceSqToEntity(this.thePlayer) > (double)(this.minPlayerDistance * this.minPlayerDistance) ? false : this.field_75384_e > 0 && this.hasPlayerGotBoneInHand(this.thePlayer));
-    }
+	/**
+	 * Gets if the Player has the Bone in the hand.
+	 */
+	private boolean hasPlayerGotBoneInHand(EntityPlayer p_75382_1_) {
+		final ItemStack var2 = p_75382_1_.inventory.getCurrentItem();
+		return var2 == null ? false : !theWolf.isTamed()
+				&& var2.getItem() == Items.bone ? true : theWolf
+				.isBreedingItem(var2);
+	}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.theWolf.func_70918_i(true);
-        this.field_75384_e = 40 + this.theWolf.getRNG().nextInt(40);
-    }
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		theWolf.func_70918_i(false);
+		thePlayer = null;
+	}
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.theWolf.func_70918_i(false);
-        this.thePlayer = null;
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		thePlayer = worldObject.getClosestPlayerToEntity(theWolf,
+				minPlayerDistance);
+		return thePlayer == null ? false : hasPlayerGotBoneInHand(thePlayer);
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        this.theWolf.getLookHelper().setLookPosition(this.thePlayer.posX, this.thePlayer.posY + (double)this.thePlayer.getEyeHeight(), this.thePlayer.posZ, 10.0F, (float)this.theWolf.getVerticalFaceSpeed());
-        --this.field_75384_e;
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		theWolf.func_70918_i(true);
+		field_75384_e = 40 + theWolf.getRNG().nextInt(40);
+	}
 
-    /**
-     * Gets if the Player has the Bone in the hand.
-     */
-    private boolean hasPlayerGotBoneInHand(EntityPlayer p_75382_1_)
-    {
-        ItemStack var2 = p_75382_1_.inventory.getCurrentItem();
-        return var2 == null ? false : (!this.theWolf.isTamed() && var2.getItem() == Items.bone ? true : this.theWolf.isBreedingItem(var2));
-    }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		theWolf.getLookHelper().setLookPosition(thePlayer.posX,
+				thePlayer.posY + thePlayer.getEyeHeight(), thePlayer.posZ,
+				10.0F, theWolf.getVerticalFaceSpeed());
+		--field_75384_e;
+	}
 }

@@ -1,96 +1,90 @@
 package net.minecraft.client.resources;
 
-import com.google.gson.JsonParseException;
 import java.io.IOException;
+
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.data.PackMetadataSection;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ResourcePackListEntryDefault extends ResourcePackListEntry
-{
-    private static final Logger logger = LogManager.getLogger();
-    private final IResourcePack field_148320_d;
-    private final ResourceLocation field_148321_e;
-    private static final String __OBFID = "CL_00000822";
+import com.google.gson.JsonParseException;
 
-    public ResourcePackListEntryDefault(GuiScreenResourcePacks p_i45052_1_)
-    {
-        super(p_i45052_1_);
-        this.field_148320_d = this.field_148317_a.getResourcePackRepository().rprDefaultResourcePack;
-        DynamicTexture var2;
+public class ResourcePackListEntryDefault extends ResourcePackListEntry {
+	private static final Logger logger = LogManager.getLogger();
+	private final IResourcePack field_148320_d;
+	private final ResourceLocation field_148321_e;
 
-        try
-        {
-            var2 = new DynamicTexture(this.field_148320_d.getPackImage());
-        }
-        catch (IOException var4)
-        {
-            var2 = TextureUtil.missingTexture;
-        }
+	public ResourcePackListEntryDefault(GuiScreenResourcePacks p_i45052_1_) {
+		super(p_i45052_1_);
+		field_148320_d = field_148317_a.getResourcePackRepository().rprDefaultResourcePack;
+		DynamicTexture var2;
 
-        this.field_148321_e = this.field_148317_a.getTextureManager().getDynamicTextureLocation("texturepackicon", var2);
-    }
+		try {
+			var2 = new DynamicTexture(field_148320_d.getPackImage());
+		} catch (final IOException var4) {
+			var2 = TextureUtil.missingTexture;
+		}
 
-    protected String func_148311_a()
-    {
-        try
-        {
-            PackMetadataSection var1 = (PackMetadataSection)this.field_148320_d.getPackMetadata(this.field_148317_a.getResourcePackRepository().rprMetadataSerializer, "pack");
+		field_148321_e = field_148317_a.getTextureManager()
+				.getDynamicTextureLocation("texturepackicon", var2);
+	}
 
-            if (var1 != null)
-            {
-                return var1.func_152805_a().getFormattedText();
-            }
-        }
-        catch (JsonParseException var2)
-        {
-            logger.error("Couldn\'t load metadata info", var2);
-        }
-        catch (IOException var3)
-        {
-            logger.error("Couldn\'t load metadata info", var3);
-        }
+	@Override
+	protected boolean func_148307_h() {
+		return false;
+	}
 
-        return EnumChatFormatting.RED + "Missing " + "pack.mcmeta" + " :(";
-    }
+	@Override
+	protected boolean func_148308_f() {
+		return false;
+	}
 
-    protected boolean func_148309_e()
-    {
-        return false;
-    }
+	@Override
+	protected boolean func_148309_e() {
+		return false;
+	}
 
-    protected boolean func_148308_f()
-    {
-        return false;
-    }
+	@Override
+	protected boolean func_148310_d() {
+		return false;
+	}
 
-    protected boolean func_148314_g()
-    {
-        return false;
-    }
+	@Override
+	protected String func_148311_a() {
+		try {
+			final PackMetadataSection var1 = (PackMetadataSection) field_148320_d
+					.getPackMetadata(
+							field_148317_a.getResourcePackRepository().rprMetadataSerializer,
+							"pack");
 
-    protected boolean func_148307_h()
-    {
-        return false;
-    }
+			if (var1 != null)
+				return var1.func_152805_a().getFormattedText();
+		} catch (final JsonParseException var2) {
+			logger.error("Couldn\'t load metadata info", var2);
+		} catch (final IOException var3) {
+			logger.error("Couldn\'t load metadata info", var3);
+		}
 
-    protected String func_148312_b()
-    {
-        return "Default";
-    }
+		return EnumChatFormatting.RED + "Missing " + "pack.mcmeta" + " :(";
+	}
 
-    protected void func_148313_c()
-    {
-        this.field_148317_a.getTextureManager().bindTexture(this.field_148321_e);
-    }
+	@Override
+	protected String func_148312_b() {
+		return "Default";
+	}
 
-    protected boolean func_148310_d()
-    {
-        return false;
-    }
+	@Override
+	protected void func_148313_c() {
+		field_148317_a.getTextureManager().bindTexture(field_148321_e);
+	}
+
+	@Override
+	protected boolean func_148314_g() {
+		return false;
+	}
 }

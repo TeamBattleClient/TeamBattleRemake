@@ -1,8 +1,8 @@
 package net.minecraft.command.server;
 
-import com.mojang.authlib.GameProfile;
 import java.util.Date;
 import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -11,79 +11,85 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListBansEntry;
 
-public class CommandBanPlayer extends CommandBase
-{
-    private static final String __OBFID = "CL_00000165";
+import com.mojang.authlib.GameProfile;
 
-    public String getCommandName()
-    {
-        return "ban";
-    }
+public class CommandBanPlayer extends CommandBase {
 
-    /**
-     * Return the required permission level for this command.
-     */
-    public int getRequiredPermissionLevel()
-    {
-        return 3;
-    }
+	/**
+	 * Adds the strings available in this command to the given list of tab
+	 * completion options.
+	 */
+	@Override
+	public List addTabCompletionOptions(ICommandSender p_71516_1_,
+			String[] p_71516_2_) {
+		return p_71516_2_.length >= 1 ? getListOfStringsMatchingLastWord(
+				p_71516_2_, MinecraftServer.getServer().getAllUsernames())
+				: null;
+	}
 
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "commands.ban.usage";
-    }
+	/**
+	 * Returns true if the given command sender is allowed to use this command.
+	 */
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_) {
+		return MinecraftServer.getServer().getConfigurationManager()
+				.func_152608_h().func_152689_b()
+				&& super.canCommandSenderUseCommand(p_71519_1_);
+	}
 
-    /**
-     * Returns true if the given command sender is allowed to use this command.
-     */
-    public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_)
-    {
-        return MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152689_b() && super.canCommandSenderUseCommand(p_71519_1_);
-    }
+	@Override
+	public String getCommandName() {
+		return "ban";
+	}
 
-    public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_)
-    {
-        if (p_71515_2_.length >= 1 && p_71515_2_[0].length() > 0)
-        {
-            MinecraftServer var3 = MinecraftServer.getServer();
-            GameProfile var4 = var3.func_152358_ax().func_152655_a(p_71515_2_[0]);
+	@Override
+	public String getCommandUsage(ICommandSender p_71518_1_) {
+		return "commands.ban.usage";
+	}
 
-            if (var4 == null)
-            {
-                throw new CommandException("commands.ban.failed", new Object[] {p_71515_2_[0]});
-            }
-            else
-            {
-                String var5 = null;
+	/**
+	 * Return the required permission level for this command.
+	 */
+	@Override
+	public int getRequiredPermissionLevel() {
+		return 3;
+	}
 
-                if (p_71515_2_.length >= 2)
-                {
-                    var5 = func_147178_a(p_71515_1_, p_71515_2_, 1).getUnformattedText();
-                }
+	@Override
+	public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_) {
+		if (p_71515_2_.length >= 1 && p_71515_2_[0].length() > 0) {
+			final MinecraftServer var3 = MinecraftServer.getServer();
+			final GameProfile var4 = var3.func_152358_ax().func_152655_a(
+					p_71515_2_[0]);
 
-                UserListBansEntry var6 = new UserListBansEntry(var4, (Date)null, p_71515_1_.getCommandSenderName(), (Date)null, var5);
-                var3.getConfigurationManager().func_152608_h().func_152687_a(var6);
-                EntityPlayerMP var7 = var3.getConfigurationManager().func_152612_a(p_71515_2_[0]);
+			if (var4 == null)
+				throw new CommandException("commands.ban.failed",
+						new Object[] { p_71515_2_[0] });
+			else {
+				String var5 = null;
 
-                if (var7 != null)
-                {
-                    var7.playerNetServerHandler.kickPlayerFromServer("You are banned from this server.");
-                }
+				if (p_71515_2_.length >= 2) {
+					var5 = func_147178_a(p_71515_1_, p_71515_2_, 1)
+							.getUnformattedText();
+				}
 
-                func_152373_a(p_71515_1_, this, "commands.ban.success", new Object[] {p_71515_2_[0]});
-            }
-        }
-        else
-        {
-            throw new WrongUsageException("commands.ban.usage", new Object[0]);
-        }
-    }
+				final UserListBansEntry var6 = new UserListBansEntry(var4,
+						(Date) null, p_71515_1_.getCommandSenderName(),
+						(Date) null, var5);
+				var3.getConfigurationManager().func_152608_h()
+						.func_152687_a(var6);
+				final EntityPlayerMP var7 = var3.getConfigurationManager()
+						.func_152612_a(p_71515_2_[0]);
 
-    /**
-     * Adds the strings available in this command to the given list of tab completion options.
-     */
-    public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_)
-    {
-        return p_71516_2_.length >= 1 ? getListOfStringsMatchingLastWord(p_71516_2_, MinecraftServer.getServer().getAllUsernames()) : null;
-    }
+				if (var7 != null) {
+					var7.playerNetServerHandler
+							.kickPlayerFromServer("You are banned from this server.");
+				}
+
+				func_152373_a(p_71515_1_, this, "commands.ban.success",
+						new Object[] { p_71515_2_[0] });
+			}
+		} else
+			throw new WrongUsageException("commands.ban.usage", new Object[0]);
+	}
 }

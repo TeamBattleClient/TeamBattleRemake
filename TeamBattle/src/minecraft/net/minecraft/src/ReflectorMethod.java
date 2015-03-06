@@ -2,107 +2,92 @@ package net.minecraft.src;
 
 import java.lang.reflect.Method;
 
-public class ReflectorMethod
-{
-    private ReflectorClass reflectorClass;
-    private String targetMethodName;
-    private Class[] targetMethodParameterTypes;
-    private boolean checked;
-    private Method targetMethod;
+public class ReflectorMethod {
+	private boolean checked;
+	private ReflectorClass reflectorClass;
+	private Method targetMethod;
+	private String targetMethodName;
+	private Class[] targetMethodParameterTypes;
 
-    public ReflectorMethod(ReflectorClass reflectorClass, String targetMethodName)
-    {
-        this(reflectorClass, targetMethodName, (Class[])null);
-    }
+	public ReflectorMethod(ReflectorClass reflectorClass,
+			String targetMethodName) {
+		this(reflectorClass, targetMethodName, (Class[]) null);
+	}
 
-    public ReflectorMethod(ReflectorClass reflectorClass, String targetMethodName, Class[] targetMethodParameterTypes)
-    {
-        this.reflectorClass = null;
-        this.targetMethodName = null;
-        this.targetMethodParameterTypes = null;
-        this.checked = false;
-        this.targetMethod = null;
-        this.reflectorClass = reflectorClass;
-        this.targetMethodName = targetMethodName;
-        this.targetMethodParameterTypes = targetMethodParameterTypes;
-        Method m = this.getTargetMethod();
-    }
+	public ReflectorMethod(ReflectorClass reflectorClass,
+			String targetMethodName, Class[] targetMethodParameterTypes) {
+		this.reflectorClass = null;
+		this.targetMethodName = null;
+		this.targetMethodParameterTypes = null;
+		checked = false;
+		targetMethod = null;
+		this.reflectorClass = reflectorClass;
+		this.targetMethodName = targetMethodName;
+		this.targetMethodParameterTypes = targetMethodParameterTypes;
+		getTargetMethod();
+	}
 
-    public Method getTargetMethod()
-    {
-        if (this.checked)
-        {
-            return this.targetMethod;
-        }
-        else
-        {
-            this.checked = true;
-            Class cls = this.reflectorClass.getTargetClass();
+	public void deactivate() {
+		checked = true;
+		targetMethod = null;
+	}
 
-            if (cls == null)
-            {
-                return null;
-            }
-            else
-            {
-                Method[] ms = cls.getDeclaredMethods();
-                int i = 0;
-                Method m;
+	public boolean exists() {
+		return checked ? targetMethod != null : getTargetMethod() != null;
+	}
 
-                while (true)
-                {
-                    if (i >= ms.length)
-                    {
-                        Config.log("(Reflector) Method not pesent: " + cls.getName() + "." + this.targetMethodName);
-                        return null;
-                    }
+	public Class getReturnType() {
+		final Method tm = getTargetMethod();
+		return tm == null ? null : tm.getReturnType();
+	}
 
-                    m = ms[i];
+	public Method getTargetMethod() {
+		if (checked)
+			return targetMethod;
+		else {
+			checked = true;
+			final Class cls = reflectorClass.getTargetClass();
 
-                    if (m.getName().equals(this.targetMethodName))
-                    {
-                        if (this.targetMethodParameterTypes == null)
-                        {
-                            break;
-                        }
+			if (cls == null)
+				return null;
+			else {
+				final Method[] ms = cls.getDeclaredMethods();
+				int i = 0;
+				Method m;
 
-                        Class[] types = m.getParameterTypes();
+				while (true) {
+					if (i >= ms.length) {
+						Config.log("(Reflector) Method not pesent: "
+								+ cls.getName() + "." + targetMethodName);
+						return null;
+					}
 
-                        if (Reflector.matchesTypes(this.targetMethodParameterTypes, types))
-                        {
-                            break;
-                        }
-                    }
+					m = ms[i];
 
-                    ++i;
-                }
+					if (m.getName().equals(targetMethodName)) {
+						if (targetMethodParameterTypes == null) {
+							break;
+						}
 
-                this.targetMethod = m;
+						final Class[] types = m.getParameterTypes();
 
-                if (!this.targetMethod.isAccessible())
-                {
-                    this.targetMethod.setAccessible(true);
-                }
+						if (Reflector.matchesTypes(targetMethodParameterTypes,
+								types)) {
+							break;
+						}
+					}
 
-                return this.targetMethod;
-            }
-        }
-    }
+					++i;
+				}
 
-    public boolean exists()
-    {
-        return this.checked ? this.targetMethod != null : this.getTargetMethod() != null;
-    }
+				targetMethod = m;
 
-    public Class getReturnType()
-    {
-        Method tm = this.getTargetMethod();
-        return tm == null ? null : tm.getReturnType();
-    }
+				if (!targetMethod.isAccessible()) {
+					targetMethod.setAccessible(true);
+				}
 
-    public void deactivate()
-    {
-        this.checked = true;
-        this.targetMethod = null;
-    }
+				return targetMethod;
+			}
+		}
+	}
 }

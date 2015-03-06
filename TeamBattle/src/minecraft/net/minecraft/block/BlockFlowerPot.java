@@ -1,6 +1,7 @@
 package net.minecraft.block;
 
 import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -12,255 +13,281 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFlowerPot;
 import net.minecraft.world.World;
 
-public class BlockFlowerPot extends BlockContainer
-{
-    private static final String __OBFID = "CL_00000247";
+public class BlockFlowerPot extends BlockContainer {
 
-    public BlockFlowerPot()
-    {
-        super(Material.circuits);
-        this.setBlockBoundsForItemRender();
-    }
+	public BlockFlowerPot() {
+		super(Material.circuits);
+		setBlockBoundsForItemRender();
+	}
 
-    /**
-     * Sets the block's bounds for rendering it as an item
-     */
-    public void setBlockBoundsForItemRender()
-    {
-        float var1 = 0.375F;
-        float var2 = var1 / 2.0F;
-        this.setBlockBounds(0.5F - var2, 0.0F, 0.5F - var2, 0.5F + var2, var1, 0.5F + var2);
-    }
+	@Override
+	public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_,
+			int p_149749_4_, Block p_149749_5_, int p_149749_6_) {
+		final TileEntityFlowerPot var7 = func_149929_e(p_149749_1_,
+				p_149749_2_, p_149749_3_, p_149749_4_);
 
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
+		if (var7 != null && var7.func_145965_a() != null) {
+			dropBlockAsItem_do(
+					p_149749_1_,
+					p_149749_2_,
+					p_149749_3_,
+					p_149749_4_,
+					new ItemStack(var7.func_145965_a(), 1, var7.func_145966_b()));
+		}
 
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return 33;
-    }
+		super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_,
+				p_149749_5_, p_149749_6_);
+	}
 
-    public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
+	@Override
+	public boolean canPlaceBlockAt(World p_149742_1_, int p_149742_2_,
+			int p_149742_3_, int p_149742_4_) {
+		return super.canPlaceBlockAt(p_149742_1_, p_149742_2_, p_149742_3_,
+				p_149742_4_)
+				&& World.doesBlockHaveSolidTopSurface(p_149742_1_, p_149742_2_,
+						p_149742_3_ - 1, p_149742_4_);
+	}
 
-    /**
-     * Called upon block activation (right click on the block.)
-     */
-    public boolean onBlockActivated(World p_149727_1_, int p_149727_2_, int p_149727_3_, int p_149727_4_, EntityPlayer p_149727_5_, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
-    {
-        ItemStack var10 = p_149727_5_.inventory.getCurrentItem();
+	/**
+	 * Returns a new instance of a block's tile entity class. Called on placing
+	 * the block.
+	 */
+	@Override
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+		Object var3 = null;
+		byte var4 = 0;
 
-        if (var10 != null && var10.getItem() instanceof ItemBlock)
-        {
-            TileEntityFlowerPot var11 = this.func_149929_e(p_149727_1_, p_149727_2_, p_149727_3_, p_149727_4_);
+		switch (p_149915_2_) {
+		case 1:
+			var3 = Blocks.red_flower;
+			var4 = 0;
+			break;
 
-            if (var11 != null)
-            {
-                if (var11.func_145965_a() != null)
-                {
-                    return false;
-                }
-                else
-                {
-                    Block var12 = Block.getBlockFromItem(var10.getItem());
+		case 2:
+			var3 = Blocks.yellow_flower;
+			break;
 
-                    if (!this.func_149928_a(var12, var10.getItemDamage()))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        var11.func_145964_a(var10.getItem(), var10.getItemDamage());
-                        var11.onInventoryChanged();
+		case 3:
+			var3 = Blocks.sapling;
+			var4 = 0;
+			break;
 
-                        if (!p_149727_1_.setBlockMetadataWithNotify(p_149727_2_, p_149727_3_, p_149727_4_, var10.getItemDamage(), 2))
-                        {
-                            p_149727_1_.func_147471_g(p_149727_2_, p_149727_3_, p_149727_4_);
-                        }
+		case 4:
+			var3 = Blocks.sapling;
+			var4 = 1;
+			break;
 
-                        if (!p_149727_5_.capabilities.isCreativeMode && --var10.stackSize <= 0)
-                        {
-                            p_149727_5_.inventory.setInventorySlotContents(p_149727_5_.inventory.currentItem, (ItemStack)null);
-                        }
+		case 5:
+			var3 = Blocks.sapling;
+			var4 = 2;
+			break;
 
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+		case 6:
+			var3 = Blocks.sapling;
+			var4 = 3;
+			break;
 
-    private boolean func_149928_a(Block p_149928_1_, int p_149928_2_)
-    {
-        return p_149928_1_ != Blocks.yellow_flower && p_149928_1_ != Blocks.red_flower && p_149928_1_ != Blocks.cactus && p_149928_1_ != Blocks.brown_mushroom && p_149928_1_ != Blocks.red_mushroom && p_149928_1_ != Blocks.sapling && p_149928_1_ != Blocks.deadbush ? p_149928_1_ == Blocks.tallgrass && p_149928_2_ == 2 : true;
-    }
+		case 7:
+			var3 = Blocks.red_mushroom;
+			break;
 
-    /**
-     * Gets an item for the block being called on. Args: world, x, y, z
-     */
-    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_)
-    {
-        TileEntityFlowerPot var5 = this.func_149929_e(p_149694_1_, p_149694_2_, p_149694_3_, p_149694_4_);
-        return var5 != null && var5.func_145965_a() != null ? var5.func_145965_a() : Items.flower_pot;
-    }
+		case 8:
+			var3 = Blocks.brown_mushroom;
+			break;
 
-    /**
-     * Get the block's damage value (for use with pick block).
-     */
-    public int getDamageValue(World p_149643_1_, int p_149643_2_, int p_149643_3_, int p_149643_4_)
-    {
-        TileEntityFlowerPot var5 = this.func_149929_e(p_149643_1_, p_149643_2_, p_149643_3_, p_149643_4_);
-        return var5 != null && var5.func_145965_a() != null ? var5.func_145966_b() : 0;
-    }
+		case 9:
+			var3 = Blocks.cactus;
+			break;
 
-    /**
-     * Returns true only if block is flowerPot
-     */
-    public boolean isFlowerPot()
-    {
-        return true;
-    }
+		case 10:
+			var3 = Blocks.deadbush;
+			break;
 
-    public boolean canPlaceBlockAt(World p_149742_1_, int p_149742_2_, int p_149742_3_, int p_149742_4_)
-    {
-        return super.canPlaceBlockAt(p_149742_1_, p_149742_2_, p_149742_3_, p_149742_4_) && World.doesBlockHaveSolidTopSurface(p_149742_1_, p_149742_2_, p_149742_3_ - 1, p_149742_4_);
-    }
+		case 11:
+			var3 = Blocks.tallgrass;
+			var4 = 2;
+			break;
 
-    public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_)
-    {
-        if (!World.doesBlockHaveSolidTopSurface(p_149695_1_, p_149695_2_, p_149695_3_ - 1, p_149695_4_))
-        {
-            this.dropBlockAsItem(p_149695_1_, p_149695_2_, p_149695_3_, p_149695_4_, p_149695_1_.getBlockMetadata(p_149695_2_, p_149695_3_, p_149695_4_), 0);
-            p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
-        }
-    }
+		case 12:
+			var3 = Blocks.sapling;
+			var4 = 4;
+			break;
 
-    public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_, int p_149749_6_)
-    {
-        TileEntityFlowerPot var7 = this.func_149929_e(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_);
+		case 13:
+			var3 = Blocks.sapling;
+			var4 = 5;
+		}
 
-        if (var7 != null && var7.func_145965_a() != null)
-        {
-            this.dropBlockAsItem_do(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, new ItemStack(var7.func_145965_a(), 1, var7.func_145966_b()));
-        }
+		return new TileEntityFlowerPot(Item.getItemFromBlock((Block) var3),
+				var4);
+	}
 
-        super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
-    }
+	private boolean func_149928_a(Block p_149928_1_, int p_149928_2_) {
+		return p_149928_1_ != Blocks.yellow_flower
+				&& p_149928_1_ != Blocks.red_flower
+				&& p_149928_1_ != Blocks.cactus
+				&& p_149928_1_ != Blocks.brown_mushroom
+				&& p_149928_1_ != Blocks.red_mushroom
+				&& p_149928_1_ != Blocks.sapling
+				&& p_149928_1_ != Blocks.deadbush ? p_149928_1_ == Blocks.tallgrass
+				&& p_149928_2_ == 2
+				: true;
+	}
 
-    /**
-     * Called when the block is attempted to be harvested
-     */
-    public void onBlockHarvested(World p_149681_1_, int p_149681_2_, int p_149681_3_, int p_149681_4_, int p_149681_5_, EntityPlayer p_149681_6_)
-    {
-        super.onBlockHarvested(p_149681_1_, p_149681_2_, p_149681_3_, p_149681_4_, p_149681_5_, p_149681_6_);
+	private TileEntityFlowerPot func_149929_e(World p_149929_1_,
+			int p_149929_2_, int p_149929_3_, int p_149929_4_) {
+		final TileEntity var5 = p_149929_1_.getTileEntity(p_149929_2_,
+				p_149929_3_, p_149929_4_);
+		return var5 != null && var5 instanceof TileEntityFlowerPot ? (TileEntityFlowerPot) var5
+				: null;
+	}
 
-        if (p_149681_6_.capabilities.isCreativeMode)
-        {
-            TileEntityFlowerPot var7 = this.func_149929_e(p_149681_1_, p_149681_2_, p_149681_3_, p_149681_4_);
+	/**
+	 * Get the block's damage value (for use with pick block).
+	 */
+	@Override
+	public int getDamageValue(World p_149643_1_, int p_149643_2_,
+			int p_149643_3_, int p_149643_4_) {
+		final TileEntityFlowerPot var5 = func_149929_e(p_149643_1_,
+				p_149643_2_, p_149643_3_, p_149643_4_);
+		return var5 != null && var5.func_145965_a() != null ? var5
+				.func_145966_b() : 0;
+	}
 
-            if (var7 != null)
-            {
-                var7.func_145964_a(Item.getItemById(0), 0);
-            }
-        }
-    }
+	/**
+	 * Gets an item for the block being called on. Args: world, x, y, z
+	 */
+	@Override
+	public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_,
+			int p_149694_4_) {
+		final TileEntityFlowerPot var5 = func_149929_e(p_149694_1_,
+				p_149694_2_, p_149694_3_, p_149694_4_);
+		return var5 != null && var5.func_145965_a() != null ? var5
+				.func_145965_a() : Items.flower_pot;
+	}
 
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-    {
-        return Items.flower_pot;
-    }
+	@Override
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_,
+			int p_149650_3_) {
+		return Items.flower_pot;
+	}
 
-    private TileEntityFlowerPot func_149929_e(World p_149929_1_, int p_149929_2_, int p_149929_3_, int p_149929_4_)
-    {
-        TileEntity var5 = p_149929_1_.getTileEntity(p_149929_2_, p_149929_3_, p_149929_4_);
-        return var5 != null && var5 instanceof TileEntityFlowerPot ? (TileEntityFlowerPot)var5 : null;
-    }
+	/**
+	 * The type of render function that is called for this block
+	 */
+	@Override
+	public int getRenderType() {
+		return 33;
+	}
 
-    /**
-     * Returns a new instance of a block's tile entity class. Called on placing the block.
-     */
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
-    {
-        Object var3 = null;
-        byte var4 = 0;
+	/**
+	 * Returns true only if block is flowerPot
+	 */
+	@Override
+	public boolean isFlowerPot() {
+		return true;
+	}
 
-        switch (p_149915_2_)
-        {
-            case 1:
-                var3 = Blocks.red_flower;
-                var4 = 0;
-                break;
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
 
-            case 2:
-                var3 = Blocks.yellow_flower;
-                break;
+	/**
+	 * Called upon block activation (right click on the block.)
+	 */
+	@Override
+	public boolean onBlockActivated(World p_149727_1_, int p_149727_2_,
+			int p_149727_3_, int p_149727_4_, EntityPlayer p_149727_5_,
+			int p_149727_6_, float p_149727_7_, float p_149727_8_,
+			float p_149727_9_) {
+		final ItemStack var10 = p_149727_5_.inventory.getCurrentItem();
 
-            case 3:
-                var3 = Blocks.sapling;
-                var4 = 0;
-                break;
+		if (var10 != null && var10.getItem() instanceof ItemBlock) {
+			final TileEntityFlowerPot var11 = func_149929_e(p_149727_1_,
+					p_149727_2_, p_149727_3_, p_149727_4_);
 
-            case 4:
-                var3 = Blocks.sapling;
-                var4 = 1;
-                break;
+			if (var11 != null) {
+				if (var11.func_145965_a() != null)
+					return false;
+				else {
+					final Block var12 = Block.getBlockFromItem(var10.getItem());
 
-            case 5:
-                var3 = Blocks.sapling;
-                var4 = 2;
-                break;
+					if (!func_149928_a(var12, var10.getItemDamage()))
+						return false;
+					else {
+						var11.func_145964_a(var10.getItem(),
+								var10.getItemDamage());
+						var11.onInventoryChanged();
 
-            case 6:
-                var3 = Blocks.sapling;
-                var4 = 3;
-                break;
+						if (!p_149727_1_.setBlockMetadataWithNotify(
+								p_149727_2_, p_149727_3_, p_149727_4_,
+								var10.getItemDamage(), 2)) {
+							p_149727_1_.func_147471_g(p_149727_2_, p_149727_3_,
+									p_149727_4_);
+						}
 
-            case 7:
-                var3 = Blocks.red_mushroom;
-                break;
+						if (!p_149727_5_.capabilities.isCreativeMode
+								&& --var10.stackSize <= 0) {
+							p_149727_5_.inventory.setInventorySlotContents(
+									p_149727_5_.inventory.currentItem,
+									(ItemStack) null);
+						}
 
-            case 8:
-                var3 = Blocks.brown_mushroom;
-                break;
+						return true;
+					}
+				}
+			} else
+				return false;
+		} else
+			return false;
+	}
 
-            case 9:
-                var3 = Blocks.cactus;
-                break;
+	/**
+	 * Called when the block is attempted to be harvested
+	 */
+	@Override
+	public void onBlockHarvested(World p_149681_1_, int p_149681_2_,
+			int p_149681_3_, int p_149681_4_, int p_149681_5_,
+			EntityPlayer p_149681_6_) {
+		super.onBlockHarvested(p_149681_1_, p_149681_2_, p_149681_3_,
+				p_149681_4_, p_149681_5_, p_149681_6_);
 
-            case 10:
-                var3 = Blocks.deadbush;
-                break;
+		if (p_149681_6_.capabilities.isCreativeMode) {
+			final TileEntityFlowerPot var7 = func_149929_e(p_149681_1_,
+					p_149681_2_, p_149681_3_, p_149681_4_);
 
-            case 11:
-                var3 = Blocks.tallgrass;
-                var4 = 2;
-                break;
+			if (var7 != null) {
+				var7.func_145964_a(Item.getItemById(0), 0);
+			}
+		}
+	}
 
-            case 12:
-                var3 = Blocks.sapling;
-                var4 = 4;
-                break;
+	@Override
+	public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_,
+			int p_149695_3_, int p_149695_4_, Block p_149695_5_) {
+		if (!World.doesBlockHaveSolidTopSurface(p_149695_1_, p_149695_2_,
+				p_149695_3_ - 1, p_149695_4_)) {
+			dropBlockAsItem(p_149695_1_, p_149695_2_, p_149695_3_, p_149695_4_,
+					p_149695_1_.getBlockMetadata(p_149695_2_, p_149695_3_,
+							p_149695_4_), 0);
+			p_149695_1_.setBlockToAir(p_149695_2_, p_149695_3_, p_149695_4_);
+		}
+	}
 
-            case 13:
-                var3 = Blocks.sapling;
-                var4 = 5;
-        }
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
 
-        return new TileEntityFlowerPot(Item.getItemFromBlock((Block)var3), var4);
-    }
+	/**
+	 * Sets the block's bounds for rendering it as an item
+	 */
+	@Override
+	public void setBlockBoundsForItemRender() {
+		final float var1 = 0.375F;
+		final float var2 = var1 / 2.0F;
+		setBlockBounds(0.5F - var2, 0.0F, 0.5F - var2, 0.5F + var2, var1,
+				0.5F + var2);
+	}
 }

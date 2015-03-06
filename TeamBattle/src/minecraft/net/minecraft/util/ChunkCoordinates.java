@@ -1,88 +1,85 @@
 package net.minecraft.util;
 
-public class ChunkCoordinates implements Comparable
-{
-    public int posX;
+public class ChunkCoordinates implements Comparable {
+	public int posX;
 
-    /** the y coordinate */
-    public int posY;
+	/** the y coordinate */
+	public int posY;
 
-    /** the z coordinate */
-    public int posZ;
-    private static final String __OBFID = "CL_00001555";
+	/** the z coordinate */
+	public int posZ;
 
-    public ChunkCoordinates() {}
+	public ChunkCoordinates() {
+	}
 
-    public ChunkCoordinates(int p_i1354_1_, int p_i1354_2_, int p_i1354_3_)
-    {
-        this.posX = p_i1354_1_;
-        this.posY = p_i1354_2_;
-        this.posZ = p_i1354_3_;
-    }
+	public ChunkCoordinates(ChunkCoordinates p_i1355_1_) {
+		posX = p_i1355_1_.posX;
+		posY = p_i1355_1_.posY;
+		posZ = p_i1355_1_.posZ;
+	}
 
-    public ChunkCoordinates(ChunkCoordinates p_i1355_1_)
-    {
-        this.posX = p_i1355_1_.posX;
-        this.posY = p_i1355_1_.posY;
-        this.posZ = p_i1355_1_.posZ;
-    }
+	public ChunkCoordinates(int p_i1354_1_, int p_i1354_2_, int p_i1354_3_) {
+		posX = p_i1354_1_;
+		posY = p_i1354_2_;
+		posZ = p_i1354_3_;
+	}
 
-    public boolean equals(Object p_equals_1_)
-    {
-        if (!(p_equals_1_ instanceof ChunkCoordinates))
-        {
-            return false;
-        }
-        else
-        {
-            ChunkCoordinates var2 = (ChunkCoordinates)p_equals_1_;
-            return this.posX == var2.posX && this.posY == var2.posY && this.posZ == var2.posZ;
-        }
-    }
+	public int compareTo(ChunkCoordinates p_compareTo_1_) {
+		return posY == p_compareTo_1_.posY ? posZ == p_compareTo_1_.posZ ? posX
+				- p_compareTo_1_.posX : posZ - p_compareTo_1_.posZ : posY
+				- p_compareTo_1_.posY;
+	}
 
-    public int hashCode()
-    {
-        return this.posX + this.posZ << 8 + this.posY << 16;
-    }
+	@Override
+	public int compareTo(Object p_compareTo_1_) {
+		return this.compareTo((ChunkCoordinates) p_compareTo_1_);
+	}
 
-    public int compareTo(ChunkCoordinates p_compareTo_1_)
-    {
-        return this.posY == p_compareTo_1_.posY ? (this.posZ == p_compareTo_1_.posZ ? this.posX - p_compareTo_1_.posX : this.posZ - p_compareTo_1_.posZ) : this.posY - p_compareTo_1_.posY;
-    }
+	@Override
+	public boolean equals(Object p_equals_1_) {
+		if (!(p_equals_1_ instanceof ChunkCoordinates))
+			return false;
+		else {
+			final ChunkCoordinates var2 = (ChunkCoordinates) p_equals_1_;
+			return posX == var2.posX && posY == var2.posY && posZ == var2.posZ;
+		}
+	}
 
-    public void set(int p_71571_1_, int p_71571_2_, int p_71571_3_)
-    {
-        this.posX = p_71571_1_;
-        this.posY = p_71571_2_;
-        this.posZ = p_71571_3_;
-    }
+	/**
+	 * Returns the squared distance between this coordinates and the coordinates
+	 * given as argument.
+	 */
+	public float getDistanceSquared(int p_71569_1_, int p_71569_2_,
+			int p_71569_3_) {
+		final float var4 = posX - p_71569_1_;
+		final float var5 = posY - p_71569_2_;
+		final float var6 = posZ - p_71569_3_;
+		return var4 * var4 + var5 * var5 + var6 * var6;
+	}
 
-    /**
-     * Returns the squared distance between this coordinates and the coordinates given as argument.
-     */
-    public float getDistanceSquared(int p_71569_1_, int p_71569_2_, int p_71569_3_)
-    {
-        float var4 = (float)(this.posX - p_71569_1_);
-        float var5 = (float)(this.posY - p_71569_2_);
-        float var6 = (float)(this.posZ - p_71569_3_);
-        return var4 * var4 + var5 * var5 + var6 * var6;
-    }
+	/**
+	 * Return the squared distance between this coordinates and the
+	 * ChunkCoordinates given as argument.
+	 */
+	public float getDistanceSquaredToChunkCoordinates(
+			ChunkCoordinates p_82371_1_) {
+		return getDistanceSquared(p_82371_1_.posX, p_82371_1_.posY,
+				p_82371_1_.posZ);
+	}
 
-    /**
-     * Return the squared distance between this coordinates and the ChunkCoordinates given as argument.
-     */
-    public float getDistanceSquaredToChunkCoordinates(ChunkCoordinates p_82371_1_)
-    {
-        return this.getDistanceSquared(p_82371_1_.posX, p_82371_1_.posY, p_82371_1_.posZ);
-    }
+	@Override
+	public int hashCode() {
+		return posX + posZ << 8 + posY << 16;
+	}
 
-    public String toString()
-    {
-        return "Pos{x=" + this.posX + ", y=" + this.posY + ", z=" + this.posZ + '}';
-    }
+	public void set(int p_71571_1_, int p_71571_2_, int p_71571_3_) {
+		posX = p_71571_1_;
+		posY = p_71571_2_;
+		posZ = p_71571_3_;
+	}
 
-    public int compareTo(Object p_compareTo_1_)
-    {
-        return this.compareTo((ChunkCoordinates)p_compareTo_1_);
-    }
+	@Override
+	public String toString() {
+		return "Pos{x=" + posX + ", y=" + posY + ", z=" + posZ + '}';
+	}
 }

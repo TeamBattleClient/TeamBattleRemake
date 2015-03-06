@@ -5,91 +5,82 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
 
-public class EntityAIRunAroundLikeCrazy extends EntityAIBase
-{
-    private EntityHorse horseHost;
-    private double field_111178_b;
-    private double field_111179_c;
-    private double field_111176_d;
-    private double field_111177_e;
-    private static final String __OBFID = "CL_00001612";
+public class EntityAIRunAroundLikeCrazy extends EntityAIBase {
+	private double field_111176_d;
+	private double field_111177_e;
+	private final double field_111178_b;
+	private double field_111179_c;
+	private final EntityHorse horseHost;
 
-    public EntityAIRunAroundLikeCrazy(EntityHorse p_i1653_1_, double p_i1653_2_)
-    {
-        this.horseHost = p_i1653_1_;
-        this.field_111178_b = p_i1653_2_;
-        this.setMutexBits(1);
-    }
+	public EntityAIRunAroundLikeCrazy(EntityHorse p_i1653_1_, double p_i1653_2_) {
+		horseHost = p_i1653_1_;
+		field_111178_b = p_i1653_2_;
+		setMutexBits(1);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (!this.horseHost.isTame() && this.horseHost.riddenByEntity != null)
-        {
-            Vec3 var1 = RandomPositionGenerator.findRandomTarget(this.horseHost, 5, 4);
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !horseHost.getNavigator().noPath()
+				&& horseHost.riddenByEntity != null;
+	}
 
-            if (var1 == null)
-            {
-                return false;
-            }
-            else
-            {
-                this.field_111179_c = var1.xCoord;
-                this.field_111176_d = var1.yCoord;
-                this.field_111177_e = var1.zCoord;
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		if (!horseHost.isTame() && horseHost.riddenByEntity != null) {
+			final Vec3 var1 = RandomPositionGenerator.findRandomTarget(
+					horseHost, 5, 4);
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.horseHost.getNavigator().tryMoveToXYZ(this.field_111179_c, this.field_111176_d, this.field_111177_e, this.field_111178_b);
-    }
+			if (var1 == null)
+				return false;
+			else {
+				field_111179_c = var1.xCoord;
+				field_111176_d = var1.yCoord;
+				field_111177_e = var1.zCoord;
+				return true;
+			}
+		} else
+			return false;
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.horseHost.getNavigator().noPath() && this.horseHost.riddenByEntity != null;
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		horseHost.getNavigator().tryMoveToXYZ(field_111179_c, field_111176_d,
+				field_111177_e, field_111178_b);
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        if (this.horseHost.getRNG().nextInt(50) == 0)
-        {
-            if (this.horseHost.riddenByEntity instanceof EntityPlayer)
-            {
-                int var1 = this.horseHost.getTemper();
-                int var2 = this.horseHost.getMaxTemper();
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		if (horseHost.getRNG().nextInt(50) == 0) {
+			if (horseHost.riddenByEntity instanceof EntityPlayer) {
+				final int var1 = horseHost.getTemper();
+				final int var2 = horseHost.getMaxTemper();
 
-                if (var2 > 0 && this.horseHost.getRNG().nextInt(var2) < var1)
-                {
-                    this.horseHost.setTamedBy((EntityPlayer)this.horseHost.riddenByEntity);
-                    this.horseHost.worldObj.setEntityState(this.horseHost, (byte)7);
-                    return;
-                }
+				if (var2 > 0 && horseHost.getRNG().nextInt(var2) < var1) {
+					horseHost
+							.setTamedBy((EntityPlayer) horseHost.riddenByEntity);
+					horseHost.worldObj.setEntityState(horseHost, (byte) 7);
+					return;
+				}
 
-                this.horseHost.increaseTemper(5);
-            }
+				horseHost.increaseTemper(5);
+			}
 
-            this.horseHost.riddenByEntity.mountEntity((Entity)null);
-            this.horseHost.riddenByEntity = null;
-            this.horseHost.makeHorseRearWithSound();
-            this.horseHost.worldObj.setEntityState(this.horseHost, (byte)6);
-        }
-    }
+			horseHost.riddenByEntity.mountEntity((Entity) null);
+			horseHost.riddenByEntity = null;
+			horseHost.makeHorseRearWithSound();
+			horseHost.worldObj.setEntityState(horseHost, (byte) 6);
+		}
+	}
 }

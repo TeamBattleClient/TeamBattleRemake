@@ -6,155 +6,135 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public enum EnumChatFormatting
-{
-    BLACK('0'),
-    DARK_BLUE('1'),
-    DARK_GREEN('2'),
-    DARK_AQUA('3'),
-    DARK_RED('4'),
-    DARK_PURPLE('5'),
-    GOLD('6'),
-    GRAY('7'),
-    DARK_GRAY('8'),
-    BLUE('9'),
-    GREEN('a'),
-    AQUA('b'),
-    RED('c'),
-    LIGHT_PURPLE('d'),
-    YELLOW('e'),
-    WHITE('f'),
-    OBFUSCATED('k', true),
-    BOLD('l', true),
-    STRIKETHROUGH('m', true),
-    UNDERLINE('n', true),
-    ITALIC('o', true),
-    RESET('r');
+public enum EnumChatFormatting {
+	AQUA('b'), BLACK('0'), BLUE('9'), BOLD('l', true), DARK_AQUA('3'), DARK_BLUE(
+			'1'), DARK_GRAY('8'), DARK_GREEN('2'), DARK_PURPLE('5'), DARK_RED(
+			'4'), GOLD('6'), GRAY('7'), GREEN('a'), ITALIC('o', true), LIGHT_PURPLE(
+			'd'), OBFUSCATED('k', true), RED('c'), RESET('r'), STRIKETHROUGH(
+			'm', true), UNDERLINE('n', true), WHITE('f'), YELLOW('e');
 
-    /**
-     * Maps a formatting code (e.g., 'f') to its corresponding enum value (e.g., WHITE).
-     */
-    private static final Map formattingCodeMapping = new HashMap();
+	/**
+	 * Maps a formatting code (e.g., 'f') to its corresponding enum value (e.g.,
+	 * WHITE).
+	 */
+	private static final Map formattingCodeMapping = new HashMap();
 
-    /**
-     * Maps a name (e.g., 'underline') to its corresponding enum value (e.g., UNDERLINE).
-     */
-    private static final Map nameMapping = new HashMap();
+	/**
+	 * Matches formatting codes that indicate that the client should treat the
+	 * following text as bold, recolored, obfuscated, etc.
+	 */
+	private static final Pattern formattingCodePattern = Pattern.compile("(?i)"
+			+ String.valueOf('\u00a7') + "[0-9A-FK-OR]");
 
-    /**
-     * Matches formatting codes that indicate that the client should treat the following text as bold, recolored,
-     * obfuscated, etc.
-     */
-    private static final Pattern formattingCodePattern = Pattern.compile("(?i)" + String.valueOf('\u00a7') + "[0-9A-FK-OR]");
+	/**
+	 * Maps a name (e.g., 'underline') to its corresponding enum value (e.g.,
+	 * UNDERLINE).
+	 */
+	private static final Map nameMapping = new HashMap();
 
-    /** The formatting code that produces this format. */
-    private final char formattingCode;
-    private final boolean fancyStyling;
+	static {
+		final EnumChatFormatting[] var0 = values();
+		final int var1 = var0.length;
 
-    /**
-     * The control string (section sign + formatting code) that can be inserted into client-side text to display
-     * subsequent text in this format.
-     */
-    private final String controlString;
-    private static final String __OBFID = "CL_00000342";
+		for (int var2 = 0; var2 < var1; ++var2) {
+			final EnumChatFormatting var3 = var0[var2];
+			formattingCodeMapping.put(
+					Character.valueOf(var3.getFormattingCode()), var3);
+			nameMapping.put(var3.getFriendlyName(), var3);
+		}
+	}
 
-    private EnumChatFormatting(char p_i1336_3_)
-    {
-        this(p_i1336_3_, false);
-    }
+	/**
+	 * Returns a copy of the given string, with formatting codes stripped away.
+	 */
+	public static String getTextWithoutFormattingCodes(String p_110646_0_) {
+		return p_110646_0_ == null ? null : formattingCodePattern.matcher(
+				p_110646_0_).replaceAll("");
+	}
 
-    private EnumChatFormatting(char p_i1337_3_, boolean p_i1337_4_)
-    {
-        this.formattingCode = p_i1337_3_;
-        this.fancyStyling = p_i1337_4_;
-        this.controlString = "\u00a7" + p_i1337_3_;
-    }
+	/**
+	 * Gets all the valid values. Args: @param par0: Whether or not to include
+	 * color values. @param par1: Whether or not to include fancy-styling values
+	 * (anything that isn't a color value or the "reset" value).
+	 */
+	public static Collection getValidValues(boolean p_96296_0_,
+			boolean p_96296_1_) {
+		final ArrayList var2 = new ArrayList();
+		final EnumChatFormatting[] var3 = values();
+		final int var4 = var3.length;
 
-    /**
-     * Gets the formatting code that produces this format.
-     */
-    public char getFormattingCode()
-    {
-        return this.formattingCode;
-    }
+		for (int var5 = 0; var5 < var4; ++var5) {
+			final EnumChatFormatting var6 = var3[var5];
 
-    /**
-     * False if this is just changing the color or resetting; true otherwise.
-     */
-    public boolean isFancyStyling()
-    {
-        return this.fancyStyling;
-    }
+			if ((!var6.isColor() || p_96296_0_)
+					&& (!var6.isFancyStyling() || p_96296_1_)) {
+				var2.add(var6.getFriendlyName());
+			}
+		}
 
-    /**
-     * Checks if typo is a color.
-     */
-    public boolean isColor()
-    {
-        return !this.fancyStyling && this != RESET;
-    }
+		return var2;
+	}
 
-    /**
-     * Gets the friendly name of this value.
-     */
-    public String getFriendlyName()
-    {
-        return this.name().toLowerCase();
-    }
+	/**
+	 * Gets a value by its friendly name; null if the given name does not map to
+	 * a defined value.
+	 */
+	public static EnumChatFormatting getValueByName(String p_96300_0_) {
+		return p_96300_0_ == null ? null : (EnumChatFormatting) nameMapping
+				.get(p_96300_0_.toLowerCase());
+	}
 
-    public String toString()
-    {
-        return this.controlString;
-    }
+	/**
+	 * The control string (section sign + formatting code) that can be inserted
+	 * into client-side text to display subsequent text in this format.
+	 */
+	private final String controlString;
 
-    /**
-     * Returns a copy of the given string, with formatting codes stripped away.
-     */
-    public static String getTextWithoutFormattingCodes(String p_110646_0_)
-    {
-        return p_110646_0_ == null ? null : formattingCodePattern.matcher(p_110646_0_).replaceAll("");
-    }
+	private final boolean fancyStyling;
 
-    /**
-     * Gets a value by its friendly name; null if the given name does not map to a defined value.
-     */
-    public static EnumChatFormatting getValueByName(String p_96300_0_)
-    {
-        return p_96300_0_ == null ? null : (EnumChatFormatting)nameMapping.get(p_96300_0_.toLowerCase());
-    }
+	/** The formatting code that produces this format. */
+	private final char formattingCode;
 
-    /**
-     * Gets all the valid values. Args: @param par0: Whether or not to include color values. @param par1: Whether or not
-     * to include fancy-styling values (anything that isn't a color value or the "reset" value).
-     */
-    public static Collection getValidValues(boolean p_96296_0_, boolean p_96296_1_)
-    {
-        ArrayList var2 = new ArrayList();
-        EnumChatFormatting[] var3 = values();
-        int var4 = var3.length;
+	private EnumChatFormatting(char p_i1336_3_) {
+		this(p_i1336_3_, false);
+	}
 
-        for (int var5 = 0; var5 < var4; ++var5)
-        {
-            EnumChatFormatting var6 = var3[var5];
+	private EnumChatFormatting(char p_i1337_3_, boolean p_i1337_4_) {
+		formattingCode = p_i1337_3_;
+		fancyStyling = p_i1337_4_;
+		controlString = "\u00a7" + p_i1337_3_;
+	}
 
-            if ((!var6.isColor() || p_96296_0_) && (!var6.isFancyStyling() || p_96296_1_))
-            {
-                var2.add(var6.getFriendlyName());
-            }
-        }
+	/**
+	 * Gets the formatting code that produces this format.
+	 */
+	public char getFormattingCode() {
+		return formattingCode;
+	}
 
-        return var2;
-    }
+	/**
+	 * Gets the friendly name of this value.
+	 */
+	public String getFriendlyName() {
+		return name().toLowerCase();
+	}
 
-    static {
-        EnumChatFormatting[] var0 = values();
-        int var1 = var0.length;
+	/**
+	 * Checks if typo is a color.
+	 */
+	public boolean isColor() {
+		return !fancyStyling && this != RESET;
+	}
 
-        for (int var2 = 0; var2 < var1; ++var2)
-        {
-            EnumChatFormatting var3 = var0[var2];
-            formattingCodeMapping.put(Character.valueOf(var3.getFormattingCode()), var3);
-            nameMapping.put(var3.getFriendlyName(), var3);
-        }
-    }
+	/**
+	 * False if this is just changing the color or resetting; true otherwise.
+	 */
+	public boolean isFancyStyling() {
+		return fancyStyling;
+	}
+
+	@Override
+	public String toString() {
+		return controlString;
+	}
 }

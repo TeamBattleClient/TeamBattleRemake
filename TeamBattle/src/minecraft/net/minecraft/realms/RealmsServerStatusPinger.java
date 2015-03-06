@@ -1,12 +1,14 @@
 package net.minecraft.realms;
 
 import io.netty.util.concurrent.GenericFutureListener;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.ServerStatusResponse;
@@ -18,118 +20,120 @@ import net.minecraft.network.status.server.S00PacketServerInfo;
 import net.minecraft.network.status.server.S01PacketPong;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RealmsServerStatusPinger
-{
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final List connections = Collections.synchronizedList(new ArrayList());
-    private static final String __OBFID = "CL_00001854";
+public class RealmsServerStatusPinger {
+	private static final Logger LOGGER = LogManager.getLogger();
+	private final List connections = Collections
+			.synchronizedList(new ArrayList());
 
-    public void pingServer(final String p_pingServer_1_, final ServerPing p_pingServer_2_) throws IOException
-    {
-        if (p_pingServer_1_ != null && !p_pingServer_1_.startsWith("0.0.0.0") && !p_pingServer_1_.isEmpty())
-        {
-            RealmsServerAddress var3 = RealmsServerAddress.parseString(p_pingServer_1_);
-            final NetworkManager var4 = NetworkManager.provideLanClient(InetAddress.getByName(var3.getHost()), var3.getPort());
-            this.connections.add(var4);
-            var4.setNetHandler(new INetHandlerStatusClient()
-            {
-                private boolean field_154345_e = false;
-                private static final String __OBFID = "CL_00001807";
-                public void handleServerInfo(S00PacketServerInfo p_147397_1_)
-                {
-                    ServerStatusResponse var2 = p_147397_1_.func_149294_c();
+	public void pingServer(final String p_pingServer_1_,
+			final ServerPing p_pingServer_2_) throws IOException {
+		if (p_pingServer_1_ != null && !p_pingServer_1_.startsWith("0.0.0.0")
+				&& !p_pingServer_1_.isEmpty()) {
+			final RealmsServerAddress var3 = RealmsServerAddress
+					.parseString(p_pingServer_1_);
+			final NetworkManager var4 = NetworkManager.provideLanClient(
+					InetAddress.getByName(var3.getHost()), var3.getPort());
+			connections.add(var4);
+			var4.setNetHandler(new INetHandlerStatusClient() {
+				private boolean field_154345_e = false;
 
-                    if (var2.func_151318_b() != null)
-                    {
-                        p_pingServer_2_.nrOfPlayers = String.valueOf(var2.func_151318_b().func_151333_b());
-                    }
+				@Override
+				public void handlePong(S01PacketPong p_147398_1_) {
+					var4.closeChannel(new ChatComponentText("Finished"));
+				}
 
-                    var4.scheduleOutboundPacket(new C01PacketPing(Realms.currentTimeMillis()), new GenericFutureListener[0]);
-                    this.field_154345_e = true;
-                }
-                public void handlePong(S01PacketPong p_147398_1_)
-                {
-                    var4.closeChannel(new ChatComponentText("Finished"));
-                }
-                public void onDisconnect(IChatComponent p_147231_1_)
-                {
-                    if (!this.field_154345_e)
-                    {
-                        RealmsServerStatusPinger.LOGGER.error("Can\'t ping " + p_pingServer_1_ + ": " + p_147231_1_.getUnformattedText());
-                    }
-                }
-                public void onConnectionStateTransition(EnumConnectionState p_147232_1_, EnumConnectionState p_147232_2_)
-                {
-                    if (p_147232_2_ != EnumConnectionState.STATUS)
-                    {
-                        throw new UnsupportedOperationException("Unexpected change in protocol to " + p_147232_2_);
-                    }
-                }
-                public void onNetworkTick() {}
-            });
+				@Override
+				public void handleServerInfo(S00PacketServerInfo p_147397_1_) {
+					final ServerStatusResponse var2 = p_147397_1_
+							.func_149294_c();
 
-            try
-            {
-                var4.scheduleOutboundPacket(new C00Handshake(RealmsSharedConstants.NETWORK_PROTOCOL_VERSION, var3.getHost(), var3.getPort(), EnumConnectionState.STATUS), new GenericFutureListener[0]);
-                var4.scheduleOutboundPacket(new C00PacketServerQuery(), new GenericFutureListener[0]);
-            }
-            catch (Throwable var6)
-            {
-                LOGGER.error(var6);
-            }
-        }
-    }
+					if (var2.func_151318_b() != null) {
+						p_pingServer_2_.nrOfPlayers = String.valueOf(var2
+								.func_151318_b().func_151333_b());
+					}
 
-    public void tick()
-    {
-        List var1 = this.connections;
+					var4.scheduleOutboundPacket(
+							new C01PacketPing(Realms.currentTimeMillis()),
+							new GenericFutureListener[0]);
+					field_154345_e = true;
+				}
 
-        synchronized (this.connections)
-        {
-            Iterator var2 = this.connections.iterator();
+				@Override
+				public void onConnectionStateTransition(
+						EnumConnectionState p_147232_1_,
+						EnumConnectionState p_147232_2_) {
+					if (p_147232_2_ != EnumConnectionState.STATUS)
+						throw new UnsupportedOperationException(
+								"Unexpected change in protocol to "
+										+ p_147232_2_);
+				}
 
-            while (var2.hasNext())
-            {
-                NetworkManager var3 = (NetworkManager)var2.next();
+				@Override
+				public void onDisconnect(IChatComponent p_147231_1_) {
+					if (!field_154345_e) {
+						RealmsServerStatusPinger.LOGGER.error("Can\'t ping "
+								+ p_pingServer_1_ + ": "
+								+ p_147231_1_.getUnformattedText());
+					}
+				}
 
-                if (var3.isChannelOpen())
-                {
-                    var3.processReceivedPackets();
-                }
-                else
-                {
-                    var2.remove();
+				@Override
+				public void onNetworkTick() {
+				}
+			});
 
-                    if (var3.getExitMessage() != null)
-                    {
-                        var3.getNetHandler().onDisconnect(var3.getExitMessage());
-                    }
-                }
-            }
-        }
-    }
+			try {
+				var4.scheduleOutboundPacket(
+						new C00Handshake(
+								RealmsSharedConstants.NETWORK_PROTOCOL_VERSION,
+								var3.getHost(), var3.getPort(),
+								EnumConnectionState.STATUS),
+						new GenericFutureListener[0]);
+				var4.scheduleOutboundPacket(new C00PacketServerQuery(),
+						new GenericFutureListener[0]);
+			} catch (final Throwable var6) {
+				LOGGER.error(var6);
+			}
+		}
+	}
 
-    public void removeAll()
-    {
-        List var1 = this.connections;
+	public void removeAll() {
+		synchronized (connections) {
+			final Iterator var2 = connections.iterator();
 
-        synchronized (this.connections)
-        {
-            Iterator var2 = this.connections.iterator();
+			while (var2.hasNext()) {
+				final NetworkManager var3 = (NetworkManager) var2.next();
 
-            while (var2.hasNext())
-            {
-                NetworkManager var3 = (NetworkManager)var2.next();
+				if (var3.isChannelOpen()) {
+					var2.remove();
+					var3.closeChannel(new ChatComponentText("Cancelled"));
+				}
+			}
+		}
+	}
 
-                if (var3.isChannelOpen())
-                {
-                    var2.remove();
-                    var3.closeChannel(new ChatComponentText("Cancelled"));
-                }
-            }
-        }
-    }
+	public void tick() {
+		synchronized (connections) {
+			final Iterator var2 = connections.iterator();
+
+			while (var2.hasNext()) {
+				final NetworkManager var3 = (NetworkManager) var2.next();
+
+				if (var3.isChannelOpen()) {
+					var3.processReceivedPackets();
+				} else {
+					var2.remove();
+
+					if (var3.getExitMessage() != null) {
+						var3.getNetHandler()
+								.onDisconnect(var3.getExitMessage());
+					}
+				}
+			}
+		}
+	}
 }

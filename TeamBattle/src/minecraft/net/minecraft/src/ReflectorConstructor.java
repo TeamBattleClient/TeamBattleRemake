@@ -2,80 +2,68 @@ package net.minecraft.src;
 
 import java.lang.reflect.Constructor;
 
-public class ReflectorConstructor
-{
-    private ReflectorClass reflectorClass = null;
-    private Class[] parameterTypes = null;
-    private boolean checked = false;
-    private Constructor targetConstructor = null;
+public class ReflectorConstructor {
+	private static Constructor findConstructor(Class cls, Class[] paramTypes) {
+		final Constructor[] cs = cls.getDeclaredConstructors();
 
-    public ReflectorConstructor(ReflectorClass reflectorClass, Class[] parameterTypes)
-    {
-        this.reflectorClass = reflectorClass;
-        this.parameterTypes = parameterTypes;
-        Constructor c = this.getTargetConstructor();
-    }
+		for (final Constructor c : cs) {
+			final Class[] types = c.getParameterTypes();
 
-    public Constructor getTargetConstructor()
-    {
-        if (this.checked)
-        {
-            return this.targetConstructor;
-        }
-        else
-        {
-            this.checked = true;
-            Class cls = this.reflectorClass.getTargetClass();
+			if (Reflector.matchesTypes(paramTypes, types))
+				return c;
+		}
 
-            if (cls == null)
-            {
-                return null;
-            }
-            else
-            {
-                this.targetConstructor = findConstructor(cls, this.parameterTypes);
+		return null;
+	}
 
-                if (this.targetConstructor == null)
-                {
-                    Config.dbg("(Reflector) Constructor not present: " + cls.getName() + ", params: " + Config.arrayToString((Object[])this.parameterTypes));
-                }
+	private boolean checked = false;
+	private Class[] parameterTypes = null;
+	private ReflectorClass reflectorClass = null;
 
-                if (this.targetConstructor != null && !this.targetConstructor.isAccessible())
-                {
-                    this.targetConstructor.setAccessible(true);
-                }
+	private Constructor targetConstructor = null;
 
-                return this.targetConstructor;
-            }
-        }
-    }
+	public ReflectorConstructor(ReflectorClass reflectorClass,
+			Class[] parameterTypes) {
+		this.reflectorClass = reflectorClass;
+		this.parameterTypes = parameterTypes;
+		getTargetConstructor();
+	}
 
-    private static Constructor findConstructor(Class cls, Class[] paramTypes)
-    {
-        Constructor[] cs = cls.getDeclaredConstructors();
+	public void deactivate() {
+		checked = true;
+		targetConstructor = null;
+	}
 
-        for (int i = 0; i < cs.length; ++i)
-        {
-            Constructor c = cs[i];
-            Class[] types = c.getParameterTypes();
+	public boolean exists() {
+		return checked ? targetConstructor != null
+				: getTargetConstructor() != null;
+	}
 
-            if (Reflector.matchesTypes(paramTypes, types))
-            {
-                return c;
-            }
-        }
+	public Constructor getTargetConstructor() {
+		if (checked)
+			return targetConstructor;
+		else {
+			checked = true;
+			final Class cls = reflectorClass.getTargetClass();
 
-        return null;
-    }
+			if (cls == null)
+				return null;
+			else {
+				targetConstructor = findConstructor(cls, parameterTypes);
 
-    public boolean exists()
-    {
-        return this.checked ? this.targetConstructor != null : this.getTargetConstructor() != null;
-    }
+				if (targetConstructor == null) {
+					Config.dbg("(Reflector) Constructor not present: "
+							+ cls.getName() + ", params: "
+							+ Config.arrayToString(parameterTypes));
+				}
 
-    public void deactivate()
-    {
-        this.checked = true;
-        this.targetConstructor = null;
-    }
+				if (targetConstructor != null
+						&& !targetConstructor.isAccessible()) {
+					targetConstructor.setAccessible(true);
+				}
+
+				return targetConstructor;
+			}
+		}
+	}
 }

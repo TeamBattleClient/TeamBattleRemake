@@ -1,6 +1,5 @@
 package net.minecraft.src;
 
-public interface IWrUpdateListener
-{
-    void updating(IWrUpdateControl var1);
+public interface IWrUpdateListener {
+	void updating(IWrUpdateControl var1);
 }

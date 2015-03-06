@@ -1,0 +1,24 @@
+package me.client.modules.player;
+
+import com.darkmagician6.eventapi.EventManager;
+
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+
+public class Sneak extends Module{
+
+	public Sneak() {
+		super("Sneak", "Sneak", ModuleCategory.MOVEMENT);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	pubi
+}

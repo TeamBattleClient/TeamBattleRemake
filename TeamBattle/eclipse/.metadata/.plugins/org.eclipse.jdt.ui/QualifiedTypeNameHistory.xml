@@ -20,9 +20,7 @@
 <fullyQualifiedTypeName name="me.johny9020.TeamBattle.module.combat.KillAura"/>
 <fullyQualifiedTypeName name="me.johny9020.TeamBattle.irc.TeamBattleIrcBot"/>
 <fullyQualifiedTypeName name="net.minecraft.util.EnumChatFormatting"/>
-<fullyQualifiedTypeName name="org.lwjgl.input.Keyboard"/>
 <fullyQualifiedTypeName name="org.lwjgl.util.vector.Vector3f"/>
-<fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventManager"/>
 <fullyQualifiedTypeName name="com.darkmagician6.eventapi.types.Priority"/>
 <fullyQualifiedTypeName name="java.awt.Event"/>
 <fullyQualifiedTypeName name="net.minecraft.util.AxisAlignedBB"/>
@@ -37,4 +35,9 @@
 <fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventPacketSent"/>
 <fullyQualifiedTypeName name="me.client.events.EventPreMotion"/>
 <fullyQualifiedTypeName name="me.client.events.EventPacketSent"/>
+<fullyQualifiedTypeName name="net.minecraft.network.play.client.C0BPacketEntityAction"/>
+<fullyQualifiedTypeName name="org.lwjgl.input.Keyboard"/>
+<fullyQualifiedTypeName name="me.client.events.EventUpdate"/>
+<fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventManager"/>
+<fullyQualifiedTypeName name="java.lang.Override"/>
 </qualifiedTypeNameHistroy>

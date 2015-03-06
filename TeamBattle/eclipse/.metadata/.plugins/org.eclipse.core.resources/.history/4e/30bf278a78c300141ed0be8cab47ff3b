@@ -1,0 +1,43 @@
+package me.client.modules.player;
+
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+
+import com.darkmagician6.eventapi.EventManager;
+
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+
+public class Sneak extends Module{
+
+	public Sneak() {
+		super("Sneak", "Sneak", ModuleCategory.MOVEMENT);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	public void onPreMotionEvent()
+	{
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 1));
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 2));
+	}
+	public void onPostMotionEvent()
+	{
+		if(!mc.thePlayer.isInWater())
+		{
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 2));
+		mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, 1));
+		}
+	}
+	boolean checks = mc.thePlayer.onGround && !mc.thePlayer.isInWater() && mc.thePlayer.motionX > 0.0F && mc.thePlayer.motionY > 0.0F && mc.thePlayer.motionZ > 0.0F && !mc.thePlayer.isDead;
+	public boolean checkSneak()
+	{
+		return checks;
+	}
+}

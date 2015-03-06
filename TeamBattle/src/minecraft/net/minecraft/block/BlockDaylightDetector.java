@@ -1,6 +1,7 @@
 package net.minecraft.block;
 
 import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -12,110 +13,119 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockDaylightDetector extends BlockContainer
-{
-    private IIcon[] field_149958_a = new IIcon[2];
-    private static final String __OBFID = "CL_00000223";
+public class BlockDaylightDetector extends BlockContainer {
+	private final IIcon[] field_149958_a = new IIcon[2];
 
-    public BlockDaylightDetector()
-    {
-        super(Material.wood);
-        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
-        this.setCreativeTab(CreativeTabs.tabRedstone);
-    }
+	public BlockDaylightDetector() {
+		super(Material.wood);
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
+		setCreativeTab(CreativeTabs.tabRedstone);
+	}
 
-    public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_, int p_149719_2_, int p_149719_3_, int p_149719_4_)
-    {
-        this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
-    }
+	/**
+	 * Can this block provide power. Only wire currently seems to have this
+	 * change based on its state.
+	 */
+	@Override
+	public boolean canProvidePower() {
+		return true;
+	}
 
-    public int isProvidingWeakPower(IBlockAccess p_149709_1_, int p_149709_2_, int p_149709_3_, int p_149709_4_, int p_149709_5_)
-    {
-        return p_149709_1_.getBlockMetadata(p_149709_2_, p_149709_3_, p_149709_4_);
-    }
+	/**
+	 * Returns a new instance of a block's tile entity class. Called on placing
+	 * the block.
+	 */
+	@Override
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+		return new TileEntityDaylightDetector();
+	}
 
-    /**
-     * Ticks the block if it's been scheduled
-     */
-    public void updateTick(World p_149674_1_, int p_149674_2_, int p_149674_3_, int p_149674_4_, Random p_149674_5_) {}
+	public void func_149957_e(World p_149957_1_, int p_149957_2_,
+			int p_149957_3_, int p_149957_4_) {
+		if (!p_149957_1_.provider.hasNoSky) {
+			final int var5 = p_149957_1_.getBlockMetadata(p_149957_2_,
+					p_149957_3_, p_149957_4_);
+			int var6 = p_149957_1_.getSavedLightValue(EnumSkyBlock.Sky,
+					p_149957_2_, p_149957_3_, p_149957_4_)
+					- p_149957_1_.skylightSubtracted;
+			float var7 = p_149957_1_.getCelestialAngleRadians(1.0F);
 
-    public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_) {}
+			if (var7 < (float) Math.PI) {
+				var7 += (0.0F - var7) * 0.2F;
+			} else {
+				var7 += ((float) Math.PI * 2F - var7) * 0.2F;
+			}
 
-    public void onBlockAdded(World p_149726_1_, int p_149726_2_, int p_149726_3_, int p_149726_4_) {}
+			var6 = Math.round(var6 * MathHelper.cos(var7));
 
-    public void func_149957_e(World p_149957_1_, int p_149957_2_, int p_149957_3_, int p_149957_4_)
-    {
-        if (!p_149957_1_.provider.hasNoSky)
-        {
-            int var5 = p_149957_1_.getBlockMetadata(p_149957_2_, p_149957_3_, p_149957_4_);
-            int var6 = p_149957_1_.getSavedLightValue(EnumSkyBlock.Sky, p_149957_2_, p_149957_3_, p_149957_4_) - p_149957_1_.skylightSubtracted;
-            float var7 = p_149957_1_.getCelestialAngleRadians(1.0F);
+			if (var6 < 0) {
+				var6 = 0;
+			}
 
-            if (var7 < (float)Math.PI)
-            {
-                var7 += (0.0F - var7) * 0.2F;
-            }
-            else
-            {
-                var7 += (((float)Math.PI * 2F) - var7) * 0.2F;
-            }
+			if (var6 > 15) {
+				var6 = 15;
+			}
 
-            var6 = Math.round((float)var6 * MathHelper.cos(var7));
+			if (var5 != var6) {
+				p_149957_1_.setBlockMetadataWithNotify(p_149957_2_,
+						p_149957_3_, p_149957_4_, var6, 3);
+			}
+		}
+	}
 
-            if (var6 < 0)
-            {
-                var6 = 0;
-            }
+	/**
+	 * Gets the block's texture. Args: side, meta
+	 */
+	@Override
+	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
+		return p_149691_1_ == 1 ? field_149958_a[0] : field_149958_a[1];
+	}
 
-            if (var6 > 15)
-            {
-                var6 = 15;
-            }
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
 
-            if (var5 != var6)
-            {
-                p_149957_1_.setBlockMetadataWithNotify(p_149957_2_, p_149957_3_, p_149957_4_, var6, 3);
-            }
-        }
-    }
+	@Override
+	public int isProvidingWeakPower(IBlockAccess p_149709_1_, int p_149709_2_,
+			int p_149709_3_, int p_149709_4_, int p_149709_5_) {
+		return p_149709_1_.getBlockMetadata(p_149709_2_, p_149709_3_,
+				p_149709_4_);
+	}
 
-    public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
+	@Override
+	public void onBlockAdded(World p_149726_1_, int p_149726_2_,
+			int p_149726_3_, int p_149726_4_) {
+	}
 
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
+	@Override
+	public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_,
+			int p_149695_3_, int p_149695_4_, Block p_149695_5_) {
+	}
 
-    /**
-     * Can this block provide power. Only wire currently seems to have this change based on its state.
-     */
-    public boolean canProvidePower()
-    {
-        return true;
-    }
+	@Override
+	public void registerBlockIcons(IIconRegister p_149651_1_) {
+		field_149958_a[0] = p_149651_1_.registerIcon(getTextureName() + "_top");
+		field_149958_a[1] = p_149651_1_
+				.registerIcon(getTextureName() + "_side");
+	}
 
-    /**
-     * Returns a new instance of a block's tile entity class. Called on placing the block.
-     */
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
-    {
-        return new TileEntityDaylightDetector();
-    }
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
 
-    /**
-     * Gets the block's texture. Args: side, meta
-     */
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_)
-    {
-        return p_149691_1_ == 1 ? this.field_149958_a[0] : this.field_149958_a[1];
-    }
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_,
+			int p_149719_2_, int p_149719_3_, int p_149719_4_) {
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
+	}
 
-    public void registerBlockIcons(IIconRegister p_149651_1_)
-    {
-        this.field_149958_a[0] = p_149651_1_.registerIcon(this.getTextureName() + "_top");
-        this.field_149958_a[1] = p_149651_1_.registerIcon(this.getTextureName() + "_side");
-    }
+	/**
+	 * Ticks the block if it's been scheduled
+	 */
+	@Override
+	public void updateTick(World p_149674_1_, int p_149674_2_, int p_149674_3_,
+			int p_149674_4_, Random p_149674_5_) {
+	}
 }

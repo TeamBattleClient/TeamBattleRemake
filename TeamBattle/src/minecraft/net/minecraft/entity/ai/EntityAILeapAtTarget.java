@@ -4,61 +4,58 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
-public class EntityAILeapAtTarget extends EntityAIBase
-{
-    /** The entity that is leaping. */
-    EntityLiving leaper;
+public class EntityAILeapAtTarget extends EntityAIBase {
+	/** The entity that is leaping. */
+	EntityLiving leaper;
 
-    /** The entity that the leaper is leaping towards. */
-    EntityLivingBase leapTarget;
+	/** The entity's motionY after leaping. */
+	float leapMotionY;
 
-    /** The entity's motionY after leaping. */
-    float leapMotionY;
-    private static final String __OBFID = "CL_00001591";
+	/** The entity that the leaper is leaping towards. */
+	EntityLivingBase leapTarget;
 
-    public EntityAILeapAtTarget(EntityLiving p_i1630_1_, float p_i1630_2_)
-    {
-        this.leaper = p_i1630_1_;
-        this.leapMotionY = p_i1630_2_;
-        this.setMutexBits(5);
-    }
+	public EntityAILeapAtTarget(EntityLiving p_i1630_1_, float p_i1630_2_) {
+		leaper = p_i1630_1_;
+		leapMotionY = p_i1630_2_;
+		setMutexBits(5);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        this.leapTarget = this.leaper.getAttackTarget();
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !leaper.onGround;
+	}
 
-        if (this.leapTarget == null)
-        {
-            return false;
-        }
-        else
-        {
-            double var1 = this.leaper.getDistanceSqToEntity(this.leapTarget);
-            return var1 >= 4.0D && var1 <= 16.0D ? (!this.leaper.onGround ? false : this.leaper.getRNG().nextInt(5) == 0) : false;
-        }
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		leapTarget = leaper.getAttackTarget();
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.leaper.onGround;
-    }
+		if (leapTarget == null)
+			return false;
+		else {
+			final double var1 = leaper.getDistanceSqToEntity(leapTarget);
+			return var1 >= 4.0D && var1 <= 16.0D ? !leaper.onGround ? false
+					: leaper.getRNG().nextInt(5) == 0 : false;
+		}
+	}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        double var1 = this.leapTarget.posX - this.leaper.posX;
-        double var3 = this.leapTarget.posZ - this.leaper.posZ;
-        float var5 = MathHelper.sqrt_double(var1 * var1 + var3 * var3);
-        this.leaper.motionX += var1 / (double)var5 * 0.5D * 0.800000011920929D + this.leaper.motionX * 0.20000000298023224D;
-        this.leaper.motionZ += var3 / (double)var5 * 0.5D * 0.800000011920929D + this.leaper.motionZ * 0.20000000298023224D;
-        this.leaper.motionY = (double)this.leapMotionY;
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		final double var1 = leapTarget.posX - leaper.posX;
+		final double var3 = leapTarget.posZ - leaper.posZ;
+		final float var5 = MathHelper.sqrt_double(var1 * var1 + var3 * var3);
+		leaper.motionX += var1 / var5 * 0.5D * 0.800000011920929D
+				+ leaper.motionX * 0.20000000298023224D;
+		leaper.motionZ += var3 / var5 * 0.5D * 0.800000011920929D
+				+ leaper.motionZ * 0.20000000298023224D;
+		leaper.motionY = leapMotionY;
+	}
 }

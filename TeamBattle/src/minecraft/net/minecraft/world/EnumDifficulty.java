@@ -1,45 +1,39 @@
 package net.minecraft.world;
 
-public enum EnumDifficulty
-{
-    PEACEFUL(0, "options.difficulty.peaceful"),
-    EASY(1, "options.difficulty.easy"),
-    NORMAL(2, "options.difficulty.normal"),
-    HARD(3, "options.difficulty.hard");
-    private static final EnumDifficulty[] difficultyEnums = new EnumDifficulty[values().length];
-    private final int difficultyId;
-    private final String difficultyResourceKey;
-    private static final String __OBFID = "CL_00001510";
+public enum EnumDifficulty {
+	EASY(1, "options.difficulty.easy"), HARD(3, "options.difficulty.hard"), NORMAL(
+			2, "options.difficulty.normal"), PEACEFUL(0,
+			"options.difficulty.peaceful");
+	private static final EnumDifficulty[] difficultyEnums = new EnumDifficulty[values().length];
 
-    private EnumDifficulty(int p_i45312_3_, String p_i45312_4_)
-    {
-        this.difficultyId = p_i45312_3_;
-        this.difficultyResourceKey = p_i45312_4_;
-    }
+	static {
+		final EnumDifficulty[] var0 = values();
+		final int var1 = var0.length;
 
-    public int getDifficultyId()
-    {
-        return this.difficultyId;
-    }
+		for (int var2 = 0; var2 < var1; ++var2) {
+			final EnumDifficulty var3 = var0[var2];
+			difficultyEnums[var3.difficultyId] = var3;
+		}
+	}
 
-    public static EnumDifficulty getDifficultyEnum(int p_151523_0_)
-    {
-        return difficultyEnums[p_151523_0_ % difficultyEnums.length];
-    }
+	public static EnumDifficulty getDifficultyEnum(int p_151523_0_) {
+		return difficultyEnums[p_151523_0_ % difficultyEnums.length];
+	}
 
-    public String getDifficultyResourceKey()
-    {
-        return this.difficultyResourceKey;
-    }
+	private final int difficultyId;
 
-    static {
-        EnumDifficulty[] var0 = values();
-        int var1 = var0.length;
+	private final String difficultyResourceKey;
 
-        for (int var2 = 0; var2 < var1; ++var2)
-        {
-            EnumDifficulty var3 = var0[var2];
-            difficultyEnums[var3.difficultyId] = var3;
-        }
-    }
+	private EnumDifficulty(int p_i45312_3_, String p_i45312_4_) {
+		difficultyId = p_i45312_3_;
+		difficultyResourceKey = p_i45312_4_;
+	}
+
+	public int getDifficultyId() {
+		return difficultyId;
+	}
+
+	public String getDifficultyResourceKey() {
+		return difficultyResourceKey;
+	}
 }

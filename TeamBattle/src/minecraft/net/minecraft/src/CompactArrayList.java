@@ -2,152 +2,123 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 
-public class CompactArrayList
-{
-    private ArrayList list;
-    private int initialCapacity;
-    private float loadFactor;
-    private int countValid;
+public class CompactArrayList {
+	private int countValid;
+	private int initialCapacity;
+	private ArrayList list;
+	private float loadFactor;
 
-    public CompactArrayList()
-    {
-        this(10, 0.75F);
-    }
+	public CompactArrayList() {
+		this(10, 0.75F);
+	}
 
-    public CompactArrayList(int initialCapacity)
-    {
-        this(initialCapacity, 0.75F);
-    }
+	public CompactArrayList(int initialCapacity) {
+		this(initialCapacity, 0.75F);
+	}
 
-    public CompactArrayList(int initialCapacity, float loadFactor)
-    {
-        this.list = null;
-        this.initialCapacity = 0;
-        this.loadFactor = 1.0F;
-        this.countValid = 0;
-        this.list = new ArrayList(initialCapacity);
-        this.initialCapacity = initialCapacity;
-        this.loadFactor = loadFactor;
-    }
+	public CompactArrayList(int initialCapacity, float loadFactor) {
+		list = null;
+		this.initialCapacity = 0;
+		this.loadFactor = 1.0F;
+		countValid = 0;
+		list = new ArrayList(initialCapacity);
+		this.initialCapacity = initialCapacity;
+		this.loadFactor = loadFactor;
+	}
 
-    public void add(int index, Object element)
-    {
-        if (element != null)
-        {
-            ++this.countValid;
-        }
+	public void add(int index, Object element) {
+		if (element != null) {
+			++countValid;
+		}
 
-        this.list.add(index, element);
-    }
+		list.add(index, element);
+	}
 
-    public boolean add(Object element)
-    {
-        if (element != null)
-        {
-            ++this.countValid;
-        }
+	public boolean add(Object element) {
+		if (element != null) {
+			++countValid;
+		}
 
-        return this.list.add(element);
-    }
+		return list.add(element);
+	}
 
-    public Object set(int index, Object element)
-    {
-        Object oldElement = this.list.set(index, element);
+	public void clear() {
+		list.clear();
+		countValid = 0;
+	}
 
-        if (element != oldElement)
-        {
-            if (oldElement == null)
-            {
-                ++this.countValid;
-            }
+	public void compact() {
+		if (countValid <= 0 && list.size() <= 0) {
+			clear();
+		} else if (list.size() > initialCapacity) {
+			final float currentLoadFactor = countValid * 1.0F / list.size();
 
-            if (element == null)
-            {
-                --this.countValid;
-            }
-        }
+			if (currentLoadFactor <= loadFactor) {
+				int dstIndex = 0;
+				int i;
 
-        return oldElement;
-    }
+				for (i = 0; i < list.size(); ++i) {
+					final Object wr = list.get(i);
 
-    public Object remove(int index)
-    {
-        Object oldElement = this.list.remove(index);
+					if (wr != null) {
+						if (i != dstIndex) {
+							list.set(dstIndex, wr);
+						}
 
-        if (oldElement != null)
-        {
-            --this.countValid;
-        }
+						++dstIndex;
+					}
+				}
 
-        return oldElement;
-    }
+				for (i = list.size() - 1; i >= dstIndex; --i) {
+					list.remove(i);
+				}
+			}
+		}
+	}
 
-    public void clear()
-    {
-        this.list.clear();
-        this.countValid = 0;
-    }
+	public boolean contains(Object elem) {
+		return list.contains(elem);
+	}
 
-    public void compact()
-    {
-        if (this.countValid <= 0 && this.list.size() <= 0)
-        {
-            this.clear();
-        }
-        else if (this.list.size() > this.initialCapacity)
-        {
-            float currentLoadFactor = (float)this.countValid * 1.0F / (float)this.list.size();
+	public Object get(int index) {
+		return list.get(index);
+	}
 
-            if (currentLoadFactor <= this.loadFactor)
-            {
-                int dstIndex = 0;
-                int i;
+	public int getCountValid() {
+		return countValid;
+	}
 
-                for (i = 0; i < this.list.size(); ++i)
-                {
-                    Object wr = this.list.get(i);
+	public boolean isEmpty() {
+		return list.isEmpty();
+	}
 
-                    if (wr != null)
-                    {
-                        if (i != dstIndex)
-                        {
-                            this.list.set(dstIndex, wr);
-                        }
+	public Object remove(int index) {
+		final Object oldElement = list.remove(index);
 
-                        ++dstIndex;
-                    }
-                }
+		if (oldElement != null) {
+			--countValid;
+		}
 
-                for (i = this.list.size() - 1; i >= dstIndex; --i)
-                {
-                    this.list.remove(i);
-                }
-            }
-        }
-    }
+		return oldElement;
+	}
 
-    public boolean contains(Object elem)
-    {
-        return this.list.contains(elem);
-    }
+	public Object set(int index, Object element) {
+		final Object oldElement = list.set(index, element);
 
-    public Object get(int index)
-    {
-        return this.list.get(index);
-    }
+		if (element != oldElement) {
+			if (oldElement == null) {
+				++countValid;
+			}
 
-    public boolean isEmpty()
-    {
-        return this.list.isEmpty();
-    }
+			if (element == null) {
+				--countValid;
+			}
+		}
 
-    public int size()
-    {
-        return this.list.size();
-    }
+		return oldElement;
+	}
 
-    public int getCountValid()
-    {
-        return this.countValid;
-    }
+	public int size() {
+		return list.size();
+	}
 }

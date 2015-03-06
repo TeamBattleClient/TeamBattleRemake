@@ -1,80 +1,70 @@
 package net.minecraft.client.shader;
 
-public class TesselatorVertexState
-{
-    private int[] rawBuffer;
-    private int rawBufferIndex;
-    private int vertexCount;
-    private boolean hasTexture;
-    private boolean hasBrightness;
-    private boolean hasNormals;
-    private boolean hasColor;
-    private static final String __OBFID = "CL_00000961";
+public class TesselatorVertexState {
+	private final boolean hasBrightness;
+	private final boolean hasColor;
+	private final boolean hasNormals;
+	private final boolean hasTexture;
+	private int[] rawBuffer;
+	private int rawBufferIndex;
+	private int vertexCount;
 
-    public TesselatorVertexState(int[] p_i45079_1_, int p_i45079_2_, int p_i45079_3_, boolean p_i45079_4_, boolean p_i45079_5_, boolean p_i45079_6_, boolean p_i45079_7_)
-    {
-        this.rawBuffer = p_i45079_1_;
-        this.rawBufferIndex = p_i45079_2_;
-        this.vertexCount = p_i45079_3_;
-        this.hasTexture = p_i45079_4_;
-        this.hasBrightness = p_i45079_5_;
-        this.hasNormals = p_i45079_6_;
-        this.hasColor = p_i45079_7_;
-    }
+	public TesselatorVertexState(int[] p_i45079_1_, int p_i45079_2_,
+			int p_i45079_3_, boolean p_i45079_4_, boolean p_i45079_5_,
+			boolean p_i45079_6_, boolean p_i45079_7_) {
+		rawBuffer = p_i45079_1_;
+		rawBufferIndex = p_i45079_2_;
+		vertexCount = p_i45079_3_;
+		hasTexture = p_i45079_4_;
+		hasBrightness = p_i45079_5_;
+		hasNormals = p_i45079_6_;
+		hasColor = p_i45079_7_;
+	}
 
-    public int[] getRawBuffer()
-    {
-        return this.rawBuffer;
-    }
+	public void addTessellatorVertexState(TesselatorVertexState tsv) {
+		if (tsv != null) {
+			if (tsv.hasBrightness == hasBrightness && tsv.hasColor == hasColor
+					&& tsv.hasNormals == hasNormals
+					&& tsv.hasTexture == hasTexture) {
+				final int newRawBufferIndex = rawBufferIndex
+						+ tsv.rawBufferIndex;
+				final int[] newRawBuffer = new int[newRawBufferIndex];
+				System.arraycopy(rawBuffer, 0, newRawBuffer, 0, rawBufferIndex);
+				System.arraycopy(tsv.rawBuffer, 0, newRawBuffer,
+						rawBufferIndex, tsv.rawBufferIndex);
+				rawBuffer = newRawBuffer;
+				rawBufferIndex = newRawBufferIndex;
+				vertexCount += tsv.vertexCount;
+			} else
+				throw new IllegalArgumentException("Incompatible vertex states");
+		}
+	}
 
-    public int getRawBufferIndex()
-    {
-        return this.rawBufferIndex;
-    }
+	public boolean getHasBrightness() {
+		return hasBrightness;
+	}
 
-    public int getVertexCount()
-    {
-        return this.vertexCount;
-    }
+	public boolean getHasColor() {
+		return hasColor;
+	}
 
-    public boolean getHasTexture()
-    {
-        return this.hasTexture;
-    }
+	public boolean getHasNormals() {
+		return hasNormals;
+	}
 
-    public boolean getHasBrightness()
-    {
-        return this.hasBrightness;
-    }
+	public boolean getHasTexture() {
+		return hasTexture;
+	}
 
-    public boolean getHasNormals()
-    {
-        return this.hasNormals;
-    }
+	public int[] getRawBuffer() {
+		return rawBuffer;
+	}
 
-    public boolean getHasColor()
-    {
-        return this.hasColor;
-    }
+	public int getRawBufferIndex() {
+		return rawBufferIndex;
+	}
 
-    public void addTessellatorVertexState(TesselatorVertexState tsv)
-    {
-        if (tsv != null)
-        {
-            if (tsv.hasBrightness == this.hasBrightness && tsv.hasColor == this.hasColor && tsv.hasNormals == this.hasNormals && tsv.hasTexture == this.hasTexture)
-            {
-                int newRawBufferIndex = this.rawBufferIndex + tsv.rawBufferIndex;
-                int[] newRawBuffer = new int[newRawBufferIndex];
-                System.arraycopy(this.rawBuffer, 0, newRawBuffer, 0, this.rawBufferIndex);
-                System.arraycopy(tsv.rawBuffer, 0, newRawBuffer, this.rawBufferIndex, tsv.rawBufferIndex);
-                this.rawBuffer = newRawBuffer;
-                this.rawBufferIndex = newRawBufferIndex;
-                this.vertexCount += tsv.vertexCount;
-            }
-            else
-            {
-                throw new IllegalArgumentException("Incompatible vertex states");
-            }
-        }
-    }
+	public int getVertexCount() {
+		return vertexCount;
+	}
 }

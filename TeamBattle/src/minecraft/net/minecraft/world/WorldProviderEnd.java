@@ -8,134 +8,135 @@ import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderEnd;
 
-public class WorldProviderEnd extends WorldProvider
-{
-    private static final String __OBFID = "CL_00000389";
+public class WorldProviderEnd extends WorldProvider {
 
-    /**
-     * creates a new world chunk manager for WorldProvider
-     */
-    public void registerWorldChunkManager()
-    {
-        this.worldChunkMgr = new WorldChunkManagerHell(BiomeGenBase.sky, 0.0F);
-        this.dimensionId = 1;
-        this.hasNoSky = true;
-    }
+	/**
+	 * Returns array with sunrise/sunset colors
+	 */
+	@Override
+	public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_) {
+		return null;
+	}
 
-    /**
-     * Returns a new chunk provider which generates chunks for this world
-     */
-    public IChunkProvider createChunkGenerator()
-    {
-        return new ChunkProviderEnd(this.worldObj, this.worldObj.getSeed());
-    }
+	/**
+	 * Calculates the angle of sun and moon in the sky relative to a specified
+	 * time (usually worldTime)
+	 */
+	@Override
+	public float calculateCelestialAngle(long p_76563_1_, float p_76563_3_) {
+		return 0.0F;
+	}
 
-    /**
-     * Calculates the angle of sun and moon in the sky relative to a specified time (usually worldTime)
-     */
-    public float calculateCelestialAngle(long p_76563_1_, float p_76563_3_)
-    {
-        return 0.0F;
-    }
+	/**
+	 * Will check if the x, z position specified is alright to be set as the map
+	 * spawn point
+	 */
+	@Override
+	public boolean canCoordinateBeSpawn(int p_76566_1_, int p_76566_2_) {
+		return worldObj.getTopBlock(p_76566_1_, p_76566_2_).getMaterial()
+				.blocksMovement();
+	}
 
-    /**
-     * Returns array with sunrise/sunset colors
-     */
-    public float[] calcSunriseSunsetColors(float p_76560_1_, float p_76560_2_)
-    {
-        return null;
-    }
+	/**
+	 * True if the player can respawn in this dimension (true = overworld, false
+	 * = nether).
+	 */
+	@Override
+	public boolean canRespawnHere() {
+		return false;
+	}
 
-    /**
-     * Return Vec3D with biome specific fog color
-     */
-    public Vec3 getFogColor(float p_76562_1_, float p_76562_2_)
-    {
-        int var3 = 10518688;
-        float var4 = MathHelper.cos(p_76562_1_ * (float)Math.PI * 2.0F) * 2.0F + 0.5F;
+	/**
+	 * Returns a new chunk provider which generates chunks for this world
+	 */
+	@Override
+	public IChunkProvider createChunkGenerator() {
+		return new ChunkProviderEnd(worldObj, worldObj.getSeed());
+	}
 
-        if (var4 < 0.0F)
-        {
-            var4 = 0.0F;
-        }
+	/**
+	 * Returns true if the given X,Z coordinate should show environmental fog.
+	 */
+	@Override
+	public boolean doesXZShowFog(int p_76568_1_, int p_76568_2_) {
+		return true;
+	}
 
-        if (var4 > 1.0F)
-        {
-            var4 = 1.0F;
-        }
+	@Override
+	public int getAverageGroundLevel() {
+		return 50;
+	}
 
-        float var5 = (float)(var3 >> 16 & 255) / 255.0F;
-        float var6 = (float)(var3 >> 8 & 255) / 255.0F;
-        float var7 = (float)(var3 & 255) / 255.0F;
-        var5 *= var4 * 0.0F + 0.15F;
-        var6 *= var4 * 0.0F + 0.15F;
-        var7 *= var4 * 0.0F + 0.15F;
-        return Vec3.createVectorHelper((double)var5, (double)var6, (double)var7);
-    }
+	/**
+	 * the y level at which clouds are rendered.
+	 */
+	@Override
+	public float getCloudHeight() {
+		return 8.0F;
+	}
 
-    public boolean isSkyColored()
-    {
-        return false;
-    }
+	/**
+	 * Returns the dimension's name, e.g. "The End", "Nether", or "Overworld".
+	 */
+	@Override
+	public String getDimensionName() {
+		return "The End";
+	}
 
-    /**
-     * True if the player can respawn in this dimension (true = overworld, false = nether).
-     */
-    public boolean canRespawnHere()
-    {
-        return false;
-    }
+	/**
+	 * Gets the hard-coded portal location to use when entering this dimension.
+	 */
+	@Override
+	public ChunkCoordinates getEntrancePortalLocation() {
+		return new ChunkCoordinates(100, 50, 0);
+	}
 
-    /**
-     * Returns 'true' if in the "main surface world", but 'false' if in the Nether or End dimensions.
-     */
-    public boolean isSurfaceWorld()
-    {
-        return false;
-    }
+	/**
+	 * Return Vec3D with biome specific fog color
+	 */
+	@Override
+	public Vec3 getFogColor(float p_76562_1_, float p_76562_2_) {
+		final int var3 = 10518688;
+		float var4 = MathHelper.cos(p_76562_1_ * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
 
-    /**
-     * the y level at which clouds are rendered.
-     */
-    public float getCloudHeight()
-    {
-        return 8.0F;
-    }
+		if (var4 < 0.0F) {
+			var4 = 0.0F;
+		}
 
-    /**
-     * Will check if the x, z position specified is alright to be set as the map spawn point
-     */
-    public boolean canCoordinateBeSpawn(int p_76566_1_, int p_76566_2_)
-    {
-        return this.worldObj.getTopBlock(p_76566_1_, p_76566_2_).getMaterial().blocksMovement();
-    }
+		if (var4 > 1.0F) {
+			var4 = 1.0F;
+		}
 
-    /**
-     * Gets the hard-coded portal location to use when entering this dimension.
-     */
-    public ChunkCoordinates getEntrancePortalLocation()
-    {
-        return new ChunkCoordinates(100, 50, 0);
-    }
+		float var5 = (var3 >> 16 & 255) / 255.0F;
+		float var6 = (var3 >> 8 & 255) / 255.0F;
+		float var7 = (var3 & 255) / 255.0F;
+		var5 *= var4 * 0.0F + 0.15F;
+		var6 *= var4 * 0.0F + 0.15F;
+		var7 *= var4 * 0.0F + 0.15F;
+		return Vec3.createVectorHelper(var5, var6, var7);
+	}
 
-    public int getAverageGroundLevel()
-    {
-        return 50;
-    }
+	@Override
+	public boolean isSkyColored() {
+		return false;
+	}
 
-    /**
-     * Returns true if the given X,Z coordinate should show environmental fog.
-     */
-    public boolean doesXZShowFog(int p_76568_1_, int p_76568_2_)
-    {
-        return true;
-    }
+	/**
+	 * Returns 'true' if in the "main surface world", but 'false' if in the
+	 * Nether or End dimensions.
+	 */
+	@Override
+	public boolean isSurfaceWorld() {
+		return false;
+	}
 
-    /**
-     * Returns the dimension's name, e.g. "The End", "Nether", or "Overworld".
-     */
-    public String getDimensionName()
-    {
-        return "The End";
-    }
+	/**
+	 * creates a new world chunk manager for WorldProvider
+	 */
+	@Override
+	public void registerWorldChunkManager() {
+		worldChunkMgr = new WorldChunkManagerHell(BiomeGenBase.sky, 0.0F);
+		dimensionId = 1;
+		hasNoSky = true;
+	}
 }

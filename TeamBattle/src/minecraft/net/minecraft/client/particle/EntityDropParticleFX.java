@@ -5,127 +5,119 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityDropParticleFX extends EntityFX
-{
-    /** the material type for dropped items/blocks */
-    private Material materialType;
+public class EntityDropParticleFX extends EntityFX {
+	/** The height of the current bob */
+	private int bobTimer;
 
-    /** The height of the current bob */
-    private int bobTimer;
-    private static final String __OBFID = "CL_00000901";
+	/** the material type for dropped items/blocks */
+	private final Material materialType;
 
-    public EntityDropParticleFX(World p_i1203_1_, double p_i1203_2_, double p_i1203_4_, double p_i1203_6_, Material p_i1203_8_)
-    {
-        super(p_i1203_1_, p_i1203_2_, p_i1203_4_, p_i1203_6_, 0.0D, 0.0D, 0.0D);
-        this.motionX = this.motionY = this.motionZ = 0.0D;
+	public EntityDropParticleFX(World p_i1203_1_, double p_i1203_2_,
+			double p_i1203_4_, double p_i1203_6_, Material p_i1203_8_) {
+		super(p_i1203_1_, p_i1203_2_, p_i1203_4_, p_i1203_6_, 0.0D, 0.0D, 0.0D);
+		motionX = motionY = motionZ = 0.0D;
 
-        if (p_i1203_8_ == Material.water)
-        {
-            this.particleRed = 0.0F;
-            this.particleGreen = 0.0F;
-            this.particleBlue = 1.0F;
-        }
-        else
-        {
-            this.particleRed = 1.0F;
-            this.particleGreen = 0.0F;
-            this.particleBlue = 0.0F;
-        }
+		if (p_i1203_8_ == Material.water) {
+			particleRed = 0.0F;
+			particleGreen = 0.0F;
+			particleBlue = 1.0F;
+		} else {
+			particleRed = 1.0F;
+			particleGreen = 0.0F;
+			particleBlue = 0.0F;
+		}
 
-        this.setParticleTextureIndex(113);
-        this.setSize(0.01F, 0.01F);
-        this.particleGravity = 0.06F;
-        this.materialType = p_i1203_8_;
-        this.bobTimer = 40;
-        this.particleMaxAge = (int)(64.0D / (Math.random() * 0.8D + 0.2D));
-        this.motionX = this.motionY = this.motionZ = 0.0D;
-    }
+		setParticleTextureIndex(113);
+		setSize(0.01F, 0.01F);
+		particleGravity = 0.06F;
+		materialType = p_i1203_8_;
+		bobTimer = 40;
+		particleMaxAge = (int) (64.0D / (Math.random() * 0.8D + 0.2D));
+		motionX = motionY = motionZ = 0.0D;
+	}
 
-    public int getBrightnessForRender(float p_70070_1_)
-    {
-        return this.materialType == Material.water ? super.getBrightnessForRender(p_70070_1_) : 257;
-    }
+	/**
+	 * Gets how bright this entity is.
+	 */
+	@Override
+	public float getBrightness(float p_70013_1_) {
+		return materialType == Material.water ? super.getBrightness(p_70013_1_)
+				: 1.0F;
+	}
 
-    /**
-     * Gets how bright this entity is.
-     */
-    public float getBrightness(float p_70013_1_)
-    {
-        return this.materialType == Material.water ? super.getBrightness(p_70013_1_) : 1.0F;
-    }
+	@Override
+	public int getBrightnessForRender(float p_70070_1_) {
+		return materialType == Material.water ? super
+				.getBrightnessForRender(p_70070_1_) : 257;
+	}
 
-    /**
-     * Called to update the entity's position/logic.
-     */
-    public void onUpdate()
-    {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	@Override
+	public void onUpdate() {
+		prevPosX = posX;
+		prevPosY = posY;
+		prevPosZ = posZ;
 
-        if (this.materialType == Material.water)
-        {
-            this.particleRed = 0.2F;
-            this.particleGreen = 0.3F;
-            this.particleBlue = 1.0F;
-        }
-        else
-        {
-            this.particleRed = 1.0F;
-            this.particleGreen = 16.0F / (float)(40 - this.bobTimer + 16);
-            this.particleBlue = 4.0F / (float)(40 - this.bobTimer + 8);
-        }
+		if (materialType == Material.water) {
+			particleRed = 0.2F;
+			particleGreen = 0.3F;
+			particleBlue = 1.0F;
+		} else {
+			particleRed = 1.0F;
+			particleGreen = 16.0F / (40 - bobTimer + 16);
+			particleBlue = 4.0F / (40 - bobTimer + 8);
+		}
 
-        this.motionY -= (double)this.particleGravity;
+		motionY -= particleGravity;
 
-        if (this.bobTimer-- > 0)
-        {
-            this.motionX *= 0.02D;
-            this.motionY *= 0.02D;
-            this.motionZ *= 0.02D;
-            this.setParticleTextureIndex(113);
-        }
-        else
-        {
-            this.setParticleTextureIndex(112);
-        }
+		if (bobTimer-- > 0) {
+			motionX *= 0.02D;
+			motionY *= 0.02D;
+			motionZ *= 0.02D;
+			setParticleTextureIndex(113);
+		} else {
+			setParticleTextureIndex(112);
+		}
 
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+		moveEntity(motionX, motionY, motionZ);
+		motionX *= 0.9800000190734863D;
+		motionY *= 0.9800000190734863D;
+		motionZ *= 0.9800000190734863D;
 
-        if (this.particleMaxAge-- <= 0)
-        {
-            this.setDead();
-        }
+		if (particleMaxAge-- <= 0) {
+			setDead();
+		}
 
-        if (this.onGround)
-        {
-            if (this.materialType == Material.water)
-            {
-                this.setDead();
-                this.worldObj.spawnParticle("splash", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
-            }
-            else
-            {
-                this.setParticleTextureIndex(114);
-            }
+		if (onGround) {
+			if (materialType == Material.water) {
+				setDead();
+				worldObj.spawnParticle("splash", posX, posY, posZ, 0.0D, 0.0D,
+						0.0D);
+			} else {
+				setParticleTextureIndex(114);
+			}
 
-            this.motionX *= 0.699999988079071D;
-            this.motionZ *= 0.699999988079071D;
-        }
+			motionX *= 0.699999988079071D;
+			motionZ *= 0.699999988079071D;
+		}
 
-        Material var1 = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ)).getMaterial();
+		final Material var1 = worldObj.getBlock(MathHelper.floor_double(posX),
+				MathHelper.floor_double(posY), MathHelper.floor_double(posZ))
+				.getMaterial();
 
-        if (var1.isLiquid() || var1.isSolid())
-        {
-            double var2 = (double)((float)(MathHelper.floor_double(this.posY) + 1) - BlockLiquid.func_149801_b(this.worldObj.getBlockMetadata(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ))));
+		if (var1.isLiquid() || var1.isSolid()) {
+			final double var2 = MathHelper.floor_double(posY)
+					+ 1
+					- BlockLiquid.func_149801_b(worldObj.getBlockMetadata(
+							MathHelper.floor_double(posX),
+							MathHelper.floor_double(posY),
+							MathHelper.floor_double(posZ)));
 
-            if (this.posY < var2)
-            {
-                this.setDead();
-            }
-        }
-    }
+			if (posY < var2) {
+				setDead();
+			}
+		}
+	}
 }

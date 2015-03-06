@@ -1,23 +1,21 @@
 package me.client.utils;
 
-import me.client.Client;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 
-public class Logger {
+public final class Logger {
+	private static Minecraft mc = Minecraft.getMinecraft();
 
-	public void log(String message, LogType logType) {
-		switch(logType) {
-		case NORMAL: 
-			System.out.println("[" + Client.instance.Client_Name + "] " + message);
-			break;
-		case WARNING:
-			System.out.println("[" + Client.instance.Client_Name + " - WARNING] " + message);
-			break;
-		case ERROR:
-			System.out.println("[" + Client.instance.Client_Name + " - ERROR] " + message);
+	public static void logChat(String message) {
+		if (mc.thePlayer == null) {
+			logConsole(message);
+		} else {
+			mc.thePlayer.addChatMessage(new ChatComponentText("\2473[TeamBattle]\247f "
+					+ message));
 		}
 	}
-	
-	public static enum LogType {
-		NORMAL, WARNING, ERROR
+
+	public static void logConsole(String message) {
+		System.out.println("[TeamBattle] " + message);
 	}
 }

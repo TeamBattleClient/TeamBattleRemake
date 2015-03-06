@@ -5,81 +5,77 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-public class LowerStringMap implements Map
-{
-    private final Map internalMap = new LinkedHashMap();
-    private static final String __OBFID = "CL_00001488";
+public class LowerStringMap implements Map {
+	private final Map internalMap = new LinkedHashMap();
 
-    public int size()
-    {
-        return this.internalMap.size();
-    }
+	@Override
+	public void clear() {
+		internalMap.clear();
+	}
 
-    public boolean isEmpty()
-    {
-        return this.internalMap.isEmpty();
-    }
+	@Override
+	public boolean containsKey(Object p_containsKey_1_) {
+		return internalMap.containsKey(p_containsKey_1_.toString()
+				.toLowerCase());
+	}
 
-    public boolean containsKey(Object p_containsKey_1_)
-    {
-        return this.internalMap.containsKey(p_containsKey_1_.toString().toLowerCase());
-    }
+	@Override
+	public boolean containsValue(Object p_containsValue_1_) {
+		return internalMap.containsKey(p_containsValue_1_);
+	}
 
-    public boolean containsValue(Object p_containsValue_1_)
-    {
-        return this.internalMap.containsKey(p_containsValue_1_);
-    }
+	@Override
+	public Set entrySet() {
+		return internalMap.entrySet();
+	}
 
-    public Object get(Object p_get_1_)
-    {
-        return this.internalMap.get(p_get_1_.toString().toLowerCase());
-    }
+	@Override
+	public Object get(Object p_get_1_) {
+		return internalMap.get(p_get_1_.toString().toLowerCase());
+	}
 
-    public Object put(String p_put_1_, Object p_put_2_)
-    {
-        return this.internalMap.put(p_put_1_.toLowerCase(), p_put_2_);
-    }
+	@Override
+	public boolean isEmpty() {
+		return internalMap.isEmpty();
+	}
 
-    public Object remove(Object p_remove_1_)
-    {
-        return this.internalMap.remove(p_remove_1_.toString().toLowerCase());
-    }
+	@Override
+	public Set keySet() {
+		return internalMap.keySet();
+	}
 
-    public void putAll(Map p_putAll_1_)
-    {
-        Iterator var2 = p_putAll_1_.entrySet().iterator();
+	@Override
+	public Object put(Object p_put_1_, Object p_put_2_) {
+		return this.put((String) p_put_1_, p_put_2_);
+	}
 
-        while (var2.hasNext())
-        {
-            Entry var3 = (Entry)var2.next();
-            this.put((String)var3.getKey(), var3.getValue());
-        }
-    }
+	public Object put(String p_put_1_, Object p_put_2_) {
+		return internalMap.put(p_put_1_.toLowerCase(), p_put_2_);
+	}
 
-    public void clear()
-    {
-        this.internalMap.clear();
-    }
+	@Override
+	public void putAll(Map p_putAll_1_) {
+		final Iterator var2 = p_putAll_1_.entrySet().iterator();
 
-    public Set keySet()
-    {
-        return this.internalMap.keySet();
-    }
+		while (var2.hasNext()) {
+			final Entry var3 = (Entry) var2.next();
+			this.put((String) var3.getKey(), var3.getValue());
+		}
+	}
 
-    public Collection values()
-    {
-        return this.internalMap.values();
-    }
+	@Override
+	public Object remove(Object p_remove_1_) {
+		return internalMap.remove(p_remove_1_.toString().toLowerCase());
+	}
 
-    public Set entrySet()
-    {
-        return this.internalMap.entrySet();
-    }
+	@Override
+	public int size() {
+		return internalMap.size();
+	}
 
-    public Object put(Object p_put_1_, Object p_put_2_)
-    {
-        return this.put((String)p_put_1_, p_put_2_);
-    }
+	@Override
+	public Collection values() {
+		return internalMap.values();
+	}
 }

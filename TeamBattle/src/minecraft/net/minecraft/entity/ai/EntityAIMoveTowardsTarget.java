@@ -4,83 +4,82 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.Vec3;
 
-public class EntityAIMoveTowardsTarget extends EntityAIBase
-{
-    private EntityCreature theEntity;
-    private EntityLivingBase targetEntity;
-    private double movePosX;
-    private double movePosY;
-    private double movePosZ;
-    private double speed;
+public class EntityAIMoveTowardsTarget extends EntityAIBase {
+	/**
+	 * If the distance to the target entity is further than this, this AI task
+	 * will not run.
+	 */
+	private final float maxTargetDistance;
+	private double movePosX;
+	private double movePosY;
+	private double movePosZ;
+	private final double speed;
+	private EntityLivingBase targetEntity;
 
-    /**
-     * If the distance to the target entity is further than this, this AI task will not run.
-     */
-    private float maxTargetDistance;
-    private static final String __OBFID = "CL_00001599";
+	private final EntityCreature theEntity;
 
-    public EntityAIMoveTowardsTarget(EntityCreature p_i1640_1_, double p_i1640_2_, float p_i1640_4_)
-    {
-        this.theEntity = p_i1640_1_;
-        this.speed = p_i1640_2_;
-        this.maxTargetDistance = p_i1640_4_;
-        this.setMutexBits(1);
-    }
+	public EntityAIMoveTowardsTarget(EntityCreature p_i1640_1_,
+			double p_i1640_2_, float p_i1640_4_) {
+		theEntity = p_i1640_1_;
+		speed = p_i1640_2_;
+		maxTargetDistance = p_i1640_4_;
+		setMutexBits(1);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        this.targetEntity = this.theEntity.getAttackTarget();
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !theEntity.getNavigator().noPath()
+				&& targetEntity.isEntityAlive()
+				&& targetEntity.getDistanceSqToEntity(theEntity) < maxTargetDistance
+						* maxTargetDistance;
+	}
 
-        if (this.targetEntity == null)
-        {
-            return false;
-        }
-        else if (this.targetEntity.getDistanceSqToEntity(this.theEntity) > (double)(this.maxTargetDistance * this.maxTargetDistance))
-        {
-            return false;
-        }
-        else
-        {
-            Vec3 var1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.theEntity, 16, 7, Vec3.createVectorHelper(this.targetEntity.posX, this.targetEntity.posY, this.targetEntity.posZ));
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		targetEntity = null;
+	}
 
-            if (var1 == null)
-            {
-                return false;
-            }
-            else
-            {
-                this.movePosX = var1.xCoord;
-                this.movePosY = var1.yCoord;
-                this.movePosZ = var1.zCoord;
-                return true;
-            }
-        }
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		targetEntity = theEntity.getAttackTarget();
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.theEntity.getNavigator().noPath() && this.targetEntity.isEntityAlive() && this.targetEntity.getDistanceSqToEntity(this.theEntity) < (double)(this.maxTargetDistance * this.maxTargetDistance);
-    }
+		if (targetEntity == null)
+			return false;
+		else if (targetEntity.getDistanceSqToEntity(theEntity) > maxTargetDistance
+				* maxTargetDistance)
+			return false;
+		else {
+			final Vec3 var1 = RandomPositionGenerator
+					.findRandomTargetBlockTowards(theEntity, 16, 7, Vec3
+							.createVectorHelper(targetEntity.posX,
+									targetEntity.posY, targetEntity.posZ));
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.targetEntity = null;
-    }
+			if (var1 == null)
+				return false;
+			else {
+				movePosX = var1.xCoord;
+				movePosY = var1.yCoord;
+				movePosZ = var1.zCoord;
+				return true;
+			}
+		}
+	}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.theEntity.getNavigator().tryMoveToXYZ(this.movePosX, this.movePosY, this.movePosZ, this.speed);
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		theEntity.getNavigator().tryMoveToXYZ(movePosX, movePosY, movePosZ,
+				speed);
+	}
 }

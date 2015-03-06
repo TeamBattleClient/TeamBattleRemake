@@ -7,139 +7,133 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 
-public class EntityAIOcelotSit extends EntityAIBase
-{
-    private final EntityOcelot field_151493_a;
-    private final double field_151491_b;
-    private int field_151492_c;
-    private int field_151489_d;
-    private int field_151490_e;
-    private int field_151487_f;
-    private int field_151488_g;
-    private int field_151494_h;
-    private static final String __OBFID = "CL_00001601";
+public class EntityAIOcelotSit extends EntityAIBase {
+	private int field_151487_f;
+	private int field_151488_g;
+	private int field_151489_d;
+	private int field_151490_e;
+	private final double field_151491_b;
+	private int field_151492_c;
+	private final EntityOcelot field_151493_a;
+	private int field_151494_h;
 
-    public EntityAIOcelotSit(EntityOcelot p_i45315_1_, double p_i45315_2_)
-    {
-        this.field_151493_a = p_i45315_1_;
-        this.field_151491_b = p_i45315_2_;
-        this.setMutexBits(5);
-    }
+	public EntityAIOcelotSit(EntityOcelot p_i45315_1_, double p_i45315_2_) {
+		field_151493_a = p_i45315_1_;
+		field_151491_b = p_i45315_2_;
+		setMutexBits(5);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        return this.field_151493_a.isTamed() && !this.field_151493_a.isSitting() && this.field_151493_a.getRNG().nextDouble() <= 0.006500000134110451D && this.func_151485_f();
-    }
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return field_151492_c <= field_151490_e
+				&& field_151489_d <= 60
+				&& func_151486_a(field_151493_a.worldObj, field_151487_f,
+						field_151488_g, field_151494_h);
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return this.field_151492_c <= this.field_151490_e && this.field_151489_d <= 60 && this.func_151486_a(this.field_151493_a.worldObj, this.field_151487_f, this.field_151488_g, this.field_151494_h);
-    }
+	private boolean func_151485_f() {
+		final int var1 = (int) field_151493_a.posY;
+		double var2 = 2.147483647E9D;
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.field_151493_a.getNavigator().tryMoveToXYZ((double)((float)this.field_151487_f) + 0.5D, (double)(this.field_151488_g + 1), (double)((float)this.field_151494_h) + 0.5D, this.field_151491_b);
-        this.field_151492_c = 0;
-        this.field_151489_d = 0;
-        this.field_151490_e = this.field_151493_a.getRNG().nextInt(this.field_151493_a.getRNG().nextInt(1200) + 1200) + 1200;
-        this.field_151493_a.func_70907_r().setSitting(false);
-    }
+		for (int var4 = (int) field_151493_a.posX - 8; var4 < field_151493_a.posX + 8.0D; ++var4) {
+			for (int var5 = (int) field_151493_a.posZ - 8; var5 < field_151493_a.posZ + 8.0D; ++var5) {
+				if (func_151486_a(field_151493_a.worldObj, var4, var1, var5)
+						&& field_151493_a.worldObj.isAirBlock(var4, var1 + 1,
+								var5)) {
+					final double var6 = field_151493_a.getDistanceSq(var4,
+							var1, var5);
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.field_151493_a.setSitting(false);
-    }
+					if (var6 < var2) {
+						field_151487_f = var4;
+						field_151488_g = var1;
+						field_151494_h = var5;
+						var2 = var6;
+					}
+				}
+			}
+		}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        ++this.field_151492_c;
-        this.field_151493_a.func_70907_r().setSitting(false);
+		return var2 < 2.147483647E9D;
+	}
 
-        if (this.field_151493_a.getDistanceSq((double)this.field_151487_f, (double)(this.field_151488_g + 1), (double)this.field_151494_h) > 1.0D)
-        {
-            this.field_151493_a.setSitting(false);
-            this.field_151493_a.getNavigator().tryMoveToXYZ((double)((float)this.field_151487_f) + 0.5D, (double)(this.field_151488_g + 1), (double)((float)this.field_151494_h) + 0.5D, this.field_151491_b);
-            ++this.field_151489_d;
-        }
-        else if (!this.field_151493_a.isSitting())
-        {
-            this.field_151493_a.setSitting(true);
-        }
-        else
-        {
-            --this.field_151489_d;
-        }
-    }
+	private boolean func_151486_a(World p_151486_1_, int p_151486_2_,
+			int p_151486_3_, int p_151486_4_) {
+		final Block var5 = p_151486_1_.getBlock(p_151486_2_, p_151486_3_,
+				p_151486_4_);
+		final int var6 = p_151486_1_.getBlockMetadata(p_151486_2_, p_151486_3_,
+				p_151486_4_);
 
-    private boolean func_151485_f()
-    {
-        int var1 = (int)this.field_151493_a.posY;
-        double var2 = 2.147483647E9D;
+		if (var5 == Blocks.chest) {
+			final TileEntityChest var7 = (TileEntityChest) p_151486_1_
+					.getTileEntity(p_151486_2_, p_151486_3_, p_151486_4_);
 
-        for (int var4 = (int)this.field_151493_a.posX - 8; (double)var4 < this.field_151493_a.posX + 8.0D; ++var4)
-        {
-            for (int var5 = (int)this.field_151493_a.posZ - 8; (double)var5 < this.field_151493_a.posZ + 8.0D; ++var5)
-            {
-                if (this.func_151486_a(this.field_151493_a.worldObj, var4, var1, var5) && this.field_151493_a.worldObj.isAirBlock(var4, var1 + 1, var5))
-                {
-                    double var6 = this.field_151493_a.getDistanceSq((double)var4, (double)var1, (double)var5);
+			if (var7.field_145987_o < 1)
+				return true;
+		} else {
+			if (var5 == Blocks.lit_furnace)
+				return true;
 
-                    if (var6 < var2)
-                    {
-                        this.field_151487_f = var4;
-                        this.field_151488_g = var1;
-                        this.field_151494_h = var5;
-                        var2 = var6;
-                    }
-                }
-            }
-        }
+			if (var5 == Blocks.bed && !BlockBed.func_149975_b(var6))
+				return true;
+		}
 
-        return var2 < 2.147483647E9D;
-    }
+		return false;
+	}
 
-    private boolean func_151486_a(World p_151486_1_, int p_151486_2_, int p_151486_3_, int p_151486_4_)
-    {
-        Block var5 = p_151486_1_.getBlock(p_151486_2_, p_151486_3_, p_151486_4_);
-        int var6 = p_151486_1_.getBlockMetadata(p_151486_2_, p_151486_3_, p_151486_4_);
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		field_151493_a.setSitting(false);
+	}
 
-        if (var5 == Blocks.chest)
-        {
-            TileEntityChest var7 = (TileEntityChest)p_151486_1_.getTileEntity(p_151486_2_, p_151486_3_, p_151486_4_);
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		return field_151493_a.isTamed()
+				&& !field_151493_a.isSitting()
+				&& field_151493_a.getRNG().nextDouble() <= 0.006500000134110451D
+				&& func_151485_f();
+	}
 
-            if (var7.field_145987_o < 1)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            if (var5 == Blocks.lit_furnace)
-            {
-                return true;
-            }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		field_151493_a.getNavigator().tryMoveToXYZ(field_151487_f + 0.5D,
+				field_151488_g + 1, field_151494_h + 0.5D, field_151491_b);
+		field_151492_c = 0;
+		field_151489_d = 0;
+		field_151490_e = field_151493_a.getRNG().nextInt(
+				field_151493_a.getRNG().nextInt(1200) + 1200) + 1200;
+		field_151493_a.func_70907_r().setSitting(false);
+	}
 
-            if (var5 == Blocks.bed && !BlockBed.func_149975_b(var6))
-            {
-                return true;
-            }
-        }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		++field_151492_c;
+		field_151493_a.func_70907_r().setSitting(false);
 
-        return false;
-    }
+		if (field_151493_a.getDistanceSq(field_151487_f, field_151488_g + 1,
+				field_151494_h) > 1.0D) {
+			field_151493_a.setSitting(false);
+			field_151493_a.getNavigator().tryMoveToXYZ(field_151487_f + 0.5D,
+					field_151488_g + 1, field_151494_h + 0.5D, field_151491_b);
+			++field_151489_d;
+		} else if (!field_151493_a.isSitting()) {
+			field_151493_a.setSitting(true);
+		} else {
+			--field_151489_d;
+		}
+	}
 }

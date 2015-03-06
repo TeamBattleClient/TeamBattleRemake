@@ -2,48 +2,40 @@ package net.minecraft.util;
 
 import net.minecraft.client.settings.GameSettings;
 
-public class MovementInputFromOptions extends MovementInput
-{
-    private GameSettings gameSettings;
-    private static final String __OBFID = "CL_00000937";
+public class MovementInputFromOptions extends MovementInput {
+	private final GameSettings gameSettings;
 
-    public MovementInputFromOptions(GameSettings p_i1237_1_)
-    {
-        this.gameSettings = p_i1237_1_;
-    }
+	public MovementInputFromOptions(GameSettings p_i1237_1_) {
+		gameSettings = p_i1237_1_;
+	}
 
-    public void updatePlayerMoveState()
-    {
-        this.moveStrafe = 0.0F;
-        this.moveForward = 0.0F;
+	@Override
+	public void updatePlayerMoveState() {
+		moveStrafe = 0.0F;
+		moveForward = 0.0F;
 
-        if (this.gameSettings.keyBindForward.getIsKeyPressed())
-        {
-            ++this.moveForward;
-        }
+		if (gameSettings.keyBindForward.getIsKeyPressed()) {
+			++moveForward;
+		}
 
-        if (this.gameSettings.keyBindBack.getIsKeyPressed())
-        {
-            --this.moveForward;
-        }
+		if (gameSettings.keyBindBack.getIsKeyPressed()) {
+			--moveForward;
+		}
 
-        if (this.gameSettings.keyBindLeft.getIsKeyPressed())
-        {
-            ++this.moveStrafe;
-        }
+		if (gameSettings.keyBindLeft.getIsKeyPressed()) {
+			++moveStrafe;
+		}
 
-        if (this.gameSettings.keyBindRight.getIsKeyPressed())
-        {
-            --this.moveStrafe;
-        }
+		if (gameSettings.keyBindRight.getIsKeyPressed()) {
+			--moveStrafe;
+		}
 
-        this.jump = this.gameSettings.keyBindJump.getIsKeyPressed();
-        this.sneak = this.gameSettings.keyBindSneak.getIsKeyPressed();
+		jump = gameSettings.keyBindJump.getIsKeyPressed();
+		sneak = gameSettings.keyBindSneak.getIsKeyPressed();
 
-        if (this.sneak)
-        {
-            this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
-            this.moveForward = (float)((double)this.moveForward * 0.3D);
-        }
-    }
+		if (sneak) {
+			moveStrafe = (float) (moveStrafe * 0.3D);
+			moveForward = (float) (moveForward * 0.3D);
+		}
+	}
 }

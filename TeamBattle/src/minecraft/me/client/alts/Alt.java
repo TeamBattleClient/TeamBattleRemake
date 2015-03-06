@@ -1,28 +1,32 @@
 package me.client.alts;
 
-public class Alt
-{
-    public String name;
-    public String password;
-    public boolean cracked;
+public class Alt {
+	private String mask = "";
+	private final String username, password;
 
-    public Alt(String name, String password)
-    {
-        if (password == null)
-        {
-            password = "";
-        }
+	public Alt(String username, String password) {
+		this(username, password, "");
+	}
 
-        this.name = name;
-        this.password = password;
+	public Alt(String username, String password, String mask) {
+		this.username = username;
+		this.password = password;
+		this.mask = mask;
+	}
 
-        if (password.length() == 0)
-        {
-            this.cracked = true;
-        }
-        else
-        {
-            this.cracked = false;
-        }
-    }
+	public String getMask() {
+		return mask;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setMask(String mask) {
+		this.mask = mask;
+	}
 }

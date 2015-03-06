@@ -12,226 +12,222 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 
-public abstract class EntityMob extends EntityCreature implements IMob
-{
-    private static final String __OBFID = "CL_00001692";
+public abstract class EntityMob extends EntityCreature implements IMob {
 
-    public EntityMob(World p_i1738_1_)
-    {
-        super(p_i1738_1_);
-        this.experienceValue = 5;
-    }
+	public EntityMob(World p_i1738_1_) {
+		super(p_i1738_1_);
+		experienceValue = 5;
+	}
 
-    /**
-     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
-     * use this to react to sunlight and start to burn.
-     */
-    public void onLivingUpdate()
-    {
-        this.updateArmSwingProgress();
-        float var1 = this.getBrightness(1.0F);
+	@Override
+	protected void applyEntityAttributes() {
+		super.applyEntityAttributes();
+		getAttributeMap().registerAttribute(
+				SharedMonsterAttributes.attackDamage);
+	}
 
-        if (var1 > 0.5F)
-        {
-            this.entityAge += 2;
-        }
+	/**
+	 * Basic mob attack. Default to touch of death in EntityCreature. Overridden
+	 * by each mob to define their attack.
+	 */
+	@Override
+	protected void attackEntity(Entity p_70785_1_, float p_70785_2_) {
+		if (attackTime <= 0 && p_70785_2_ < 2.0F
+				&& p_70785_1_.boundingBox.maxY > boundingBox.minY
+				&& p_70785_1_.boundingBox.minY < boundingBox.maxY) {
+			attackTime = 20;
+			attackEntityAsMob(p_70785_1_);
+		}
+	}
 
-        super.onLivingUpdate();
-    }
+	@Override
+	public boolean attackEntityAsMob(Entity p_70652_1_) {
+		float var2 = (float) getEntityAttribute(
+				SharedMonsterAttributes.attackDamage).getAttributeValue();
+		int var3 = 0;
 
-    /**
-     * Called to update the entity's position/logic.
-     */
-    public void onUpdate()
-    {
-        super.onUpdate();
+		if (p_70652_1_ instanceof EntityLivingBase) {
+			var2 += EnchantmentHelper.getEnchantmentModifierLiving(this,
+					(EntityLivingBase) p_70652_1_);
+			var3 += EnchantmentHelper.getKnockbackModifier(this,
+					(EntityLivingBase) p_70652_1_);
+		}
 
-        if (!this.worldObj.isClient && this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL)
-        {
-            this.setDead();
-        }
-    }
+		final boolean var4 = p_70652_1_.attackEntityFrom(
+				DamageSource.causeMobDamage(this), var2);
 
-    protected String getSwimSound()
-    {
-        return "game.hostile.swim";
-    }
+		if (var4) {
+			if (var3 > 0) {
+				p_70652_1_.addVelocity(
+						-MathHelper.sin(rotationYaw * (float) Math.PI / 180.0F)
+								* var3 * 0.5F, 0.1D,
+						MathHelper.cos(rotationYaw * (float) Math.PI / 180.0F)
+								* var3 * 0.5F);
+				motionX *= 0.6D;
+				motionZ *= 0.6D;
+			}
 
-    protected String getSplashSound()
-    {
-        return "game.hostile.swim.splash";
-    }
+			final int var5 = EnchantmentHelper.getFireAspectModifier(this);
 
-    /**
-     * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking
-     * (Animals, Spiders at day, peaceful PigZombies).
-     */
-    protected Entity findPlayerToAttack()
-    {
-        EntityPlayer var1 = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0D);
-        return var1 != null && this.canEntityBeSeen(var1) ? var1 : null;
-    }
+			if (var5 > 0) {
+				p_70652_1_.setFire(var5 * 4);
+			}
 
-    /**
-     * Called when the entity is attacked.
-     */
-    public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
-    {
-        if (this.isEntityInvulnerable())
-        {
-            return false;
-        }
-        else if (super.attackEntityFrom(p_70097_1_, p_70097_2_))
-        {
-            Entity var3 = p_70097_1_.getEntity();
+			if (p_70652_1_ instanceof EntityLivingBase) {
+				EnchantmentHelper.func_151384_a((EntityLivingBase) p_70652_1_,
+						this);
+			}
 
-            if (this.riddenByEntity != var3 && this.ridingEntity != var3)
-            {
-                if (var3 != this)
-                {
-                    this.entityToAttack = var3;
-                }
+			EnchantmentHelper.func_151385_b(this, p_70652_1_);
+		}
 
-                return true;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+		return var4;
+	}
 
-    /**
-     * Returns the sound this mob makes when it is hurt.
-     */
-    protected String getHurtSound()
-    {
-        return "game.hostile.hurt";
-    }
+	/**
+	 * Called when the entity is attacked.
+	 */
+	@Override
+	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
+		if (isEntityInvulnerable())
+			return false;
+		else if (super.attackEntityFrom(p_70097_1_, p_70097_2_)) {
+			final Entity var3 = p_70097_1_.getEntity();
 
-    /**
-     * Returns the sound this mob makes on death.
-     */
-    protected String getDeathSound()
-    {
-        return "game.hostile.die";
-    }
+			if (riddenByEntity != var3 && ridingEntity != var3) {
+				if (var3 != this) {
+					entityToAttack = var3;
+				}
 
-    protected String func_146067_o(int p_146067_1_)
-    {
-        return p_146067_1_ > 4 ? "game.hostile.hurt.fall.big" : "game.hostile.hurt.fall.small";
-    }
+				return true;
+			} else
+				return true;
+		} else
+			return false;
+	}
 
-    public boolean attackEntityAsMob(Entity p_70652_1_)
-    {
-        float var2 = (float)this.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
-        int var3 = 0;
+	/**
+	 * Finds the closest player within 16 blocks to attack, or null if this
+	 * Entity isn't interested in attacking (Animals, Spiders at day, peaceful
+	 * PigZombies).
+	 */
+	@Override
+	protected Entity findPlayerToAttack() {
+		final EntityPlayer var1 = worldObj.getClosestVulnerablePlayerToEntity(
+				this, 16.0D);
+		return var1 != null && canEntityBeSeen(var1) ? var1 : null;
+	}
 
-        if (p_70652_1_ instanceof EntityLivingBase)
-        {
-            var2 += EnchantmentHelper.getEnchantmentModifierLiving(this, (EntityLivingBase)p_70652_1_);
-            var3 += EnchantmentHelper.getKnockbackModifier(this, (EntityLivingBase)p_70652_1_);
-        }
+	@Override
+	protected boolean func_146066_aG() {
+		return true;
+	}
 
-        boolean var4 = p_70652_1_.attackEntityFrom(DamageSource.causeMobDamage(this), var2);
+	@Override
+	protected String func_146067_o(int p_146067_1_) {
+		return p_146067_1_ > 4 ? "game.hostile.hurt.fall.big"
+				: "game.hostile.hurt.fall.small";
+	}
 
-        if (var4)
-        {
-            if (var3 > 0)
-            {
-                p_70652_1_.addVelocity((double)(-MathHelper.sin(this.rotationYaw * (float)Math.PI / 180.0F) * (float)var3 * 0.5F), 0.1D, (double)(MathHelper.cos(this.rotationYaw * (float)Math.PI / 180.0F) * (float)var3 * 0.5F));
-                this.motionX *= 0.6D;
-                this.motionZ *= 0.6D;
-            }
+	/**
+	 * Takes a coordinate in and returns a weight to determine how likely this
+	 * creature will try to path to the block. Args: x, y, z
+	 */
+	@Override
+	public float getBlockPathWeight(int p_70783_1_, int p_70783_2_,
+			int p_70783_3_) {
+		return 0.5F - worldObj.getLightBrightness(p_70783_1_, p_70783_2_,
+				p_70783_3_);
+	}
 
-            int var5 = EnchantmentHelper.getFireAspectModifier(this);
+	/**
+	 * Checks if the entity's current position is a valid location to spawn this
+	 * entity.
+	 */
+	@Override
+	public boolean getCanSpawnHere() {
+		return worldObj.difficultySetting != EnumDifficulty.PEACEFUL
+				&& isValidLightLevel() && super.getCanSpawnHere();
+	}
 
-            if (var5 > 0)
-            {
-                p_70652_1_.setFire(var5 * 4);
-            }
+	/**
+	 * Returns the sound this mob makes on death.
+	 */
+	@Override
+	protected String getDeathSound() {
+		return "game.hostile.die";
+	}
 
-            if (p_70652_1_ instanceof EntityLivingBase)
-            {
-                EnchantmentHelper.func_151384_a((EntityLivingBase)p_70652_1_, this);
-            }
+	/**
+	 * Returns the sound this mob makes when it is hurt.
+	 */
+	@Override
+	protected String getHurtSound() {
+		return "game.hostile.hurt";
+	}
 
-            EnchantmentHelper.func_151385_b(this, p_70652_1_);
-        }
+	@Override
+	protected String getSplashSound() {
+		return "game.hostile.swim.splash";
+	}
 
-        return var4;
-    }
+	@Override
+	protected String getSwimSound() {
+		return "game.hostile.swim";
+	}
 
-    /**
-     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
-     */
-    protected void attackEntity(Entity p_70785_1_, float p_70785_2_)
-    {
-        if (this.attackTime <= 0 && p_70785_2_ < 2.0F && p_70785_1_.boundingBox.maxY > this.boundingBox.minY && p_70785_1_.boundingBox.minY < this.boundingBox.maxY)
-        {
-            this.attackTime = 20;
-            this.attackEntityAsMob(p_70785_1_);
-        }
-    }
+	/**
+	 * Checks to make sure the light is not too bright where the mob is spawning
+	 */
+	protected boolean isValidLightLevel() {
+		final int var1 = MathHelper.floor_double(posX);
+		final int var2 = MathHelper.floor_double(boundingBox.minY);
+		final int var3 = MathHelper.floor_double(posZ);
 
-    /**
-     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
-     * Args: x, y, z
-     */
-    public float getBlockPathWeight(int p_70783_1_, int p_70783_2_, int p_70783_3_)
-    {
-        return 0.5F - this.worldObj.getLightBrightness(p_70783_1_, p_70783_2_, p_70783_3_);
-    }
+		if (worldObj.getSavedLightValue(EnumSkyBlock.Sky, var1, var2, var3) > rand
+				.nextInt(32))
+			return false;
+		else {
+			int var4 = worldObj.getBlockLightValue(var1, var2, var3);
 
-    /**
-     * Checks to make sure the light is not too bright where the mob is spawning
-     */
-    protected boolean isValidLightLevel()
-    {
-        int var1 = MathHelper.floor_double(this.posX);
-        int var2 = MathHelper.floor_double(this.boundingBox.minY);
-        int var3 = MathHelper.floor_double(this.posZ);
+			if (worldObj.isThundering()) {
+				final int var5 = worldObj.skylightSubtracted;
+				worldObj.skylightSubtracted = 10;
+				var4 = worldObj.getBlockLightValue(var1, var2, var3);
+				worldObj.skylightSubtracted = var5;
+			}
 
-        if (this.worldObj.getSavedLightValue(EnumSkyBlock.Sky, var1, var2, var3) > this.rand.nextInt(32))
-        {
-            return false;
-        }
-        else
-        {
-            int var4 = this.worldObj.getBlockLightValue(var1, var2, var3);
+			return var4 <= rand.nextInt(8);
+		}
+	}
 
-            if (this.worldObj.isThundering())
-            {
-                int var5 = this.worldObj.skylightSubtracted;
-                this.worldObj.skylightSubtracted = 10;
-                var4 = this.worldObj.getBlockLightValue(var1, var2, var3);
-                this.worldObj.skylightSubtracted = var5;
-            }
+	/**
+	 * Called frequently so the entity can update its state every tick as
+	 * required. For example, zombies and skeletons use this to react to
+	 * sunlight and start to burn.
+	 */
+	@Override
+	public void onLivingUpdate() {
+		updateArmSwingProgress();
+		final float var1 = getBrightness(1.0F);
 
-            return var4 <= this.rand.nextInt(8);
-        }
-    }
+		if (var1 > 0.5F) {
+			entityAge += 2;
+		}
 
-    /**
-     * Checks if the entity's current position is a valid location to spawn this entity.
-     */
-    public boolean getCanSpawnHere()
-    {
-        return this.worldObj.difficultySetting != EnumDifficulty.PEACEFUL && this.isValidLightLevel() && super.getCanSpawnHere();
-    }
+		super.onLivingUpdate();
+	}
 
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage);
-    }
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	@Override
+	public void onUpdate() {
+		super.onUpdate();
 
-    protected boolean func_146066_aG()
-    {
-        return true;
-    }
+		if (!worldObj.isClient
+				&& worldObj.difficultySetting == EnumDifficulty.PEACEFUL) {
+			setDead();
+		}
+	}
 }

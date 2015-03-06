@@ -5,24 +5,21 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.IIcon;
 
-public class BlockHay extends BlockRotatedPillar
-{
-    private static final String __OBFID = "CL_00000256";
+public class BlockHay extends BlockRotatedPillar {
 
-    public BlockHay()
-    {
-        super(Material.grass);
-        this.setCreativeTab(CreativeTabs.tabBlock);
-    }
+	public BlockHay() {
+		super(Material.grass);
+		setCreativeTab(CreativeTabs.tabBlock);
+	}
 
-    protected IIcon func_150163_b(int p_150163_1_)
-    {
-        return this.blockIcon;
-    }
+	@Override
+	protected IIcon func_150163_b(int p_150163_1_) {
+		return blockIcon;
+	}
 
-    public void registerBlockIcons(IIconRegister p_149651_1_)
-    {
-        this.field_150164_N = p_149651_1_.registerIcon(this.getTextureName() + "_top");
-        this.blockIcon = p_149651_1_.registerIcon(this.getTextureName() + "_side");
-    }
+	@Override
+	public void registerBlockIcons(IIconRegister p_149651_1_) {
+		field_150164_N = p_149651_1_.registerIcon(getTextureName() + "_top");
+		blockIcon = p_149651_1_.registerIcon(getTextureName() + "_side");
+	}
 }

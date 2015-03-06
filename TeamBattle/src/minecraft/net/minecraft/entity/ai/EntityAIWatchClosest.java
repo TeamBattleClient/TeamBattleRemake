@@ -4,97 +4,97 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class EntityAIWatchClosest extends EntityAIBase
-{
-    private EntityLiving theWatcher;
+public class EntityAIWatchClosest extends EntityAIBase {
+	/** The closest entity which is being watched by this one. */
+	protected Entity closestEntity;
 
-    /** The closest entity which is being watched by this one. */
-    protected Entity closestEntity;
+	private final float field_75331_e;
 
-    /** This is the Maximum distance that the AI will look for the Entity */
-    private float maxDistanceForPlayer;
-    private int lookTime;
-    private float field_75331_e;
-    private Class watchedClass;
-    private static final String __OBFID = "CL_00001592";
+	private int lookTime;
+	/** This is the Maximum distance that the AI will look for the Entity */
+	private final float maxDistanceForPlayer;
+	private final EntityLiving theWatcher;
+	private final Class watchedClass;
 
-    public EntityAIWatchClosest(EntityLiving p_i1631_1_, Class p_i1631_2_, float p_i1631_3_)
-    {
-        this.theWatcher = p_i1631_1_;
-        this.watchedClass = p_i1631_2_;
-        this.maxDistanceForPlayer = p_i1631_3_;
-        this.field_75331_e = 0.02F;
-        this.setMutexBits(2);
-    }
+	public EntityAIWatchClosest(EntityLiving p_i1631_1_, Class p_i1631_2_,
+			float p_i1631_3_) {
+		theWatcher = p_i1631_1_;
+		watchedClass = p_i1631_2_;
+		maxDistanceForPlayer = p_i1631_3_;
+		field_75331_e = 0.02F;
+		setMutexBits(2);
+	}
 
-    public EntityAIWatchClosest(EntityLiving p_i1632_1_, Class p_i1632_2_, float p_i1632_3_, float p_i1632_4_)
-    {
-        this.theWatcher = p_i1632_1_;
-        this.watchedClass = p_i1632_2_;
-        this.maxDistanceForPlayer = p_i1632_3_;
-        this.field_75331_e = p_i1632_4_;
-        this.setMutexBits(2);
-    }
+	public EntityAIWatchClosest(EntityLiving p_i1632_1_, Class p_i1632_2_,
+			float p_i1632_3_, float p_i1632_4_) {
+		theWatcher = p_i1632_1_;
+		watchedClass = p_i1632_2_;
+		maxDistanceForPlayer = p_i1632_3_;
+		field_75331_e = p_i1632_4_;
+		setMutexBits(2);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (this.theWatcher.getRNG().nextFloat() >= this.field_75331_e)
-        {
-            return false;
-        }
-        else
-        {
-            if (this.theWatcher.getAttackTarget() != null)
-            {
-                this.closestEntity = this.theWatcher.getAttackTarget();
-            }
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !closestEntity.isEntityAlive() ? false : theWatcher
+				.getDistanceSqToEntity(closestEntity) > maxDistanceForPlayer
+				* maxDistanceForPlayer ? false : lookTime > 0;
+	}
 
-            if (this.watchedClass == EntityPlayer.class)
-            {
-                this.closestEntity = this.theWatcher.worldObj.getClosestPlayerToEntity(this.theWatcher, (double)this.maxDistanceForPlayer);
-            }
-            else
-            {
-                this.closestEntity = this.theWatcher.worldObj.findNearestEntityWithinAABB(this.watchedClass, this.theWatcher.boundingBox.expand((double)this.maxDistanceForPlayer, 3.0D, (double)this.maxDistanceForPlayer), this.theWatcher);
-            }
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		closestEntity = null;
+	}
 
-            return this.closestEntity != null;
-        }
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		if (theWatcher.getRNG().nextFloat() >= field_75331_e)
+			return false;
+		else {
+			if (theWatcher.getAttackTarget() != null) {
+				closestEntity = theWatcher.getAttackTarget();
+			}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.closestEntity.isEntityAlive() ? false : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > (double)(this.maxDistanceForPlayer * this.maxDistanceForPlayer) ? false : this.lookTime > 0);
-    }
+			if (watchedClass == EntityPlayer.class) {
+				closestEntity = theWatcher.worldObj.getClosestPlayerToEntity(
+						theWatcher, maxDistanceForPlayer);
+			} else {
+				closestEntity = theWatcher.worldObj
+						.findNearestEntityWithinAABB(watchedClass,
+								theWatcher.boundingBox.expand(
+										maxDistanceForPlayer, 3.0D,
+										maxDistanceForPlayer), theWatcher);
+			}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.lookTime = 40 + this.theWatcher.getRNG().nextInt(40);
-    }
+			return closestEntity != null;
+		}
+	}
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.closestEntity = null;
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		lookTime = 40 + theWatcher.getRNG().nextInt(40);
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX, this.closestEntity.posY + (double)this.closestEntity.getEyeHeight(), this.closestEntity.posZ, 10.0F, (float)this.theWatcher.getVerticalFaceSpeed());
-        --this.lookTime;
-    }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		theWatcher.getLookHelper().setLookPosition(closestEntity.posX,
+				closestEntity.posY + closestEntity.getEyeHeight(),
+				closestEntity.posZ, 10.0F, theWatcher.getVerticalFaceSpeed());
+		--lookTime;
+	}
 }

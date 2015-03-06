@@ -17,386 +17,376 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class TileEntityFurnace extends TileEntity implements ISidedInventory
-{
-    private static final int[] field_145962_k = new int[] {0};
-    private static final int[] field_145959_l = new int[] {2, 1};
-    private static final int[] field_145960_m = new int[] {1};
-    private ItemStack[] field_145957_n = new ItemStack[3];
-    public int field_145956_a;
-    public int field_145963_i;
-    public int field_145961_j;
-    private String field_145958_o;
-    private static final String __OBFID = "CL_00000357";
+public class TileEntityFurnace extends TileEntity implements ISidedInventory {
+	private static final int[] field_145959_l = new int[] { 2, 1 };
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
-    public int getSizeInventory()
-    {
-        return this.field_145957_n.length;
-    }
+	private static final int[] field_145960_m = new int[] { 1 };
 
-    /**
-     * Returns the stack in slot i
-     */
-    public ItemStack getStackInSlot(int p_70301_1_)
-    {
-        return this.field_145957_n[p_70301_1_];
-    }
+	private static final int[] field_145962_k = new int[] { 0 };
 
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     */
-    public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_)
-    {
-        if (this.field_145957_n[p_70298_1_] != null)
-        {
-            ItemStack var3;
+	public static int func_145952_a(ItemStack p_145952_0_) {
+		if (p_145952_0_ == null)
+			return 0;
+		else {
+			final Item var1 = p_145952_0_.getItem();
 
-            if (this.field_145957_n[p_70298_1_].stackSize <= p_70298_2_)
-            {
-                var3 = this.field_145957_n[p_70298_1_];
-                this.field_145957_n[p_70298_1_] = null;
-                return var3;
-            }
-            else
-            {
-                var3 = this.field_145957_n[p_70298_1_].splitStack(p_70298_2_);
+			if (var1 instanceof ItemBlock
+					&& Block.getBlockFromItem(var1) != Blocks.air) {
+				final Block var2 = Block.getBlockFromItem(var1);
 
-                if (this.field_145957_n[p_70298_1_].stackSize == 0)
-                {
-                    this.field_145957_n[p_70298_1_] = null;
-                }
+				if (var2 == Blocks.wooden_slab)
+					return 150;
 
-                return var3;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
+				if (var2.getMaterial() == Material.wood)
+					return 300;
 
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     */
-    public ItemStack getStackInSlotOnClosing(int p_70304_1_)
-    {
-        if (this.field_145957_n[p_70304_1_] != null)
-        {
-            ItemStack var2 = this.field_145957_n[p_70304_1_];
-            this.field_145957_n[p_70304_1_] = null;
-            return var2;
-        }
-        else
-        {
-            return null;
-        }
-    }
+				if (var2 == Blocks.coal_block)
+					return 16000;
+			}
 
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     */
-    public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_)
-    {
-        this.field_145957_n[p_70299_1_] = p_70299_2_;
+			return var1 instanceof ItemTool
+					&& ((ItemTool) var1).getToolMaterialName().equals("WOOD") ? 200
+					: var1 instanceof ItemSword
+							&& ((ItemSword) var1).func_150932_j()
+									.equals("WOOD") ? 200
+							: var1 instanceof ItemHoe
+									&& ((ItemHoe) var1).getMaterialName()
+											.equals("WOOD") ? 200
+									: var1 == Items.stick ? 100
+											: var1 == Items.coal ? 1600
+													: var1 == Items.lava_bucket ? 20000
+															: var1 == Item
+																	.getItemFromBlock(Blocks.sapling) ? 100
+																	: var1 == Items.blaze_rod ? 2400
+																			: 0;
+		}
+	}
 
-        if (p_70299_2_ != null && p_70299_2_.stackSize > this.getInventoryStackLimit())
-        {
-            p_70299_2_.stackSize = this.getInventoryStackLimit();
-        }
-    }
+	public static boolean func_145954_b(ItemStack p_145954_0_) {
+		return func_145952_a(p_145954_0_) > 0;
+	}
 
-    /**
-     * Returns the name of the inventory
-     */
-    public String getInventoryName()
-    {
-        return this.isInventoryNameLocalized() ? this.field_145958_o : "container.furnace";
-    }
+	public int field_145956_a;
+	private ItemStack[] field_145957_n = new ItemStack[3];
+	private String field_145958_o;
 
-    /**
-     * Returns if the inventory name is localized
-     */
-    public boolean isInventoryNameLocalized()
-    {
-        return this.field_145958_o != null && this.field_145958_o.length() > 0;
-    }
+	public int field_145961_j;
 
-    public void func_145951_a(String p_145951_1_)
-    {
-        this.field_145958_o = p_145951_1_;
-    }
+	public int field_145963_i;
 
-    public void readFromNBT(NBTTagCompound p_145839_1_)
-    {
-        super.readFromNBT(p_145839_1_);
-        NBTTagList var2 = p_145839_1_.getTagList("Items", 10);
-        this.field_145957_n = new ItemStack[this.getSizeInventory()];
+	/**
+	 * Returns true if automation can extract the given item in the given slot
+	 * from the given side. Args: Slot, item, side
+	 */
+	@Override
+	public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_,
+			int p_102008_3_) {
+		return p_102008_3_ != 0 || p_102008_1_ != 1
+				|| p_102008_2_.getItem() == Items.bucket;
+	}
 
-        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
-        {
-            NBTTagCompound var4 = var2.getCompoundTagAt(var3);
-            byte var5 = var4.getByte("Slot");
+	/**
+	 * Returns true if automation can insert the given item in the given slot
+	 * from the given side. Args: Slot, item, side
+	 */
+	@Override
+	public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_,
+			int p_102007_3_) {
+		return isItemValidForSlot(p_102007_1_, p_102007_2_);
+	}
 
-            if (var5 >= 0 && var5 < this.field_145957_n.length)
-            {
-                this.field_145957_n[var5] = ItemStack.loadItemStackFromNBT(var4);
-            }
-        }
+	@Override
+	public void closeInventory() {
+	}
 
-        this.field_145956_a = p_145839_1_.getShort("BurnTime");
-        this.field_145961_j = p_145839_1_.getShort("CookTime");
-        this.field_145963_i = func_145952_a(this.field_145957_n[1]);
+	/**
+	 * Removes from an inventory slot (first arg) up to a specified number
+	 * (second arg) of items and returns them in a new stack.
+	 */
+	@Override
+	public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
+		if (field_145957_n[p_70298_1_] != null) {
+			ItemStack var3;
 
-        if (p_145839_1_.func_150297_b("CustomName", 8))
-        {
-            this.field_145958_o = p_145839_1_.getString("CustomName");
-        }
-    }
+			if (field_145957_n[p_70298_1_].stackSize <= p_70298_2_) {
+				var3 = field_145957_n[p_70298_1_];
+				field_145957_n[p_70298_1_] = null;
+				return var3;
+			} else {
+				var3 = field_145957_n[p_70298_1_].splitStack(p_70298_2_);
 
-    public void writeToNBT(NBTTagCompound p_145841_1_)
-    {
-        super.writeToNBT(p_145841_1_);
-        p_145841_1_.setShort("BurnTime", (short)this.field_145956_a);
-        p_145841_1_.setShort("CookTime", (short)this.field_145961_j);
-        NBTTagList var2 = new NBTTagList();
+				if (field_145957_n[p_70298_1_].stackSize == 0) {
+					field_145957_n[p_70298_1_] = null;
+				}
 
-        for (int var3 = 0; var3 < this.field_145957_n.length; ++var3)
-        {
-            if (this.field_145957_n[var3] != null)
-            {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
-                this.field_145957_n[var3].writeToNBT(var4);
-                var2.appendTag(var4);
-            }
-        }
+				return var3;
+			}
+		} else
+			return null;
+	}
 
-        p_145841_1_.setTag("Items", var2);
+	private boolean func_145948_k() {
+		if (field_145957_n[0] == null)
+			return false;
+		else {
+			final ItemStack var1 = FurnaceRecipes.smelting().func_151395_a(
+					field_145957_n[0]);
+			return var1 == null ? false
+					: field_145957_n[2] == null ? true
+							: !field_145957_n[2].isItemEqual(var1) ? false
+									: field_145957_n[2].stackSize < getInventoryStackLimit()
+											&& field_145957_n[2].stackSize < field_145957_n[2]
+													.getMaxStackSize() ? true
+											: field_145957_n[2].stackSize < var1
+													.getMaxStackSize();
+		}
+	}
 
-        if (this.isInventoryNameLocalized())
-        {
-            p_145841_1_.setString("CustomName", this.field_145958_o);
-        }
-    }
+	public void func_145949_j() {
+		if (func_145948_k()) {
+			final ItemStack var1 = FurnaceRecipes.smelting().func_151395_a(
+					field_145957_n[0]);
 
-    /**
-     * Returns the maximum stack size for a inventory slot.
-     */
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
+			if (field_145957_n[2] == null) {
+				field_145957_n[2] = var1.copy();
+			} else if (field_145957_n[2].getItem() == var1.getItem()) {
+				++field_145957_n[2].stackSize;
+			}
 
-    public int func_145953_d(int p_145953_1_)
-    {
-        return this.field_145961_j * p_145953_1_ / 200;
-    }
+			--field_145957_n[0].stackSize;
 
-    public int func_145955_e(int p_145955_1_)
-    {
-        if (this.field_145963_i == 0)
-        {
-            this.field_145963_i = 200;
-        }
+			if (field_145957_n[0].stackSize <= 0) {
+				field_145957_n[0] = null;
+			}
+		}
+	}
 
-        return this.field_145956_a * p_145955_1_ / this.field_145963_i;
-    }
+	public boolean func_145950_i() {
+		return field_145956_a > 0;
+	}
 
-    public boolean func_145950_i()
-    {
-        return this.field_145956_a > 0;
-    }
+	public void func_145951_a(String p_145951_1_) {
+		field_145958_o = p_145951_1_;
+	}
 
-    public void updateEntity()
-    {
-        boolean var1 = this.field_145956_a > 0;
-        boolean var2 = false;
+	public int func_145953_d(int p_145953_1_) {
+		return field_145961_j * p_145953_1_ / 200;
+	}
 
-        if (this.field_145956_a > 0)
-        {
-            --this.field_145956_a;
-        }
+	public int func_145955_e(int p_145955_1_) {
+		if (field_145963_i == 0) {
+			field_145963_i = 200;
+		}
 
-        if (!this.worldObj.isClient)
-        {
-            if (this.field_145956_a != 0 || this.field_145957_n[1] != null && this.field_145957_n[0] != null)
-            {
-                if (this.field_145956_a == 0 && this.func_145948_k())
-                {
-                    this.field_145963_i = this.field_145956_a = func_145952_a(this.field_145957_n[1]);
+		return field_145956_a * p_145955_1_ / field_145963_i;
+	}
 
-                    if (this.field_145956_a > 0)
-                    {
-                        var2 = true;
+	/**
+	 * Returns an array containing the indices of the slots that can be accessed
+	 * by automation on the given side of this block.
+	 */
+	@Override
+	public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
+		return p_94128_1_ == 0 ? field_145959_l
+				: p_94128_1_ == 1 ? field_145962_k : field_145960_m;
+	}
 
-                        if (this.field_145957_n[1] != null)
-                        {
-                            --this.field_145957_n[1].stackSize;
+	/**
+	 * Returns the name of the inventory
+	 */
+	@Override
+	public String getInventoryName() {
+		return isInventoryNameLocalized() ? field_145958_o
+				: "container.furnace";
+	}
 
-                            if (this.field_145957_n[1].stackSize == 0)
-                            {
-                                Item var3 = this.field_145957_n[1].getItem().getContainerItem();
-                                this.field_145957_n[1] = var3 != null ? new ItemStack(var3) : null;
-                            }
-                        }
-                    }
-                }
+	/**
+	 * Returns the maximum stack size for a inventory slot.
+	 */
+	@Override
+	public int getInventoryStackLimit() {
+		return 64;
+	}
 
-                if (this.func_145950_i() && this.func_145948_k())
-                {
-                    ++this.field_145961_j;
+	/**
+	 * Returns the number of slots in the inventory.
+	 */
+	@Override
+	public int getSizeInventory() {
+		return field_145957_n.length;
+	}
 
-                    if (this.field_145961_j == 200)
-                    {
-                        this.field_145961_j = 0;
-                        this.func_145949_j();
-                        var2 = true;
-                    }
-                }
-                else
-                {
-                    this.field_145961_j = 0;
-                }
-            }
+	/**
+	 * Returns the stack in slot i
+	 */
+	@Override
+	public ItemStack getStackInSlot(int p_70301_1_) {
+		return field_145957_n[p_70301_1_];
+	}
 
-            if (var1 != this.field_145956_a > 0)
-            {
-                var2 = true;
-                BlockFurnace.func_149931_a(this.field_145956_a > 0, this.worldObj, this.field_145851_c, this.field_145848_d, this.field_145849_e);
-            }
-        }
+	/**
+	 * When some containers are closed they call this on each slot, then drop
+	 * whatever it returns as an EntityItem - like when you close a workbench
+	 * GUI.
+	 */
+	@Override
+	public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
+		if (field_145957_n[p_70304_1_] != null) {
+			final ItemStack var2 = field_145957_n[p_70304_1_];
+			field_145957_n[p_70304_1_] = null;
+			return var2;
+		} else
+			return null;
+	}
 
-        if (var2)
-        {
-            this.onInventoryChanged();
-        }
-    }
+	/**
+	 * Returns if the inventory name is localized
+	 */
+	@Override
+	public boolean isInventoryNameLocalized() {
+		return field_145958_o != null && field_145958_o.length() > 0;
+	}
 
-    private boolean func_145948_k()
-    {
-        if (this.field_145957_n[0] == null)
-        {
-            return false;
-        }
-        else
-        {
-            ItemStack var1 = FurnaceRecipes.smelting().func_151395_a(this.field_145957_n[0]);
-            return var1 == null ? false : (this.field_145957_n[2] == null ? true : (!this.field_145957_n[2].isItemEqual(var1) ? false : (this.field_145957_n[2].stackSize < this.getInventoryStackLimit() && this.field_145957_n[2].stackSize < this.field_145957_n[2].getMaxStackSize() ? true : this.field_145957_n[2].stackSize < var1.getMaxStackSize())));
-        }
-    }
+	/**
+	 * Returns true if automation is allowed to insert the given stack (ignoring
+	 * stack size) into the given slot.
+	 */
+	@Override
+	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+		return p_94041_1_ == 2 ? false
+				: p_94041_1_ == 1 ? func_145954_b(p_94041_2_) : true;
+	}
 
-    public void func_145949_j()
-    {
-        if (this.func_145948_k())
-        {
-            ItemStack var1 = FurnaceRecipes.smelting().func_151395_a(this.field_145957_n[0]);
+	/**
+	 * Do not make give this method the name canInteractWith because it clashes
+	 * with Container
+	 */
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+		return worldObj.getTileEntity(field_145851_c, field_145848_d,
+				field_145849_e) != this ? false : p_70300_1_.getDistanceSq(
+				field_145851_c + 0.5D, field_145848_d + 0.5D,
+				field_145849_e + 0.5D) <= 64.0D;
+	}
 
-            if (this.field_145957_n[2] == null)
-            {
-                this.field_145957_n[2] = var1.copy();
-            }
-            else if (this.field_145957_n[2].getItem() == var1.getItem())
-            {
-                ++this.field_145957_n[2].stackSize;
-            }
+	@Override
+	public void openInventory() {
+	}
 
-            --this.field_145957_n[0].stackSize;
+	@Override
+	public void readFromNBT(NBTTagCompound p_145839_1_) {
+		super.readFromNBT(p_145839_1_);
+		final NBTTagList var2 = p_145839_1_.getTagList("Items", 10);
+		field_145957_n = new ItemStack[getSizeInventory()];
 
-            if (this.field_145957_n[0].stackSize <= 0)
-            {
-                this.field_145957_n[0] = null;
-            }
-        }
-    }
+		for (int var3 = 0; var3 < var2.tagCount(); ++var3) {
+			final NBTTagCompound var4 = var2.getCompoundTagAt(var3);
+			final byte var5 = var4.getByte("Slot");
 
-    public static int func_145952_a(ItemStack p_145952_0_)
-    {
-        if (p_145952_0_ == null)
-        {
-            return 0;
-        }
-        else
-        {
-            Item var1 = p_145952_0_.getItem();
+			if (var5 >= 0 && var5 < field_145957_n.length) {
+				field_145957_n[var5] = ItemStack.loadItemStackFromNBT(var4);
+			}
+		}
 
-            if (var1 instanceof ItemBlock && Block.getBlockFromItem(var1) != Blocks.air)
-            {
-                Block var2 = Block.getBlockFromItem(var1);
+		field_145956_a = p_145839_1_.getShort("BurnTime");
+		field_145961_j = p_145839_1_.getShort("CookTime");
+		field_145963_i = func_145952_a(field_145957_n[1]);
 
-                if (var2 == Blocks.wooden_slab)
-                {
-                    return 150;
-                }
+		if (p_145839_1_.func_150297_b("CustomName", 8)) {
+			field_145958_o = p_145839_1_.getString("CustomName");
+		}
+	}
 
-                if (var2.getMaterial() == Material.wood)
-                {
-                    return 300;
-                }
+	/**
+	 * Sets the given item stack to the specified slot in the inventory (can be
+	 * crafting or armor sections).
+	 */
+	@Override
+	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
+		field_145957_n[p_70299_1_] = p_70299_2_;
 
-                if (var2 == Blocks.coal_block)
-                {
-                    return 16000;
-                }
-            }
+		if (p_70299_2_ != null
+				&& p_70299_2_.stackSize > getInventoryStackLimit()) {
+			p_70299_2_.stackSize = getInventoryStackLimit();
+		}
+	}
 
-            return var1 instanceof ItemTool && ((ItemTool)var1).getToolMaterialName().equals("WOOD") ? 200 : (var1 instanceof ItemSword && ((ItemSword)var1).func_150932_j().equals("WOOD") ? 200 : (var1 instanceof ItemHoe && ((ItemHoe)var1).getMaterialName().equals("WOOD") ? 200 : (var1 == Items.stick ? 100 : (var1 == Items.coal ? 1600 : (var1 == Items.lava_bucket ? 20000 : (var1 == Item.getItemFromBlock(Blocks.sapling) ? 100 : (var1 == Items.blaze_rod ? 2400 : 0)))))));
-        }
-    }
+	@Override
+	public void updateEntity() {
+		final boolean var1 = field_145956_a > 0;
+		boolean var2 = false;
 
-    public static boolean func_145954_b(ItemStack p_145954_0_)
-    {
-        return func_145952_a(p_145954_0_) > 0;
-    }
+		if (field_145956_a > 0) {
+			--field_145956_a;
+		}
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     */
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
-    {
-        return this.worldObj.getTileEntity(this.field_145851_c, this.field_145848_d, this.field_145849_e) != this ? false : p_70300_1_.getDistanceSq((double)this.field_145851_c + 0.5D, (double)this.field_145848_d + 0.5D, (double)this.field_145849_e + 0.5D) <= 64.0D;
-    }
+		if (!worldObj.isClient) {
+			if (field_145956_a != 0 || field_145957_n[1] != null
+					&& field_145957_n[0] != null) {
+				if (field_145956_a == 0 && func_145948_k()) {
+					field_145963_i = field_145956_a = func_145952_a(field_145957_n[1]);
 
-    public void openInventory() {}
+					if (field_145956_a > 0) {
+						var2 = true;
 
-    public void closeInventory() {}
+						if (field_145957_n[1] != null) {
+							--field_145957_n[1].stackSize;
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     */
-    public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
-    {
-        return p_94041_1_ == 2 ? false : (p_94041_1_ == 1 ? func_145954_b(p_94041_2_) : true);
-    }
+							if (field_145957_n[1].stackSize == 0) {
+								final Item var3 = field_145957_n[1].getItem()
+										.getContainerItem();
+								field_145957_n[1] = var3 != null ? new ItemStack(
+										var3) : null;
+							}
+						}
+					}
+				}
 
-    /**
-     * Returns an array containing the indices of the slots that can be accessed by automation on the given side of this
-     * block.
-     */
-    public int[] getAccessibleSlotsFromSide(int p_94128_1_)
-    {
-        return p_94128_1_ == 0 ? field_145959_l : (p_94128_1_ == 1 ? field_145962_k : field_145960_m);
-    }
+				if (func_145950_i() && func_145948_k()) {
+					++field_145961_j;
 
-    /**
-     * Returns true if automation can insert the given item in the given slot from the given side. Args: Slot, item,
-     * side
-     */
-    public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, int p_102007_3_)
-    {
-        return this.isItemValidForSlot(p_102007_1_, p_102007_2_);
-    }
+					if (field_145961_j == 200) {
+						field_145961_j = 0;
+						func_145949_j();
+						var2 = true;
+					}
+				} else {
+					field_145961_j = 0;
+				}
+			}
 
-    /**
-     * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
-     * side
-     */
-    public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_, int p_102008_3_)
-    {
-        return p_102008_3_ != 0 || p_102008_1_ != 1 || p_102008_2_.getItem() == Items.bucket;
-    }
+			if (var1 != field_145956_a > 0) {
+				var2 = true;
+				BlockFurnace.func_149931_a(field_145956_a > 0, worldObj,
+						field_145851_c, field_145848_d, field_145849_e);
+			}
+		}
+
+		if (var2) {
+			onInventoryChanged();
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound p_145841_1_) {
+		super.writeToNBT(p_145841_1_);
+		p_145841_1_.setShort("BurnTime", (short) field_145956_a);
+		p_145841_1_.setShort("CookTime", (short) field_145961_j);
+		final NBTTagList var2 = new NBTTagList();
+
+		for (int var3 = 0; var3 < field_145957_n.length; ++var3) {
+			if (field_145957_n[var3] != null) {
+				final NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte) var3);
+				field_145957_n[var3].writeToNBT(var4);
+				var2.appendTag(var4);
+			}
+		}
+
+		p_145841_1_.setTag("Items", var2);
+
+		if (isInventoryNameLocalized()) {
+			p_145841_1_.setString("CustomName", field_145958_o);
+		}
+	}
 }

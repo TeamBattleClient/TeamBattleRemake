@@ -1,6 +1,5 @@
 package net.minecraft.network;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
@@ -14,6 +13,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketAddress;
@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import net.minecraft.client.network.NetHandlerHandshakeMemory;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -34,189 +35,205 @@ import net.minecraft.util.MessageDeserializer2;
 import net.minecraft.util.MessageSerializer;
 import net.minecraft.util.MessageSerializer2;
 import net.minecraft.util.ReportedException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NetworkSystem
-{
-    private static final Logger logger = LogManager.getLogger();
-    private static final NioEventLoopGroup eventLoops = new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty IO #%d").setDaemon(true).build());
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-    /** Reference to the MinecraftServer object. */
-    private final MinecraftServer mcServer;
+public class NetworkSystem {
+	private static final NioEventLoopGroup eventLoops = new NioEventLoopGroup(
+			0, new ThreadFactoryBuilder().setNameFormat("Netty IO #%d")
+					.setDaemon(true).build());
+	private static final Logger logger = LogManager.getLogger();
 
-    /** True if this NetworkSystem has never had his endpoints terminated */
-    public volatile boolean isAlive;
+	/** Contains all endpoints added to this NetworkSystem */
+	private final List endpoints = Collections
+			.synchronizedList(new ArrayList());
 
-    /** Contains all endpoints added to this NetworkSystem */
-    private final List endpoints = Collections.synchronizedList(new ArrayList());
+	/** True if this NetworkSystem has never had his endpoints terminated */
+	public volatile boolean isAlive;
 
-    /** A list containing all NetworkManager instances of all endpoints */
-    private final List networkManagers = Collections.synchronizedList(new ArrayList());
-    private static final String __OBFID = "CL_00001447";
+	/** Reference to the MinecraftServer object. */
+	private final MinecraftServer mcServer;
 
-    public NetworkSystem(MinecraftServer p_i45292_1_)
-    {
-        this.mcServer = p_i45292_1_;
-        this.isAlive = true;
-    }
+	/** A list containing all NetworkManager instances of all endpoints */
+	private final List networkManagers = Collections
+			.synchronizedList(new ArrayList());
 
-    /**
-     * Adds a channel that listens on publicly accessible network ports
-     */
-    public void addLanEndpoint(InetAddress p_151265_1_, int p_151265_2_) throws IOException
-    {
-        List var3 = this.endpoints;
+	public NetworkSystem(MinecraftServer p_i45292_1_) {
+		mcServer = p_i45292_1_;
+		isAlive = true;
+	}
 
-        synchronized (this.endpoints)
-        {
-            this.endpoints.add(((ServerBootstrap)((ServerBootstrap)(new ServerBootstrap()).channel(NioServerSocketChannel.class)).childHandler(new ChannelInitializer()
-            {
-                private static final String __OBFID = "CL_00001448";
-                protected void initChannel(Channel p_initChannel_1_)
-                {
-                    try
-                    {
-                        p_initChannel_1_.config().setOption(ChannelOption.IP_TOS, Integer.valueOf(24));
-                    }
-                    catch (ChannelException var4)
-                    {
-                        ;
-                    }
+	/**
+	 * Adds a channel that listens on publicly accessible network ports
+	 */
+	public void addLanEndpoint(InetAddress p_151265_1_, int p_151265_2_)
+			throws IOException {
+		synchronized (endpoints) {
+			endpoints.add(new ServerBootstrap()
+					.channel(NioServerSocketChannel.class)
+					.childHandler(new ChannelInitializer() {
 
-                    try
-                    {
-                        p_initChannel_1_.config().setOption(ChannelOption.TCP_NODELAY, Boolean.valueOf(false));
-                    }
-                    catch (ChannelException var3)
-                    {
-                        ;
-                    }
+						@Override
+						protected void initChannel(Channel p_initChannel_1_) {
+							try {
+								p_initChannel_1_.config().setOption(
+										ChannelOption.IP_TOS,
+										Integer.valueOf(24));
+							} catch (final ChannelException var4) {
+								;
+							}
 
-                    p_initChannel_1_.pipeline().addLast("timeout", new ReadTimeoutHandler(30)).addLast("legacy_query", new PingResponseHandler(NetworkSystem.this)).addLast("splitter", new MessageDeserializer2()).addLast("decoder", new MessageDeserializer(NetworkManager.field_152462_h)).addLast("prepender", new MessageSerializer2()).addLast("encoder", new MessageSerializer(NetworkManager.field_152462_h));
-                    NetworkManager var2 = new NetworkManager(false);
-                    NetworkSystem.this.networkManagers.add(var2);
-                    p_initChannel_1_.pipeline().addLast("packet_handler", var2);
-                    var2.setNetHandler(new NetHandlerHandshakeTCP(NetworkSystem.this.mcServer, var2));
-                }
-            }).group(eventLoops).localAddress(p_151265_1_, p_151265_2_)).bind().syncUninterruptibly());
-        }
-    }
+							try {
+								p_initChannel_1_.config().setOption(
+										ChannelOption.TCP_NODELAY,
+										Boolean.valueOf(false));
+							} catch (final ChannelException var3) {
+								;
+							}
 
-    /**
-     * Adds a channel that listens locally
-     */
-    public SocketAddress addLocalEndpoint()
-    {
-        List var2 = this.endpoints;
-        ChannelFuture var1;
+							p_initChannel_1_
+									.pipeline()
+									.addLast("timeout",
+											new ReadTimeoutHandler(30))
+									.addLast(
+											"legacy_query",
+											new PingResponseHandler(
+													NetworkSystem.this))
+									.addLast("splitter",
+											new MessageDeserializer2())
+									.addLast(
+											"decoder",
+											new MessageDeserializer(
+													NetworkManager.field_152462_h))
+									.addLast("prepender",
+											new MessageSerializer2())
+									.addLast(
+											"encoder",
+											new MessageSerializer(
+													NetworkManager.field_152462_h));
+							final NetworkManager var2 = new NetworkManager(
+									false);
+							networkManagers.add(var2);
+							p_initChannel_1_.pipeline().addLast(
+									"packet_handler", var2);
+							var2.setNetHandler(new NetHandlerHandshakeTCP(
+									mcServer, var2));
+						}
+					}).group(eventLoops).localAddress(p_151265_1_, p_151265_2_)
+					.bind().syncUninterruptibly());
+		}
+	}
 
-        synchronized (this.endpoints)
-        {
-            var1 = ((ServerBootstrap)((ServerBootstrap)(new ServerBootstrap()).channel(LocalServerChannel.class)).childHandler(new ChannelInitializer()
-            {
-                private static final String __OBFID = "CL_00001449";
-                protected void initChannel(Channel p_initChannel_1_)
-                {
-                    NetworkManager var2 = new NetworkManager(false);
-                    var2.setNetHandler(new NetHandlerHandshakeMemory(NetworkSystem.this.mcServer, var2));
-                    NetworkSystem.this.networkManagers.add(var2);
-                    p_initChannel_1_.pipeline().addLast("packet_handler", var2);
-                }
-            }).group(eventLoops).localAddress(LocalAddress.ANY)).bind().syncUninterruptibly();
-            this.endpoints.add(var1);
-        }
+	/**
+	 * Adds a channel that listens locally
+	 */
+	public SocketAddress addLocalEndpoint() {
+		ChannelFuture var1;
 
-        return var1.channel().localAddress();
-    }
+		synchronized (endpoints) {
+			var1 = new ServerBootstrap()
+					.channel(LocalServerChannel.class)
+					.childHandler(new ChannelInitializer() {
 
-    /**
-     * Shuts down all open endpoints (with immediate effect?)
-     */
-    public void terminateEndpoints()
-    {
-        this.isAlive = false;
-        Iterator var1 = this.endpoints.iterator();
+						@Override
+						protected void initChannel(Channel p_initChannel_1_) {
+							final NetworkManager var2 = new NetworkManager(
+									false);
+							var2.setNetHandler(new NetHandlerHandshakeMemory(
+									mcServer, var2));
+							networkManagers.add(var2);
+							p_initChannel_1_.pipeline().addLast(
+									"packet_handler", var2);
+						}
+					}).group(eventLoops).localAddress(LocalAddress.ANY).bind()
+					.syncUninterruptibly();
+			endpoints.add(var1);
+		}
 
-        while (var1.hasNext())
-        {
-            ChannelFuture var2 = (ChannelFuture)var1.next();
-            var2.channel().close().syncUninterruptibly();
-        }
-    }
+		return var1.channel().localAddress();
+	}
 
-    /**
-     * Will try to process the packets received by each NetworkManager, gracefully manage processing failures and cleans
-     * up dead connections
-     */
-    public void networkTick()
-    {
-        List var1 = this.networkManagers;
+	public MinecraftServer func_151267_d() {
+		return mcServer;
+	}
 
-        synchronized (this.networkManagers)
-        {
-            Iterator var2 = this.networkManagers.iterator();
+	/**
+	 * Will try to process the packets received by each NetworkManager,
+	 * gracefully manage processing failures and cleans up dead connections
+	 */
+	public void networkTick() {
+		synchronized (networkManagers) {
+			final Iterator var2 = networkManagers.iterator();
 
-            while (var2.hasNext())
-            {
-                final NetworkManager var3 = (NetworkManager)var2.next();
+			while (var2.hasNext()) {
+				final NetworkManager var3 = (NetworkManager) var2.next();
 
-                if (!var3.isChannelOpen())
-                {
-                    var2.remove();
+				if (!var3.isChannelOpen()) {
+					var2.remove();
 
-                    if (var3.getExitMessage() != null)
-                    {
-                        var3.getNetHandler().onDisconnect(var3.getExitMessage());
-                    }
-                    else if (var3.getNetHandler() != null)
-                    {
-                        var3.getNetHandler().onDisconnect(new ChatComponentText("Disconnected"));
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var3.processReceivedPackets();
-                    }
-                    catch (Exception var8)
-                    {
-                        if (var3.isLocalChannel())
-                        {
-                            CrashReport var10 = CrashReport.makeCrashReport(var8, "Ticking memory connection");
-                            CrashReportCategory var6 = var10.makeCategory("Ticking connection");
-                            var6.addCrashSectionCallable("Connection", new Callable()
-                            {
-                                private static final String __OBFID = "CL_00001450";
-                                public String call()
-                                {
-                                    return var3.toString();
-                                }
-                            });
-                            throw new ReportedException(var10);
-                        }
+					if (var3.getExitMessage() != null) {
+						var3.getNetHandler()
+								.onDisconnect(var3.getExitMessage());
+					} else if (var3.getNetHandler() != null) {
+						var3.getNetHandler().onDisconnect(
+								new ChatComponentText("Disconnected"));
+					}
+				} else {
+					try {
+						var3.processReceivedPackets();
+					} catch (final Exception var8) {
+						if (var3.isLocalChannel()) {
+							final CrashReport var10 = CrashReport
+									.makeCrashReport(var8,
+											"Ticking memory connection");
+							final CrashReportCategory var6 = var10
+									.makeCategory("Ticking connection");
+							var6.addCrashSectionCallable("Connection",
+									new Callable() {
 
-                        logger.warn("Failed to handle packet for " + var3.getSocketAddress(), var8);
-                        final ChatComponentText var5 = new ChatComponentText("Internal server error");
-                        var3.scheduleOutboundPacket(new S40PacketDisconnect(var5), new GenericFutureListener[] {new GenericFutureListener()
-                            {
-                                private static final String __OBFID = "CL_00001451";
-                                public void operationComplete(Future p_operationComplete_1_)
-                                {
-                                    var3.closeChannel(var5);
-                                }
-                            }
-                        });
-                        var3.disableAutoRead();
-                    }
-                }
-            }
-        }
-    }
+										@Override
+										public String call() {
+											return var3.toString();
+										}
+									});
+							throw new ReportedException(var10);
+						}
 
-    public MinecraftServer func_151267_d()
-    {
-        return this.mcServer;
-    }
+						logger.warn(
+								"Failed to handle packet for "
+										+ var3.getSocketAddress(), var8);
+						final ChatComponentText var5 = new ChatComponentText(
+								"Internal server error");
+						var3.scheduleOutboundPacket(
+								new S40PacketDisconnect(var5),
+								new GenericFutureListener[] { new GenericFutureListener() {
+
+									@Override
+									public void operationComplete(
+											Future p_operationComplete_1_) {
+										var3.closeChannel(var5);
+									}
+								} });
+						var3.disableAutoRead();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Shuts down all open endpoints (with immediate effect?)
+	 */
+	public void terminateEndpoints() {
+		isAlive = false;
+		final Iterator var1 = endpoints.iterator();
+
+		while (var1.hasNext()) {
+			final ChannelFuture var2 = (ChannelFuture) var1.next();
+			var2.channel().close().syncUninterruptibly();
+		}
+	}
 }

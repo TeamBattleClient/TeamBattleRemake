@@ -1,119 +1,107 @@
 package net.minecraft.nbt;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import java.util.Iterator;
 import java.util.UUID;
+
 import net.minecraft.util.StringUtils;
 
-public final class NBTUtil
-{
-    private static final String __OBFID = "CL_00001901";
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 
-    public static GameProfile func_152459_a(NBTTagCompound p_152459_0_)
-    {
-        String var1 = null;
-        String var2 = null;
+public final class NBTUtil {
 
-        if (p_152459_0_.func_150297_b("Name", 8))
-        {
-            var1 = p_152459_0_.getString("Name");
-        }
+	public static GameProfile func_152459_a(NBTTagCompound p_152459_0_) {
+		String var1 = null;
+		String var2 = null;
 
-        if (p_152459_0_.func_150297_b("Id", 8))
-        {
-            var2 = p_152459_0_.getString("Id");
-        }
+		if (p_152459_0_.func_150297_b("Name", 8)) {
+			var1 = p_152459_0_.getString("Name");
+		}
 
-        if (StringUtils.isNullOrEmpty(var1) && StringUtils.isNullOrEmpty(var2))
-        {
-            return null;
-        }
-        else
-        {
-            UUID var3;
+		if (p_152459_0_.func_150297_b("Id", 8)) {
+			var2 = p_152459_0_.getString("Id");
+		}
 
-            try
-            {
-                var3 = UUID.fromString(var2);
-            }
-            catch (Throwable var12)
-            {
-                var3 = null;
-            }
+		if (StringUtils.isNullOrEmpty(var1) && StringUtils.isNullOrEmpty(var2))
+			return null;
+		else {
+			UUID var3;
 
-            GameProfile var4 = new GameProfile(var3, var1);
+			try {
+				var3 = UUID.fromString(var2);
+			} catch (final Throwable var12) {
+				var3 = null;
+			}
 
-            if (p_152459_0_.func_150297_b("Properties", 10))
-            {
-                NBTTagCompound var5 = p_152459_0_.getCompoundTag("Properties");
-                Iterator var6 = var5.func_150296_c().iterator();
+			final GameProfile var4 = new GameProfile(var3, var1);
 
-                while (var6.hasNext())
-                {
-                    String var7 = (String)var6.next();
-                    NBTTagList var8 = var5.getTagList(var7, 10);
+			if (p_152459_0_.func_150297_b("Properties", 10)) {
+				final NBTTagCompound var5 = p_152459_0_
+						.getCompoundTag("Properties");
+				final Iterator var6 = var5.func_150296_c().iterator();
 
-                    for (int var9 = 0; var9 < var8.tagCount(); ++var9)
-                    {
-                        NBTTagCompound var10 = var8.getCompoundTagAt(var9);
-                        String var11 = var10.getString("Value");
+				while (var6.hasNext()) {
+					final String var7 = (String) var6.next();
+					final NBTTagList var8 = var5.getTagList(var7, 10);
 
-                        if (var10.func_150297_b("Signature", 8))
-                        {
-                            var4.getProperties().put(var7, new Property(var7, var11, var10.getString("Signature")));
-                        }
-                        else
-                        {
-                            var4.getProperties().put(var7, new Property(var7, var11));
-                        }
-                    }
-                }
-            }
+					for (int var9 = 0; var9 < var8.tagCount(); ++var9) {
+						final NBTTagCompound var10 = var8
+								.getCompoundTagAt(var9);
+						final String var11 = var10.getString("Value");
 
-            return var4;
-        }
-    }
+						if (var10.func_150297_b("Signature", 8)) {
+							var4.getProperties().put(
+									var7,
+									new Property(var7, var11, var10
+											.getString("Signature")));
+						} else {
+							var4.getProperties().put(var7,
+									new Property(var7, var11));
+						}
+					}
+				}
+			}
 
-    public static void func_152460_a(NBTTagCompound p_152460_0_, GameProfile p_152460_1_)
-    {
-        if (!StringUtils.isNullOrEmpty(p_152460_1_.getName()))
-        {
-            p_152460_0_.setString("Name", p_152460_1_.getName());
-        }
+			return var4;
+		}
+	}
 
-        if (p_152460_1_.getId() != null)
-        {
-            p_152460_0_.setString("Id", p_152460_1_.getId().toString());
-        }
+	public static void func_152460_a(NBTTagCompound p_152460_0_,
+			GameProfile p_152460_1_) {
+		if (!StringUtils.isNullOrEmpty(p_152460_1_.getName())) {
+			p_152460_0_.setString("Name", p_152460_1_.getName());
+		}
 
-        if (!p_152460_1_.getProperties().isEmpty())
-        {
-            NBTTagCompound var2 = new NBTTagCompound();
-            Iterator var3 = p_152460_1_.getProperties().keySet().iterator();
+		if (p_152460_1_.getId() != null) {
+			p_152460_0_.setString("Id", p_152460_1_.getId().toString());
+		}
 
-            while (var3.hasNext())
-            {
-                String var4 = (String)var3.next();
-                NBTTagList var5 = new NBTTagList();
-                NBTTagCompound var8;
+		if (!p_152460_1_.getProperties().isEmpty()) {
+			final NBTTagCompound var2 = new NBTTagCompound();
+			final Iterator var3 = p_152460_1_.getProperties().keySet()
+					.iterator();
 
-                for (Iterator var6 = p_152460_1_.getProperties().get(var4).iterator(); var6.hasNext(); var5.appendTag(var8))
-                {
-                    Property var7 = (Property)var6.next();
-                    var8 = new NBTTagCompound();
-                    var8.setString("Value", var7.getValue());
+			while (var3.hasNext()) {
+				final String var4 = (String) var3.next();
+				final NBTTagList var5 = new NBTTagList();
+				NBTTagCompound var8;
 
-                    if (var7.hasSignature())
-                    {
-                        var8.setString("Signature", var7.getSignature());
-                    }
-                }
+				for (final Iterator var6 = p_152460_1_.getProperties()
+						.get(var4).iterator(); var6.hasNext(); var5
+						.appendTag(var8)) {
+					final Property var7 = (Property) var6.next();
+					var8 = new NBTTagCompound();
+					var8.setString("Value", var7.getValue());
 
-                var2.setTag(var4, var5);
-            }
+					if (var7.hasSignature()) {
+						var8.setString("Signature", var7.getSignature());
+					}
+				}
 
-            p_152460_0_.setTag("Properties", var2);
-        }
-    }
+				var2.setTag(var4, var5);
+			}
+
+			p_152460_0_.setTag("Properties", var2);
+		}
+	}
 }

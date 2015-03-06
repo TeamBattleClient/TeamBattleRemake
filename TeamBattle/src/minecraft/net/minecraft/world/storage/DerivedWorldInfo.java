@@ -5,267 +5,295 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 
-public class DerivedWorldInfo extends WorldInfo
-{
-    /** Instance of WorldInfo. */
-    private final WorldInfo theWorldInfo;
-    private static final String __OBFID = "CL_00000584";
+public class DerivedWorldInfo extends WorldInfo {
+	/** Instance of WorldInfo. */
+	private final WorldInfo theWorldInfo;
 
-    public DerivedWorldInfo(WorldInfo p_i2145_1_)
-    {
-        this.theWorldInfo = p_i2145_1_;
-    }
+	public DerivedWorldInfo(WorldInfo p_i2145_1_) {
+		theWorldInfo = p_i2145_1_;
+	}
 
-    /**
-     * Gets the NBTTagCompound for the worldInfo
-     */
-    public NBTTagCompound getNBTTagCompound()
-    {
-        return this.theWorldInfo.getNBTTagCompound();
-    }
+	/**
+	 * Returns true if commands are allowed on this World.
+	 */
+	@Override
+	public boolean areCommandsAllowed() {
+		return theWorldInfo.areCommandsAllowed();
+	}
 
-    /**
-     * Creates a new NBTTagCompound for the world, with the given NBTTag as the "Player"
-     */
-    public NBTTagCompound cloneNBTCompound(NBTTagCompound p_76082_1_)
-    {
-        return this.theWorldInfo.cloneNBTCompound(p_76082_1_);
-    }
+	/**
+	 * Creates a new NBTTagCompound for the world, with the given NBTTag as the
+	 * "Player"
+	 */
+	@Override
+	public NBTTagCompound cloneNBTCompound(NBTTagCompound p_76082_1_) {
+		return theWorldInfo.cloneNBTCompound(p_76082_1_);
+	}
 
-    /**
-     * Returns the seed of current world.
-     */
-    public long getSeed()
-    {
-        return this.theWorldInfo.getSeed();
-    }
+	/**
+	 * Gets the GameRules class Instance.
+	 */
+	@Override
+	public GameRules getGameRulesInstance() {
+		return theWorldInfo.getGameRulesInstance();
+	}
 
-    /**
-     * Returns the x spawn position
-     */
-    public int getSpawnX()
-    {
-        return this.theWorldInfo.getSpawnX();
-    }
+	/**
+	 * Gets the GameType.
+	 */
+	@Override
+	public WorldSettings.GameType getGameType() {
+		return theWorldInfo.getGameType();
+	}
 
-    /**
-     * Return the Y axis spawning point of the player.
-     */
-    public int getSpawnY()
-    {
-        return this.theWorldInfo.getSpawnY();
-    }
+	/**
+	 * Return the last time the player was in this world.
+	 */
+	@Override
+	public long getLastTimePlayed() {
+		return theWorldInfo.getLastTimePlayed();
+	}
 
-    /**
-     * Returns the z spawn position
-     */
-    public int getSpawnZ()
-    {
-        return this.theWorldInfo.getSpawnZ();
-    }
+	/**
+	 * Gets the NBTTagCompound for the worldInfo
+	 */
+	@Override
+	public NBTTagCompound getNBTTagCompound() {
+		return theWorldInfo.getNBTTagCompound();
+	}
 
-    public long getWorldTotalTime()
-    {
-        return this.theWorldInfo.getWorldTotalTime();
-    }
+	/**
+	 * Returns the player's NBTTagCompound to be loaded
+	 */
+	@Override
+	public NBTTagCompound getPlayerNBTTagCompound() {
+		return theWorldInfo.getPlayerNBTTagCompound();
+	}
 
-    /**
-     * Get current world time
-     */
-    public long getWorldTime()
-    {
-        return this.theWorldInfo.getWorldTime();
-    }
+	/**
+	 * Return the number of ticks until rain.
+	 */
+	@Override
+	public int getRainTime() {
+		return theWorldInfo.getRainTime();
+	}
 
-    public long getSizeOnDisk()
-    {
-        return this.theWorldInfo.getSizeOnDisk();
-    }
+	/**
+	 * Returns the save version of this world
+	 */
+	@Override
+	public int getSaveVersion() {
+		return theWorldInfo.getSaveVersion();
+	}
 
-    /**
-     * Returns the player's NBTTagCompound to be loaded
-     */
-    public NBTTagCompound getPlayerNBTTagCompound()
-    {
-        return this.theWorldInfo.getPlayerNBTTagCompound();
-    }
+	/**
+	 * Returns the seed of current world.
+	 */
+	@Override
+	public long getSeed() {
+		return theWorldInfo.getSeed();
+	}
 
-    /**
-     * Returns vanilla MC dimension (-1,0,1). For custom dimension compatibility, always prefer
-     * WorldProvider.dimensionID accessed from World.provider.dimensionID
-     */
-    public int getVanillaDimension()
-    {
-        return this.theWorldInfo.getVanillaDimension();
-    }
+	@Override
+	public long getSizeOnDisk() {
+		return theWorldInfo.getSizeOnDisk();
+	}
 
-    /**
-     * Get current world name
-     */
-    public String getWorldName()
-    {
-        return this.theWorldInfo.getWorldName();
-    }
+	/**
+	 * Returns the x spawn position
+	 */
+	@Override
+	public int getSpawnX() {
+		return theWorldInfo.getSpawnX();
+	}
 
-    /**
-     * Returns the save version of this world
-     */
-    public int getSaveVersion()
-    {
-        return this.theWorldInfo.getSaveVersion();
-    }
+	/**
+	 * Return the Y axis spawning point of the player.
+	 */
+	@Override
+	public int getSpawnY() {
+		return theWorldInfo.getSpawnY();
+	}
 
-    /**
-     * Return the last time the player was in this world.
-     */
-    public long getLastTimePlayed()
-    {
-        return this.theWorldInfo.getLastTimePlayed();
-    }
+	/**
+	 * Returns the z spawn position
+	 */
+	@Override
+	public int getSpawnZ() {
+		return theWorldInfo.getSpawnZ();
+	}
 
-    /**
-     * Returns true if it is thundering, false otherwise.
-     */
-    public boolean isThundering()
-    {
-        return this.theWorldInfo.isThundering();
-    }
+	@Override
+	public WorldType getTerrainType() {
+		return theWorldInfo.getTerrainType();
+	}
 
-    /**
-     * Returns the number of ticks until next thunderbolt.
-     */
-    public int getThunderTime()
-    {
-        return this.theWorldInfo.getThunderTime();
-    }
+	/**
+	 * Returns the number of ticks until next thunderbolt.
+	 */
+	@Override
+	public int getThunderTime() {
+		return theWorldInfo.getThunderTime();
+	}
 
-    /**
-     * Returns true if it is raining, false otherwise.
-     */
-    public boolean isRaining()
-    {
-        return this.theWorldInfo.isRaining();
-    }
+	/**
+	 * Returns vanilla MC dimension (-1,0,1). For custom dimension
+	 * compatibility, always prefer WorldProvider.dimensionID accessed from
+	 * World.provider.dimensionID
+	 */
+	@Override
+	public int getVanillaDimension() {
+		return theWorldInfo.getVanillaDimension();
+	}
 
-    /**
-     * Return the number of ticks until rain.
-     */
-    public int getRainTime()
-    {
-        return this.theWorldInfo.getRainTime();
-    }
+	/**
+	 * Get current world name
+	 */
+	@Override
+	public String getWorldName() {
+		return theWorldInfo.getWorldName();
+	}
 
-    /**
-     * Gets the GameType.
-     */
-    public WorldSettings.GameType getGameType()
-    {
-        return this.theWorldInfo.getGameType();
-    }
+	/**
+	 * Get current world time
+	 */
+	@Override
+	public long getWorldTime() {
+		return theWorldInfo.getWorldTime();
+	}
 
-    /**
-     * Set the x spawn position to the passed in value
-     */
-    public void setSpawnX(int p_76058_1_) {}
+	@Override
+	public long getWorldTotalTime() {
+		return theWorldInfo.getWorldTotalTime();
+	}
 
-    /**
-     * Sets the y spawn position
-     */
-    public void setSpawnY(int p_76056_1_) {}
+	@Override
+	public void incrementTotalWorldTime(long p_82572_1_) {
+	}
 
-    /**
-     * Set the z spawn position to the passed in value
-     */
-    public void setSpawnZ(int p_76087_1_) {}
+	/**
+	 * Returns true if hardcore mode is enabled, otherwise false
+	 */
+	@Override
+	public boolean isHardcoreModeEnabled() {
+		return theWorldInfo.isHardcoreModeEnabled();
+	}
 
-    public void incrementTotalWorldTime(long p_82572_1_) {}
+	/**
+	 * Returns true if the World is initialized.
+	 */
+	@Override
+	public boolean isInitialized() {
+		return theWorldInfo.isInitialized();
+	}
 
-    /**
-     * Set current world time
-     */
-    public void setWorldTime(long p_76068_1_) {}
+	/**
+	 * Get whether the map features (e.g. strongholds) generation is enabled or
+	 * disabled.
+	 */
+	@Override
+	public boolean isMapFeaturesEnabled() {
+		return theWorldInfo.isMapFeaturesEnabled();
+	}
 
-    /**
-     * Sets the spawn zone position. Args: x, y, z
-     */
-    public void setSpawnPosition(int p_76081_1_, int p_76081_2_, int p_76081_3_) {}
+	/**
+	 * Returns true if it is raining, false otherwise.
+	 */
+	@Override
+	public boolean isRaining() {
+		return theWorldInfo.isRaining();
+	}
 
-    public void setWorldName(String p_76062_1_) {}
+	/**
+	 * Returns true if it is thundering, false otherwise.
+	 */
+	@Override
+	public boolean isThundering() {
+		return theWorldInfo.isThundering();
+	}
 
-    /**
-     * Sets the save version of the world
-     */
-    public void setSaveVersion(int p_76078_1_) {}
+	/**
+	 * Sets whether it is raining or not.
+	 */
+	@Override
+	public void setRaining(boolean p_76084_1_) {
+	}
 
-    /**
-     * Sets whether it is thundering or not.
-     */
-    public void setThundering(boolean p_76069_1_) {}
+	/**
+	 * Sets the number of ticks until rain.
+	 */
+	@Override
+	public void setRainTime(int p_76080_1_) {
+	}
 
-    /**
-     * Defines the number of ticks until next thunderbolt.
-     */
-    public void setThunderTime(int p_76090_1_) {}
+	/**
+	 * Sets the save version of the world
+	 */
+	@Override
+	public void setSaveVersion(int p_76078_1_) {
+	}
 
-    /**
-     * Sets whether it is raining or not.
-     */
-    public void setRaining(boolean p_76084_1_) {}
+	/**
+	 * Sets the initialization status of the World.
+	 */
+	@Override
+	public void setServerInitialized(boolean p_76091_1_) {
+	}
 
-    /**
-     * Sets the number of ticks until rain.
-     */
-    public void setRainTime(int p_76080_1_) {}
+	/**
+	 * Sets the spawn zone position. Args: x, y, z
+	 */
+	@Override
+	public void setSpawnPosition(int p_76081_1_, int p_76081_2_, int p_76081_3_) {
+	}
 
-    /**
-     * Get whether the map features (e.g. strongholds) generation is enabled or disabled.
-     */
-    public boolean isMapFeaturesEnabled()
-    {
-        return this.theWorldInfo.isMapFeaturesEnabled();
-    }
+	/**
+	 * Set the x spawn position to the passed in value
+	 */
+	@Override
+	public void setSpawnX(int p_76058_1_) {
+	}
 
-    /**
-     * Returns true if hardcore mode is enabled, otherwise false
-     */
-    public boolean isHardcoreModeEnabled()
-    {
-        return this.theWorldInfo.isHardcoreModeEnabled();
-    }
+	/**
+	 * Sets the y spawn position
+	 */
+	@Override
+	public void setSpawnY(int p_76056_1_) {
+	}
 
-    public WorldType getTerrainType()
-    {
-        return this.theWorldInfo.getTerrainType();
-    }
+	/**
+	 * Set the z spawn position to the passed in value
+	 */
+	@Override
+	public void setSpawnZ(int p_76087_1_) {
+	}
 
-    public void setTerrainType(WorldType p_76085_1_) {}
+	@Override
+	public void setTerrainType(WorldType p_76085_1_) {
+	}
 
-    /**
-     * Returns true if commands are allowed on this World.
-     */
-    public boolean areCommandsAllowed()
-    {
-        return this.theWorldInfo.areCommandsAllowed();
-    }
+	/**
+	 * Sets whether it is thundering or not.
+	 */
+	@Override
+	public void setThundering(boolean p_76069_1_) {
+	}
 
-    /**
-     * Returns true if the World is initialized.
-     */
-    public boolean isInitialized()
-    {
-        return this.theWorldInfo.isInitialized();
-    }
+	/**
+	 * Defines the number of ticks until next thunderbolt.
+	 */
+	@Override
+	public void setThunderTime(int p_76090_1_) {
+	}
 
-    /**
-     * Sets the initialization status of the World.
-     */
-    public void setServerInitialized(boolean p_76091_1_) {}
+	@Override
+	public void setWorldName(String p_76062_1_) {
+	}
 
-    /**
-     * Gets the GameRules class Instance.
-     */
-    public GameRules getGameRulesInstance()
-    {
-        return this.theWorldInfo.getGameRulesInstance();
-    }
+	/**
+	 * Set current world time
+	 */
+	@Override
+	public void setWorldTime(long p_76068_1_) {
+	}
 }

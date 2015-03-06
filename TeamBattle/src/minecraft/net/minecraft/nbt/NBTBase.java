@@ -4,112 +4,107 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public abstract class NBTBase
-{
-    public static final String[] NBTTypes = new String[] {"END", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]"};
-    private static final String __OBFID = "CL_00001229";
+public abstract class NBTBase {
+	public abstract static class NBTPrimitive extends NBTBase {
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    abstract void write(DataOutput p_74734_1_) throws IOException;
+		public abstract double func_150286_g();
 
-    abstract void func_152446_a(DataInput p_152446_1_, int p_152446_2_, NBTSizeTracker p_152446_3_) throws IOException;
+		public abstract int func_150287_d();
 
-    public abstract String toString();
+		public abstract float func_150288_h();
 
-    /**
-     * Gets the type byte for the tag.
-     */
-    public abstract byte getId();
+		public abstract short func_150289_e();
 
-    protected static NBTBase func_150284_a(byte p_150284_0_)
-    {
-        switch (p_150284_0_)
-        {
-            case 0:
-                return new NBTTagEnd();
+		public abstract byte func_150290_f();
 
-            case 1:
-                return new NBTTagByte();
+		public abstract long func_150291_c();
+	}
 
-            case 2:
-                return new NBTTagShort();
+	public static final String[] NBTTypes = new String[] { "END", "BYTE",
+			"SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING",
+			"LIST", "COMPOUND", "INT[]" };
 
-            case 3:
-                return new NBTTagInt();
+	protected static NBTBase func_150284_a(byte p_150284_0_) {
+		switch (p_150284_0_) {
+		case 0:
+			return new NBTTagEnd();
 
-            case 4:
-                return new NBTTagLong();
+		case 1:
+			return new NBTTagByte();
 
-            case 5:
-                return new NBTTagFloat();
+		case 2:
+			return new NBTTagShort();
 
-            case 6:
-                return new NBTTagDouble();
+		case 3:
+			return new NBTTagInt();
 
-            case 7:
-                return new NBTTagByteArray();
+		case 4:
+			return new NBTTagLong();
 
-            case 8:
-                return new NBTTagString();
+		case 5:
+			return new NBTTagFloat();
 
-            case 9:
-                return new NBTTagList();
+		case 6:
+			return new NBTTagDouble();
 
-            case 10:
-                return new NBTTagCompound();
+		case 7:
+			return new NBTTagByteArray();
 
-            case 11:
-                return new NBTTagIntArray();
+		case 8:
+			return new NBTTagString();
 
-            default:
-                return null;
-        }
-    }
+		case 9:
+			return new NBTTagList();
 
-    /**
-     * Creates a clone of the tag.
-     */
-    public abstract NBTBase copy();
+		case 10:
+			return new NBTTagCompound();
 
-    public boolean equals(Object p_equals_1_)
-    {
-        if (!(p_equals_1_ instanceof NBTBase))
-        {
-            return false;
-        }
-        else
-        {
-            NBTBase var2 = (NBTBase)p_equals_1_;
-            return this.getId() == var2.getId();
-        }
-    }
+		case 11:
+			return new NBTTagIntArray();
 
-    public int hashCode()
-    {
-        return this.getId();
-    }
+		default:
+			return null;
+		}
+	}
 
-    protected String func_150285_a_()
-    {
-        return this.toString();
-    }
+	/**
+	 * Creates a clone of the tag.
+	 */
+	public abstract NBTBase copy();
 
-    public abstract static class NBTPrimitive extends NBTBase
-    {
-        private static final String __OBFID = "CL_00001230";
+	@Override
+	public boolean equals(Object p_equals_1_) {
+		if (!(p_equals_1_ instanceof NBTBase))
+			return false;
+		else {
+			final NBTBase var2 = (NBTBase) p_equals_1_;
+			return getId() == var2.getId();
+		}
+	}
 
-        public abstract long func_150291_c();
+	protected String func_150285_a_() {
+		return toString();
+	}
 
-        public abstract int func_150287_d();
+	abstract void func_152446_a(DataInput p_152446_1_, int p_152446_2_,
+			NBTSizeTracker p_152446_3_) throws IOException;
 
-        public abstract short func_150289_e();
+	/**
+	 * Gets the type byte for the tag.
+	 */
+	public abstract byte getId();
 
-        public abstract byte func_150290_f();
+	@Override
+	public int hashCode() {
+		return getId();
+	}
 
-        public abstract double func_150286_g();
+	@Override
+	public abstract String toString();
 
-        public abstract float func_150288_h();
-    }
+	/**
+	 * Write the actual data contents of the tag, implemented in NBT extension
+	 * classes
+	 */
+	abstract void write(DataOutput p_74734_1_) throws IOException;
 }

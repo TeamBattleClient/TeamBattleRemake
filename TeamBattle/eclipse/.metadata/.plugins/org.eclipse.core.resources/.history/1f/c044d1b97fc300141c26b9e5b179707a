@@ -1,0 +1,6 @@
+package event.events;
+
+
+public final class EventTick extends Event {
+
+}

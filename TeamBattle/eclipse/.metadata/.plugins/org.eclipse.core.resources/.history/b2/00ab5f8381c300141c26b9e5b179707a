@@ -1,0 +1,52 @@
+package me.client.modules.movement;
+
+import org.lwjgl.input.Keyboard;
+
+import com.darkmagician6.eventapi.EventManager;
+
+import me.client.events.EventPreMotion;
+import me.client.events.EventUpdate;
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+
+public class Glide extends Module {
+	
+	public Glide() {
+		super("Glide", "Glide", ModuleCategory.MOVEMENT);
+		this.setKeybind(Keyboard.KEY_G);
+	}
+	
+	@Override
+	public void onEnable() {
+		EventManager.register(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		EventManager.unregister(this);
+	}
+	
+	public void onUpdate(EventUpdate event) {
+		
+		 {
+			 if(Keyboard.isKeyDown(57)){
+				 mc.thePlayer.motionY =+ 5.0F;
+	
+			 
+		 }else if (Keyboard.isKeyDown(56)){
+			 
+			 mc.thePlayer.motionY -= 5.0F;
+		 }
+			 
+if(!mc.thePlayer.isInWater()){ 
+	
+	mc.thePlayer.motionY *= 0.08;
+	
+}
+
+}
+		 
+		 }
+	
+	}
+

@@ -12,415 +12,420 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.gen.layer.IntCache;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CrashReport
-{
-    private static final Logger logger = LogManager.getLogger();
+public class CrashReport {
+	private static final Logger logger = LogManager.getLogger();
 
-    /** Description of the crash report. */
-    private final String description;
+	/**
+	 * Gets a random witty comment for inclusion in this CrashReport
+	 */
+	private static String getWittyComment() {
+		final String[] var0 = new String[] {
+				"Who set us up the TNT?",
+				"Everything\'s going to plan. No, really, that was supposed to happen.",
+				"Uh... Did I do that?",
+				"Oops.",
+				"Why did you do that?",
+				"I feel sad now :(",
+				"My bad.",
+				"I\'m sorry, Dave.",
+				"I let you down. Sorry :(",
+				"On the bright side, I bought you a teddy bear!",
+				"Daisy, daisy...",
+				"Oh - I know what I did wrong!",
+				"Hey, that tickles! Hehehe!",
+				"I blame Dinnerbone.",
+				"You should try our sister game, Minceraft!",
+				"Don\'t be sad. I\'ll do better next time, I promise!",
+				"Don\'t be sad, have a hug! <3",
+				"I just don\'t know what went wrong :(",
+				"Shall we play a game?",
+				"Quite honestly, I wouldn\'t worry myself about that.",
+				"I bet Cylons wouldn\'t have this problem.",
+				"Sorry :(",
+				"Surprise! Haha. Well, this is awkward.",
+				"Would you like a cupcake?",
+				"Hi. I\'m Minecraft, and I\'m a crashaholic.",
+				"Ooh. Shiny.",
+				"This doesn\'t make any sense!",
+				"Why is it breaking :(",
+				"Don\'t do that.",
+				"Ouch. That hurt :(",
+				"You\'re mean.",
+				"This is a token for 1 free hug. Redeem at your nearest Mojangsta: [~~HUG~~]",
+				"There are four lights!", "But it works on my machine." };
 
-    /** The Throwable that is the "cause" for this crash and Crash Report. */
-    private final Throwable cause;
+		try {
+			return var0[(int) (System.nanoTime() % var0.length)];
+		} catch (final Throwable var2) {
+			return "Witty comment unavailable :(";
+		}
+	}
 
-    /** Category of crash */
-    private final CrashReportCategory theReportCategory = new CrashReportCategory(this, "System Details");
+	/**
+	 * Creates a crash report for the exception
+	 */
+	public static CrashReport makeCrashReport(Throwable p_85055_0_,
+			String p_85055_1_) {
+		CrashReport var2;
 
-    /** Holds the keys and values of all crash report sections. */
-    private final List crashReportSections = new ArrayList();
+		if (p_85055_0_ instanceof ReportedException) {
+			var2 = ((ReportedException) p_85055_0_).getCrashReport();
+		} else {
+			var2 = new CrashReport(p_85055_1_, p_85055_0_);
+		}
 
-    /** File of crash report. */
-    private File crashReportFile;
-    private boolean field_85059_f = true;
-    private StackTraceElement[] stacktrace = new StackTraceElement[0];
-    private static final String __OBFID = "CL_00000990";
+		return var2;
+	}
 
-    public CrashReport(String p_i1348_1_, Throwable p_i1348_2_)
-    {
-        this.description = p_i1348_1_;
-        this.cause = p_i1348_2_;
-        this.populateEnvironment();
-    }
+	/** The Throwable that is the "cause" for this crash and Crash Report. */
+	private final Throwable cause;
 
-    /**
-     * Populates this crash report with initial information about the running server and operating system / java
-     * environment
-     */
-    private void populateEnvironment()
-    {
-        this.theReportCategory.addCrashSectionCallable("Minecraft Version", new Callable()
-        {
-            private static final String __OBFID = "CL_00001197";
-            public String call()
-            {
-                return "1.7.10";
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("Operating System", new Callable()
-        {
-            private static final String __OBFID = "CL_00001222";
-            public String call()
-            {
-                return System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ") version " + System.getProperty("os.version");
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("Java Version", new Callable()
-        {
-            private static final String __OBFID = "CL_00001248";
-            public String call()
-            {
-                return System.getProperty("java.version") + ", " + System.getProperty("java.vendor");
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("Java VM Version", new Callable()
-        {
-            private static final String __OBFID = "CL_00001275";
-            public String call()
-            {
-                return System.getProperty("java.vm.name") + " (" + System.getProperty("java.vm.info") + "), " + System.getProperty("java.vm.vendor");
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("Memory", new Callable()
-        {
-            private static final String __OBFID = "CL_00001302";
-            public String call()
-            {
-                Runtime var1 = Runtime.getRuntime();
-                long var2 = var1.maxMemory();
-                long var4 = var1.totalMemory();
-                long var6 = var1.freeMemory();
-                long var8 = var2 / 1024L / 1024L;
-                long var10 = var4 / 1024L / 1024L;
-                long var12 = var6 / 1024L / 1024L;
-                return var6 + " bytes (" + var12 + " MB) / " + var4 + " bytes (" + var10 + " MB) up to " + var2 + " bytes (" + var8 + " MB)";
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("JVM Flags", new Callable()
-        {
-            private static final String __OBFID = "CL_00001329";
-            public String call()
-            {
-                RuntimeMXBean var1 = ManagementFactory.getRuntimeMXBean();
-                List var2 = var1.getInputArguments();
-                int var3 = 0;
-                StringBuilder var4 = new StringBuilder();
-                Iterator var5 = var2.iterator();
+	/** File of crash report. */
+	private File crashReportFile;
 
-                while (var5.hasNext())
-                {
-                    String var6 = (String)var5.next();
+	/** Holds the keys and values of all crash report sections. */
+	private final List crashReportSections = new ArrayList();
+	/** Description of the crash report. */
+	private final String description;
+	private boolean field_85059_f = true;
 
-                    if (var6.startsWith("-X"))
-                    {
-                        if (var3++ > 0)
-                        {
-                            var4.append(" ");
-                        }
+	private StackTraceElement[] stacktrace = new StackTraceElement[0];
 
-                        var4.append(var6);
-                    }
-                }
+	/** Category of crash */
+	private final CrashReportCategory theReportCategory = new CrashReportCategory(
+			this, "System Details");
 
-                return String.format("%d total; %s", new Object[] {Integer.valueOf(var3), var4.toString()});
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("AABB Pool Size", new Callable()
-        {
-            private static final String __OBFID = "CL_00001355";
-            public String call()
-            {
-                byte var1 = 0;
-                int var2 = 56 * var1;
-                int var3 = var2 / 1024 / 1024;
-                byte var4 = 0;
-                int var5 = 56 * var4;
-                int var6 = var5 / 1024 / 1024;
-                return var1 + " (" + var2 + " bytes; " + var3 + " MB) allocated, " + var4 + " (" + var5 + " bytes; " + var6 + " MB) used";
-            }
-        });
-        this.theReportCategory.addCrashSectionCallable("IntCache", new Callable()
-        {
-            private static final String __OBFID = "CL_00001382";
-            public String call() throws SecurityException, NoSuchFieldException, IllegalAccessException, IllegalArgumentException
-            {
-                return IntCache.getCacheSizes();
-            }
-        });
-    }
+	public CrashReport(String p_i1348_1_, Throwable p_i1348_2_) {
+		description = p_i1348_1_;
+		cause = p_i1348_2_;
+		populateEnvironment();
+	}
 
-    /**
-     * Returns the description of the Crash Report.
-     */
-    public String getDescription()
-    {
-        return this.description;
-    }
+	public CrashReportCategory getCategory() {
+		return theReportCategory;
+	}
 
-    /**
-     * Returns the Throwable object that is the cause for the crash and Crash Report.
-     */
-    public Throwable getCrashCause()
-    {
-        return this.cause;
-    }
+	/**
+	 * Gets the stack trace of the Throwable that caused this crash report, or
+	 * if that fails, the cause .toString().
+	 */
+	public String getCauseStackTraceOrString() {
+		StringWriter var1 = null;
+		PrintWriter var2 = null;
+		Object var3 = cause;
 
-    /**
-     * Gets the various sections of the crash report into the given StringBuilder
-     */
-    public void getSectionsInStringBuilder(StringBuilder p_71506_1_)
-    {
-        if ((this.stacktrace == null || this.stacktrace.length <= 0) && this.crashReportSections.size() > 0)
-        {
-            this.stacktrace = (StackTraceElement[])ArrayUtils.subarray(((CrashReportCategory)this.crashReportSections.get(0)).func_147152_a(), 0, 1);
-        }
+		if (((Throwable) var3).getMessage() == null) {
+			if (var3 instanceof NullPointerException) {
+				var3 = new NullPointerException(description);
+			} else if (var3 instanceof StackOverflowError) {
+				var3 = new StackOverflowError(description);
+			} else if (var3 instanceof OutOfMemoryError) {
+				var3 = new OutOfMemoryError(description);
+			}
 
-        if (this.stacktrace != null && this.stacktrace.length > 0)
-        {
-            p_71506_1_.append("-- Head --\n");
-            p_71506_1_.append("Stacktrace:\n");
-            StackTraceElement[] var2 = this.stacktrace;
-            int var3 = var2.length;
+			((Throwable) var3).setStackTrace(cause.getStackTrace());
+		}
 
-            for (int var4 = 0; var4 < var3; ++var4)
-            {
-                StackTraceElement var5 = var2[var4];
-                p_71506_1_.append("\t").append("at ").append(var5.toString());
-                p_71506_1_.append("\n");
-            }
+		String var4 = ((Throwable) var3).toString();
 
-            p_71506_1_.append("\n");
-        }
+		try {
+			var1 = new StringWriter();
+			var2 = new PrintWriter(var1);
+			((Throwable) var3).printStackTrace(var2);
+			var4 = var1.toString();
+		} finally {
+			IOUtils.closeQuietly(var1);
+			IOUtils.closeQuietly(var2);
+		}
 
-        Iterator var6 = this.crashReportSections.iterator();
+		return var4;
+	}
 
-        while (var6.hasNext())
-        {
-            CrashReportCategory var7 = (CrashReportCategory)var6.next();
-            var7.appendToStringBuilder(p_71506_1_);
-            p_71506_1_.append("\n\n");
-        }
+	/**
+	 * Gets the complete report with headers, stack trace, and different
+	 * sections as a string.
+	 */
+	public String getCompleteReport() {
+		final StringBuilder var1 = new StringBuilder();
+		var1.append("---- Minecraft Crash Report ----\n");
+		var1.append("// ");
+		var1.append(getWittyComment());
+		var1.append("\n\n");
+		var1.append("Time: ");
+		var1.append(new SimpleDateFormat().format(new Date()));
+		var1.append("\n");
+		var1.append("Description: ");
+		var1.append(description);
+		var1.append("\n\n");
+		var1.append(getCauseStackTraceOrString());
+		var1.append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
 
-        this.theReportCategory.appendToStringBuilder(p_71506_1_);
-    }
+		for (int var2 = 0; var2 < 87; ++var2) {
+			var1.append("-");
+		}
 
-    /**
-     * Gets the stack trace of the Throwable that caused this crash report, or if that fails, the cause .toString().
-     */
-    public String getCauseStackTraceOrString()
-    {
-        StringWriter var1 = null;
-        PrintWriter var2 = null;
-        Object var3 = this.cause;
+		var1.append("\n\n");
+		getSectionsInStringBuilder(var1);
+		return var1.toString();
+	}
 
-        if (((Throwable)var3).getMessage() == null)
-        {
-            if (var3 instanceof NullPointerException)
-            {
-                var3 = new NullPointerException(this.description);
-            }
-            else if (var3 instanceof StackOverflowError)
-            {
-                var3 = new StackOverflowError(this.description);
-            }
-            else if (var3 instanceof OutOfMemoryError)
-            {
-                var3 = new OutOfMemoryError(this.description);
-            }
+	/**
+	 * Returns the Throwable object that is the cause for the crash and Crash
+	 * Report.
+	 */
+	public Throwable getCrashCause() {
+		return cause;
+	}
 
-            ((Throwable)var3).setStackTrace(this.cause.getStackTrace());
-        }
+	/**
+	 * Returns the description of the Crash Report.
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-        String var4 = ((Throwable)var3).toString();
+	/**
+	 * Gets the file this crash report is saved into.
+	 */
+	public File getFile() {
+		return crashReportFile;
+	}
 
-        try
-        {
-            var1 = new StringWriter();
-            var2 = new PrintWriter(var1);
-            ((Throwable)var3).printStackTrace(var2);
-            var4 = var1.toString();
-        }
-        finally
-        {
-            IOUtils.closeQuietly(var1);
-            IOUtils.closeQuietly(var2);
-        }
+	/**
+	 * Gets the various sections of the crash report into the given
+	 * StringBuilder
+	 */
+	public void getSectionsInStringBuilder(StringBuilder p_71506_1_) {
+		if ((stacktrace == null || stacktrace.length <= 0)
+				&& crashReportSections.size() > 0) {
+			stacktrace = ArrayUtils.subarray(
+					((CrashReportCategory) crashReportSections.get(0))
+							.func_147152_a(), 0, 1);
+		}
 
-        return var4;
-    }
+		if (stacktrace != null && stacktrace.length > 0) {
+			p_71506_1_.append("-- Head --\n");
+			p_71506_1_.append("Stacktrace:\n");
+			final StackTraceElement[] var2 = stacktrace;
+			final int var3 = var2.length;
 
-    /**
-     * Gets the complete report with headers, stack trace, and different sections as a string.
-     */
-    public String getCompleteReport()
-    {
-        StringBuilder var1 = new StringBuilder();
-        var1.append("---- Minecraft Crash Report ----\n");
-        var1.append("// ");
-        var1.append(getWittyComment());
-        var1.append("\n\n");
-        var1.append("Time: ");
-        var1.append((new SimpleDateFormat()).format(new Date()));
-        var1.append("\n");
-        var1.append("Description: ");
-        var1.append(this.description);
-        var1.append("\n\n");
-        var1.append(this.getCauseStackTraceOrString());
-        var1.append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
+			for (int var4 = 0; var4 < var3; ++var4) {
+				final StackTraceElement var5 = var2[var4];
+				p_71506_1_.append("\t").append("at ").append(var5.toString());
+				p_71506_1_.append("\n");
+			}
 
-        for (int var2 = 0; var2 < 87; ++var2)
-        {
-            var1.append("-");
-        }
+			p_71506_1_.append("\n");
+		}
 
-        var1.append("\n\n");
-        this.getSectionsInStringBuilder(var1);
-        return var1.toString();
-    }
+		final Iterator var6 = crashReportSections.iterator();
 
-    /**
-     * Gets the file this crash report is saved into.
-     */
-    public File getFile()
-    {
-        return this.crashReportFile;
-    }
+		while (var6.hasNext()) {
+			final CrashReportCategory var7 = (CrashReportCategory) var6.next();
+			var7.appendToStringBuilder(p_71506_1_);
+			p_71506_1_.append("\n\n");
+		}
 
-    /**
-     * Saves this CrashReport to the given file and returns a value indicating whether we were successful at doing so.
-     */
-    public boolean saveToFile(File p_147149_1_)
-    {
-        if (this.crashReportFile != null)
-        {
-            return false;
-        }
-        else
-        {
-            if (p_147149_1_.getParentFile() != null)
-            {
-                p_147149_1_.getParentFile().mkdirs();
-            }
+		theReportCategory.appendToStringBuilder(p_71506_1_);
+	}
 
-            try
-            {
-                FileWriter var2 = new FileWriter(p_147149_1_);
-                var2.write(this.getCompleteReport());
-                var2.close();
-                this.crashReportFile = p_147149_1_;
-                return true;
-            }
-            catch (Throwable var3)
-            {
-                logger.error("Could not save crash report to " + p_147149_1_, var3);
-                return false;
-            }
-        }
-    }
+	/**
+	 * Creates a CrashReportCategory
+	 */
+	public CrashReportCategory makeCategory(String p_85058_1_) {
+		return makeCategoryDepth(p_85058_1_, 1);
+	}
 
-    public CrashReportCategory getCategory()
-    {
-        return this.theReportCategory;
-    }
+	/**
+	 * Creates a CrashReportCategory for the given stack trace depth
+	 */
+	public CrashReportCategory makeCategoryDepth(String p_85057_1_,
+			int p_85057_2_) {
+		final CrashReportCategory var3 = new CrashReportCategory(this,
+				p_85057_1_);
 
-    /**
-     * Creates a CrashReportCategory
-     */
-    public CrashReportCategory makeCategory(String p_85058_1_)
-    {
-        return this.makeCategoryDepth(p_85058_1_, 1);
-    }
+		if (field_85059_f) {
+			final int var4 = var3.getPrunedStackTrace(p_85057_2_);
+			final StackTraceElement[] var5 = cause.getStackTrace();
+			StackTraceElement var6 = null;
+			StackTraceElement var7 = null;
+			final int var8 = var5.length - var4;
 
-    /**
-     * Creates a CrashReportCategory for the given stack trace depth
-     */
-    public CrashReportCategory makeCategoryDepth(String p_85057_1_, int p_85057_2_)
-    {
-        CrashReportCategory var3 = new CrashReportCategory(this, p_85057_1_);
+			if (var8 < 0) {
+				System.out.println("Negative index in crash report handler ("
+						+ var5.length + "/" + var4 + ")");
+			}
 
-        if (this.field_85059_f)
-        {
-            int var4 = var3.getPrunedStackTrace(p_85057_2_);
-            StackTraceElement[] var5 = this.cause.getStackTrace();
-            StackTraceElement var6 = null;
-            StackTraceElement var7 = null;
-            int var8 = var5.length - var4;
+			if (var5 != null && 0 <= var8 && var8 < var5.length) {
+				var6 = var5[var8];
 
-            if (var8 < 0)
-            {
-                System.out.println("Negative index in crash report handler (" + var5.length + "/" + var4 + ")");
-            }
+				if (var5.length + 1 - var4 < var5.length) {
+					var7 = var5[var5.length + 1 - var4];
+				}
+			}
 
-            if (var5 != null && 0 <= var8 && var8 < var5.length)
-            {
-                var6 = var5[var8];
+			field_85059_f = var3.firstTwoElementsOfStackTraceMatch(var6, var7);
 
-                if (var5.length + 1 - var4 < var5.length)
-                {
-                    var7 = var5[var5.length + 1 - var4];
-                }
-            }
+			if (var4 > 0 && !crashReportSections.isEmpty()) {
+				final CrashReportCategory var9 = (CrashReportCategory) crashReportSections
+						.get(crashReportSections.size() - 1);
+				var9.trimStackTraceEntriesFromBottom(var4);
+			} else if (var5 != null && var5.length >= var4 && 0 <= var8
+					&& var8 < var5.length) {
+				stacktrace = new StackTraceElement[var8];
+				System.arraycopy(var5, 0, stacktrace, 0, stacktrace.length);
+			} else {
+				field_85059_f = false;
+			}
+		}
 
-            this.field_85059_f = var3.firstTwoElementsOfStackTraceMatch(var6, var7);
+		crashReportSections.add(var3);
+		return var3;
+	}
 
-            if (var4 > 0 && !this.crashReportSections.isEmpty())
-            {
-                CrashReportCategory var9 = (CrashReportCategory)this.crashReportSections.get(this.crashReportSections.size() - 1);
-                var9.trimStackTraceEntriesFromBottom(var4);
-            }
-            else if (var5 != null && var5.length >= var4 && 0 <= var8 && var8 < var5.length)
-            {
-                this.stacktrace = new StackTraceElement[var8];
-                System.arraycopy(var5, 0, this.stacktrace, 0, this.stacktrace.length);
-            }
-            else
-            {
-                this.field_85059_f = false;
-            }
-        }
+	/**
+	 * Populates this crash report with initial information about the running
+	 * server and operating system / java environment
+	 */
+	private void populateEnvironment() {
+		theReportCategory.addCrashSectionCallable("Minecraft Version",
+				new Callable() {
 
-        this.crashReportSections.add(var3);
-        return var3;
-    }
+					@Override
+					public String call() {
+						return "1.7.10";
+					}
+				});
+		theReportCategory.addCrashSectionCallable("Operating System",
+				new Callable() {
 
-    /**
-     * Gets a random witty comment for inclusion in this CrashReport
-     */
-    private static String getWittyComment()
-    {
-        String[] var0 = new String[] {"Who set us up the TNT?", "Everything\'s going to plan. No, really, that was supposed to happen.", "Uh... Did I do that?", "Oops.", "Why did you do that?", "I feel sad now :(", "My bad.", "I\'m sorry, Dave.", "I let you down. Sorry :(", "On the bright side, I bought you a teddy bear!", "Daisy, daisy...", "Oh - I know what I did wrong!", "Hey, that tickles! Hehehe!", "I blame Dinnerbone.", "You should try our sister game, Minceraft!", "Don\'t be sad. I\'ll do better next time, I promise!", "Don\'t be sad, have a hug! <3", "I just don\'t know what went wrong :(", "Shall we play a game?", "Quite honestly, I wouldn\'t worry myself about that.", "I bet Cylons wouldn\'t have this problem.", "Sorry :(", "Surprise! Haha. Well, this is awkward.", "Would you like a cupcake?", "Hi. I\'m Minecraft, and I\'m a crashaholic.", "Ooh. Shiny.", "This doesn\'t make any sense!", "Why is it breaking :(", "Don\'t do that.", "Ouch. That hurt :(", "You\'re mean.", "This is a token for 1 free hug. Redeem at your nearest Mojangsta: [~~HUG~~]", "There are four lights!", "But it works on my machine."};
+					@Override
+					public String call() {
+						return System.getProperty("os.name") + " ("
+								+ System.getProperty("os.arch") + ") version "
+								+ System.getProperty("os.version");
+					}
+				});
+		theReportCategory.addCrashSectionCallable("Java Version",
+				new Callable() {
 
-        try
-        {
-            return var0[(int)(System.nanoTime() % (long)var0.length)];
-        }
-        catch (Throwable var2)
-        {
-            return "Witty comment unavailable :(";
-        }
-    }
+					@Override
+					public String call() {
+						return System.getProperty("java.version") + ", "
+								+ System.getProperty("java.vendor");
+					}
+				});
+		theReportCategory.addCrashSectionCallable("Java VM Version",
+				new Callable() {
 
-    /**
-     * Creates a crash report for the exception
-     */
-    public static CrashReport makeCrashReport(Throwable p_85055_0_, String p_85055_1_)
-    {
-        CrashReport var2;
+					@Override
+					public String call() {
+						return System.getProperty("java.vm.name") + " ("
+								+ System.getProperty("java.vm.info") + "), "
+								+ System.getProperty("java.vm.vendor");
+					}
+				});
+		theReportCategory.addCrashSectionCallable("Memory", new Callable() {
 
-        if (p_85055_0_ instanceof ReportedException)
-        {
-            var2 = ((ReportedException)p_85055_0_).getCrashReport();
-        }
-        else
-        {
-            var2 = new CrashReport(p_85055_1_, p_85055_0_);
-        }
+			@Override
+			public String call() {
+				final Runtime var1 = Runtime.getRuntime();
+				final long var2 = var1.maxMemory();
+				final long var4 = var1.totalMemory();
+				final long var6 = var1.freeMemory();
+				final long var8 = var2 / 1024L / 1024L;
+				final long var10 = var4 / 1024L / 1024L;
+				final long var12 = var6 / 1024L / 1024L;
+				return var6 + " bytes (" + var12 + " MB) / " + var4
+						+ " bytes (" + var10 + " MB) up to " + var2
+						+ " bytes (" + var8 + " MB)";
+			}
+		});
+		theReportCategory.addCrashSectionCallable("JVM Flags", new Callable() {
 
-        return var2;
-    }
+			@Override
+			public String call() {
+				final RuntimeMXBean var1 = ManagementFactory.getRuntimeMXBean();
+				final List var2 = var1.getInputArguments();
+				int var3 = 0;
+				final StringBuilder var4 = new StringBuilder();
+				final Iterator var5 = var2.iterator();
+
+				while (var5.hasNext()) {
+					final String var6 = (String) var5.next();
+
+					if (var6.startsWith("-X")) {
+						if (var3++ > 0) {
+							var4.append(" ");
+						}
+
+						var4.append(var6);
+					}
+				}
+
+				return String.format("%d total; %s",
+						new Object[] { Integer.valueOf(var3), var4.toString() });
+			}
+		});
+		theReportCategory.addCrashSectionCallable("AABB Pool Size",
+				new Callable() {
+
+					@Override
+					public String call() {
+						final byte var1 = 0;
+						final int var2 = 56 * var1;
+						final int var3 = var2 / 1024 / 1024;
+						final byte var4 = 0;
+						final int var5 = 56 * var4;
+						final int var6 = var5 / 1024 / 1024;
+						return var1 + " (" + var2 + " bytes; " + var3
+								+ " MB) allocated, " + var4 + " (" + var5
+								+ " bytes; " + var6 + " MB) used";
+					}
+				});
+		theReportCategory.addCrashSectionCallable("IntCache", new Callable() {
+
+			@Override
+			public String call() throws SecurityException,
+					NoSuchFieldException, IllegalAccessException,
+					IllegalArgumentException {
+				return IntCache.getCacheSizes();
+			}
+		});
+	}
+
+	/**
+	 * Saves this CrashReport to the given file and returns a value indicating
+	 * whether we were successful at doing so.
+	 */
+	public boolean saveToFile(File p_147149_1_) {
+		if (crashReportFile != null)
+			return false;
+		else {
+			if (p_147149_1_.getParentFile() != null) {
+				p_147149_1_.getParentFile().mkdirs();
+			}
+
+			try {
+				final FileWriter var2 = new FileWriter(p_147149_1_);
+				var2.write(getCompleteReport());
+				var2.close();
+				crashReportFile = p_147149_1_;
+				return true;
+			} catch (final Throwable var3) {
+				logger.error("Could not save crash report to " + p_147149_1_,
+						var3);
+				return false;
+			}
+		}
+	}
 }

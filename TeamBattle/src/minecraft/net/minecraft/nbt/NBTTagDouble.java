@@ -3,102 +3,99 @@ package net.minecraft.nbt;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+
 import net.minecraft.util.MathHelper;
 
-public class NBTTagDouble extends NBTBase.NBTPrimitive
-{
-    /** The double value for the tag. */
-    private double data;
-    private static final String __OBFID = "CL_00001218";
+public class NBTTagDouble extends NBTBase.NBTPrimitive {
+	/** The double value for the tag. */
+	private double data;
 
-    NBTTagDouble() {}
+	NBTTagDouble() {
+	}
 
-    public NBTTagDouble(double p_i45130_1_)
-    {
-        this.data = p_i45130_1_;
-    }
+	public NBTTagDouble(double p_i45130_1_) {
+		data = p_i45130_1_;
+	}
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput p_74734_1_) throws IOException
-    {
-        p_74734_1_.writeDouble(this.data);
-    }
+	/**
+	 * Creates a clone of the tag.
+	 */
+	@Override
+	public NBTBase copy() {
+		return new NBTTagDouble(data);
+	}
 
-    void func_152446_a(DataInput p_152446_1_, int p_152446_2_, NBTSizeTracker p_152446_3_) throws IOException
-    {
-        p_152446_3_.func_152450_a(64L);
-        this.data = p_152446_1_.readDouble();
-    }
+	@Override
+	public boolean equals(Object p_equals_1_) {
+		if (super.equals(p_equals_1_)) {
+			final NBTTagDouble var2 = (NBTTagDouble) p_equals_1_;
+			return data == var2.data;
+		} else
+			return false;
+	}
 
-    /**
-     * Gets the type byte for the tag.
-     */
-    public byte getId()
-    {
-        return (byte)6;
-    }
+	@Override
+	public double func_150286_g() {
+		return data;
+	}
 
-    public String toString()
-    {
-        return "" + this.data + "d";
-    }
+	@Override
+	public int func_150287_d() {
+		return MathHelper.floor_double(data);
+	}
 
-    /**
-     * Creates a clone of the tag.
-     */
-    public NBTBase copy()
-    {
-        return new NBTTagDouble(this.data);
-    }
+	@Override
+	public float func_150288_h() {
+		return (float) data;
+	}
 
-    public boolean equals(Object p_equals_1_)
-    {
-        if (super.equals(p_equals_1_))
-        {
-            NBTTagDouble var2 = (NBTTagDouble)p_equals_1_;
-            return this.data == var2.data;
-        }
-        else
-        {
-            return false;
-        }
-    }
+	@Override
+	public short func_150289_e() {
+		return (short) (MathHelper.floor_double(data) & 65535);
+	}
 
-    public int hashCode()
-    {
-        long var1 = Double.doubleToLongBits(this.data);
-        return super.hashCode() ^ (int)(var1 ^ var1 >>> 32);
-    }
+	@Override
+	public byte func_150290_f() {
+		return (byte) (MathHelper.floor_double(data) & 255);
+	}
 
-    public long func_150291_c()
-    {
-        return (long)Math.floor(this.data);
-    }
+	@Override
+	public long func_150291_c() {
+		return (long) Math.floor(data);
+	}
 
-    public int func_150287_d()
-    {
-        return MathHelper.floor_double(this.data);
-    }
+	@Override
+	void func_152446_a(DataInput p_152446_1_, int p_152446_2_,
+			NBTSizeTracker p_152446_3_) throws IOException {
+		p_152446_3_.func_152450_a(64L);
+		data = p_152446_1_.readDouble();
+	}
 
-    public short func_150289_e()
-    {
-        return (short)(MathHelper.floor_double(this.data) & 65535);
-    }
+	/**
+	 * Gets the type byte for the tag.
+	 */
+	@Override
+	public byte getId() {
+		return (byte) 6;
+	}
 
-    public byte func_150290_f()
-    {
-        return (byte)(MathHelper.floor_double(this.data) & 255);
-    }
+	@Override
+	public int hashCode() {
+		final long var1 = Double.doubleToLongBits(data);
+		return super.hashCode() ^ (int) (var1 ^ var1 >>> 32);
+	}
 
-    public double func_150286_g()
-    {
-        return this.data;
-    }
+	@Override
+	public String toString() {
+		return "" + data + "d";
+	}
 
-    public float func_150288_h()
-    {
-        return (float)this.data;
-    }
+	/**
+	 * Write the actual data contents of the tag, implemented in NBT extension
+	 * classes
+	 */
+	@Override
+	void write(DataOutput p_74734_1_) throws IOException {
+		p_74734_1_.writeDouble(data);
+	}
 }

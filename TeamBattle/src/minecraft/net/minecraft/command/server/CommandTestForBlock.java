@@ -2,6 +2,7 @@ package net.minecraft.command.server;
 
 import java.util.Iterator;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -17,184 +18,178 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class CommandTestForBlock extends CommandBase
-{
-    private static final String __OBFID = "CL_00001181";
+public class CommandTestForBlock extends CommandBase {
 
-    public String getCommandName()
-    {
-        return "testforblock";
-    }
+	/**
+	 * Adds the strings available in this command to the given list of tab
+	 * completion options.
+	 */
+	@Override
+	public List addTabCompletionOptions(ICommandSender p_71516_1_,
+			String[] p_71516_2_) {
+		return p_71516_2_.length == 4 ? getListOfStringsFromIterableMatchingLastWord(
+				p_71516_2_, Block.blockRegistry.getKeys()) : null;
+	}
 
-    /**
-     * Return the required permission level for this command.
-     */
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
+	public boolean func_147181_a(NBTBase p_147181_1_, NBTBase p_147181_2_) {
+		if (p_147181_1_ == p_147181_2_)
+			return true;
+		else if (p_147181_1_ == null)
+			return true;
+		else if (p_147181_2_ == null)
+			return false;
+		else if (!p_147181_1_.getClass().equals(p_147181_2_.getClass()))
+			return false;
+		else if (p_147181_1_ instanceof NBTTagCompound) {
+			final NBTTagCompound var3 = (NBTTagCompound) p_147181_1_;
+			final NBTTagCompound var4 = (NBTTagCompound) p_147181_2_;
+			final Iterator var5 = var3.func_150296_c().iterator();
+			String var6;
+			NBTBase var7;
 
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "commands.testforblock.usage";
-    }
+			do {
+				if (!var5.hasNext())
+					return true;
 
-    public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_)
-    {
-        if (p_71515_2_.length >= 4)
-        {
-            int var3 = p_71515_1_.getPlayerCoordinates().posX;
-            int var4 = p_71515_1_.getPlayerCoordinates().posY;
-            int var5 = p_71515_1_.getPlayerCoordinates().posZ;
-            var3 = MathHelper.floor_double(func_110666_a(p_71515_1_, (double)var3, p_71515_2_[0]));
-            var4 = MathHelper.floor_double(func_110666_a(p_71515_1_, (double)var4, p_71515_2_[1]));
-            var5 = MathHelper.floor_double(func_110666_a(p_71515_1_, (double)var5, p_71515_2_[2]));
-            Block var6 = Block.getBlockFromName(p_71515_2_[3]);
+				var6 = (String) var5.next();
+				var7 = var3.getTag(var6);
+			} while (func_147181_a(var7, var4.getTag(var6)));
 
-            if (var6 == null)
-            {
-                throw new NumberInvalidException("commands.setblock.notFound", new Object[] {p_71515_2_[3]});
-            }
-            else
-            {
-                int var7 = -1;
+			return false;
+		} else
+			return p_147181_1_.equals(p_147181_2_);
+	}
 
-                if (p_71515_2_.length >= 5)
-                {
-                    var7 = parseIntBounded(p_71515_1_, p_71515_2_[4], -1, 15);
-                }
+	@Override
+	public String getCommandName() {
+		return "testforblock";
+	}
 
-                World var8 = p_71515_1_.getEntityWorld();
+	@Override
+	public String getCommandUsage(ICommandSender p_71518_1_) {
+		return "commands.testforblock.usage";
+	}
 
-                if (!var8.blockExists(var3, var4, var5))
-                {
-                    throw new CommandException("commands.testforblock.outOfWorld", new Object[0]);
-                }
-                else
-                {
-                    NBTTagCompound var9 = new NBTTagCompound();
-                    boolean var10 = false;
+	/**
+	 * Return the required permission level for this command.
+	 */
+	@Override
+	public int getRequiredPermissionLevel() {
+		return 2;
+	}
 
-                    if (p_71515_2_.length >= 6 && var6.hasTileEntity())
-                    {
-                        String var11 = func_147178_a(p_71515_1_, p_71515_2_, 5).getUnformattedText();
+	@Override
+	public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_) {
+		if (p_71515_2_.length >= 4) {
+			int var3 = p_71515_1_.getPlayerCoordinates().posX;
+			int var4 = p_71515_1_.getPlayerCoordinates().posY;
+			int var5 = p_71515_1_.getPlayerCoordinates().posZ;
+			var3 = MathHelper.floor_double(func_110666_a(p_71515_1_, var3,
+					p_71515_2_[0]));
+			var4 = MathHelper.floor_double(func_110666_a(p_71515_1_, var4,
+					p_71515_2_[1]));
+			var5 = MathHelper.floor_double(func_110666_a(p_71515_1_, var5,
+					p_71515_2_[2]));
+			final Block var6 = Block.getBlockFromName(p_71515_2_[3]);
 
-                        try
-                        {
-                            NBTBase var12 = JsonToNBT.func_150315_a(var11);
+			if (var6 == null)
+				throw new NumberInvalidException("commands.setblock.notFound",
+						new Object[] { p_71515_2_[3] });
+			else {
+				int var7 = -1;
 
-                            if (!(var12 instanceof NBTTagCompound))
-                            {
-                                throw new CommandException("commands.setblock.tagError", new Object[] {"Not a valid tag"});
-                            }
+				if (p_71515_2_.length >= 5) {
+					var7 = parseIntBounded(p_71515_1_, p_71515_2_[4], -1, 15);
+				}
 
-                            var9 = (NBTTagCompound)var12;
-                            var10 = true;
-                        }
-                        catch (NBTException var14)
-                        {
-                            throw new CommandException("commands.setblock.tagError", new Object[] {var14.getMessage()});
-                        }
-                    }
+				final World var8 = p_71515_1_.getEntityWorld();
 
-                    Block var15 = var8.getBlock(var3, var4, var5);
+				if (!var8.blockExists(var3, var4, var5))
+					throw new CommandException(
+							"commands.testforblock.outOfWorld", new Object[0]);
+				else {
+					NBTTagCompound var9 = new NBTTagCompound();
+					boolean var10 = false;
 
-                    if (var15 != var6)
-                    {
-                        throw new CommandException("commands.testforblock.failed.tile", new Object[] {Integer.valueOf(var3), Integer.valueOf(var4), Integer.valueOf(var5), var15.getLocalizedName(), var6.getLocalizedName()});
-                    }
-                    else
-                    {
-                        if (var7 > -1)
-                        {
-                            int var16 = var8.getBlockMetadata(var3, var4, var5);
+					if (p_71515_2_.length >= 6 && var6.hasTileEntity()) {
+						final String var11 = func_147178_a(p_71515_1_,
+								p_71515_2_, 5).getUnformattedText();
 
-                            if (var16 != var7)
-                            {
-                                throw new CommandException("commands.testforblock.failed.data", new Object[] {Integer.valueOf(var3), Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var16), Integer.valueOf(var7)});
-                            }
-                        }
+						try {
+							final NBTBase var12 = JsonToNBT
+									.func_150315_a(var11);
 
-                        if (var10)
-                        {
-                            TileEntity var17 = var8.getTileEntity(var3, var4, var5);
+							if (!(var12 instanceof NBTTagCompound))
+								throw new CommandException(
+										"commands.setblock.tagError",
+										new Object[] { "Not a valid tag" });
 
-                            if (var17 == null)
-                            {
-                                throw new CommandException("commands.testforblock.failed.tileEntity", new Object[] {Integer.valueOf(var3), Integer.valueOf(var4), Integer.valueOf(var5)});
-                            }
+							var9 = (NBTTagCompound) var12;
+							var10 = true;
+						} catch (final NBTException var14) {
+							throw new CommandException(
+									"commands.setblock.tagError",
+									new Object[] { var14.getMessage() });
+						}
+					}
 
-                            NBTTagCompound var13 = new NBTTagCompound();
-                            var17.writeToNBT(var13);
+					final Block var15 = var8.getBlock(var3, var4, var5);
 
-                            if (!this.func_147181_a(var9, var13))
-                            {
-                                throw new CommandException("commands.testforblock.failed.nbt", new Object[] {Integer.valueOf(var3), Integer.valueOf(var4), Integer.valueOf(var5)});
-                            }
-                        }
+					if (var15 != var6)
+						throw new CommandException(
+								"commands.testforblock.failed.tile",
+								new Object[] { Integer.valueOf(var3),
+										Integer.valueOf(var4),
+										Integer.valueOf(var5),
+										var15.getLocalizedName(),
+										var6.getLocalizedName() });
+					else {
+						if (var7 > -1) {
+							final int var16 = var8.getBlockMetadata(var3, var4,
+									var5);
 
-                        p_71515_1_.addChatMessage(new ChatComponentTranslation("commands.testforblock.success", new Object[] {Integer.valueOf(var3), Integer.valueOf(var4), Integer.valueOf(var5)}));
-                    }
-                }
-            }
-        }
-        else
-        {
-            throw new WrongUsageException("commands.testforblock.usage", new Object[0]);
-        }
-    }
+							if (var16 != var7)
+								throw new CommandException(
+										"commands.testforblock.failed.data",
+										new Object[] { Integer.valueOf(var3),
+												Integer.valueOf(var4),
+												Integer.valueOf(var5),
+												Integer.valueOf(var16),
+												Integer.valueOf(var7) });
+						}
 
-    public boolean func_147181_a(NBTBase p_147181_1_, NBTBase p_147181_2_)
-    {
-        if (p_147181_1_ == p_147181_2_)
-        {
-            return true;
-        }
-        else if (p_147181_1_ == null)
-        {
-            return true;
-        }
-        else if (p_147181_2_ == null)
-        {
-            return false;
-        }
-        else if (!p_147181_1_.getClass().equals(p_147181_2_.getClass()))
-        {
-            return false;
-        }
-        else if (p_147181_1_ instanceof NBTTagCompound)
-        {
-            NBTTagCompound var3 = (NBTTagCompound)p_147181_1_;
-            NBTTagCompound var4 = (NBTTagCompound)p_147181_2_;
-            Iterator var5 = var3.func_150296_c().iterator();
-            String var6;
-            NBTBase var7;
+						if (var10) {
+							final TileEntity var17 = var8.getTileEntity(var3,
+									var4, var5);
 
-            do
-            {
-                if (!var5.hasNext())
-                {
-                    return true;
-                }
+							if (var17 == null)
+								throw new CommandException(
+										"commands.testforblock.failed.tileEntity",
+										new Object[] { Integer.valueOf(var3),
+												Integer.valueOf(var4),
+												Integer.valueOf(var5) });
 
-                var6 = (String)var5.next();
-                var7 = var3.getTag(var6);
-            }
-            while (this.func_147181_a(var7, var4.getTag(var6)));
+							final NBTTagCompound var13 = new NBTTagCompound();
+							var17.writeToNBT(var13);
 
-            return false;
-        }
-        else
-        {
-            return p_147181_1_.equals(p_147181_2_);
-        }
-    }
+							if (!func_147181_a(var9, var13))
+								throw new CommandException(
+										"commands.testforblock.failed.nbt",
+										new Object[] { Integer.valueOf(var3),
+												Integer.valueOf(var4),
+												Integer.valueOf(var5) });
+						}
 
-    /**
-     * Adds the strings available in this command to the given list of tab completion options.
-     */
-    public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_)
-    {
-        return p_71516_2_.length == 4 ? getListOfStringsFromIterableMatchingLastWord(p_71516_2_, Block.blockRegistry.getKeys()) : null;
-    }
+						p_71515_1_.addChatMessage(new ChatComponentTranslation(
+								"commands.testforblock.success", new Object[] {
+										Integer.valueOf(var3),
+										Integer.valueOf(var4),
+										Integer.valueOf(var5) }));
+					}
+				}
+			}
+		} else
+			throw new WrongUsageException("commands.testforblock.usage",
+					new Object[0]);
+	}
 }

@@ -1,0 +1,16 @@
+package event;
+
+import ml.balen.Balen.event.Cancellable;
+import ml.balen.Balen.event.Event;
+
+public final class EventInsideBlock extends Event implements Cancellable {
+	@Override
+	public boolean isCancelled() {
+		return true;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+	}
+
+}

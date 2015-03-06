@@ -1,0 +1,28 @@
+package me.client.modules.movement;
+
+import me.client.helpers.BlockHelper;
+import me.client.modules.Module;
+import me.client.modules.ModuleCategory;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+
+import org.lwjgl.input.Keyboard;
+
+import event.Event;
+import event.events.EventTick;
+
+public class Dolphin extends Module{
+
+	public Dolphin() {
+		super("Dolphin", "Dolphin", ModuleCategory.MOVEMENT);
+		setKeybind(Keyboard.KEY_H);
+	}
+	
+
+
+	
+	public void onUpdate(EventTick event) {
+		if(BlockHelper.isInLiquid()) {
+			mc.thePlayer.motionY += 0.05;
+		}
+	}
+}

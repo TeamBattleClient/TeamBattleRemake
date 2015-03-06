@@ -7,257 +7,270 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.world.Explosion;
 
-public class DamageSource
-{
-    public static DamageSource inFire = (new DamageSource("inFire")).setFireDamage();
-    public static DamageSource onFire = (new DamageSource("onFire")).setDamageBypassesArmor().setFireDamage();
-    public static DamageSource lava = (new DamageSource("lava")).setFireDamage();
-    public static DamageSource inWall = (new DamageSource("inWall")).setDamageBypassesArmor();
-    public static DamageSource drown = (new DamageSource("drown")).setDamageBypassesArmor();
-    public static DamageSource starve = (new DamageSource("starve")).setDamageBypassesArmor().setDamageIsAbsolute();
-    public static DamageSource cactus = new DamageSource("cactus");
-    public static DamageSource fall = (new DamageSource("fall")).setDamageBypassesArmor();
-    public static DamageSource outOfWorld = (new DamageSource("outOfWorld")).setDamageBypassesArmor().setDamageAllowedInCreativeMode();
-    public static DamageSource generic = (new DamageSource("generic")).setDamageBypassesArmor();
-    public static DamageSource magic = (new DamageSource("magic")).setDamageBypassesArmor().setMagicDamage();
-    public static DamageSource wither = (new DamageSource("wither")).setDamageBypassesArmor();
-    public static DamageSource anvil = new DamageSource("anvil");
-    public static DamageSource fallingBlock = new DamageSource("fallingBlock");
+public class DamageSource {
+	public static DamageSource anvil = new DamageSource("anvil");
 
-    /** This kind of damage can be blocked or not. */
-    private boolean isUnblockable;
-    private boolean isDamageAllowedInCreativeMode;
+	public static DamageSource cactus = new DamageSource("cactus");
 
-    /**
-     * Whether or not the damage ignores modification by potion effects or enchantments.
-     */
-    private boolean damageIsAbsolute;
-    private float hungerDamage = 0.3F;
+	public static DamageSource drown = new DamageSource("drown")
+			.setDamageBypassesArmor();
 
-    /** This kind of damage is based on fire or not. */
-    private boolean fireDamage;
+	public static DamageSource fall = new DamageSource("fall")
+			.setDamageBypassesArmor();
 
-    /** This kind of damage is based on a projectile or not. */
-    private boolean projectile;
+	public static DamageSource fallingBlock = new DamageSource("fallingBlock");
 
-    /**
-     * Whether this damage source will have its damage amount scaled based on the current difficulty.
-     */
-    private boolean difficultyScaled;
-    private boolean magicDamage;
-    private boolean explosion;
-    public String damageType;
-    private static final String __OBFID = "CL_00001521";
+	public static DamageSource generic = new DamageSource("generic")
+			.setDamageBypassesArmor();
 
-    public static DamageSource causeMobDamage(EntityLivingBase p_76358_0_)
-    {
-        return new EntityDamageSource("mob", p_76358_0_);
-    }
+	public static DamageSource inFire = new DamageSource("inFire")
+			.setFireDamage();
 
-    /**
-     * returns an EntityDamageSource of type player
-     */
-    public static DamageSource causePlayerDamage(EntityPlayer p_76365_0_)
-    {
-        return new EntityDamageSource("player", p_76365_0_);
-    }
+	public static DamageSource inWall = new DamageSource("inWall")
+			.setDamageBypassesArmor();
 
-    /**
-     * returns EntityDamageSourceIndirect of an arrow
-     */
-    public static DamageSource causeArrowDamage(EntityArrow p_76353_0_, Entity p_76353_1_)
-    {
-        return (new EntityDamageSourceIndirect("arrow", p_76353_0_, p_76353_1_)).setProjectile();
-    }
+	public static DamageSource lava = new DamageSource("lava").setFireDamage();
+	public static DamageSource magic = new DamageSource("magic")
+			.setDamageBypassesArmor().setMagicDamage();
+	public static DamageSource onFire = new DamageSource("onFire")
+			.setDamageBypassesArmor().setFireDamage();
+	public static DamageSource outOfWorld = new DamageSource("outOfWorld")
+			.setDamageBypassesArmor().setDamageAllowedInCreativeMode();
+	public static DamageSource starve = new DamageSource("starve")
+			.setDamageBypassesArmor().setDamageIsAbsolute();
+	public static DamageSource wither = new DamageSource("wither")
+			.setDamageBypassesArmor();
 
-    /**
-     * returns EntityDamageSourceIndirect of a fireball
-     */
-    public static DamageSource causeFireballDamage(EntityFireball p_76362_0_, Entity p_76362_1_)
-    {
-        return p_76362_1_ == null ? (new EntityDamageSourceIndirect("onFire", p_76362_0_, p_76362_0_)).setFireDamage().setProjectile() : (new EntityDamageSourceIndirect("fireball", p_76362_0_, p_76362_1_)).setFireDamage().setProjectile();
-    }
+	/**
+	 * returns EntityDamageSourceIndirect of an arrow
+	 */
+	public static DamageSource causeArrowDamage(EntityArrow p_76353_0_,
+			Entity p_76353_1_) {
+		return new EntityDamageSourceIndirect("arrow", p_76353_0_, p_76353_1_)
+				.setProjectile();
+	}
 
-    public static DamageSource causeThrownDamage(Entity p_76356_0_, Entity p_76356_1_)
-    {
-        return (new EntityDamageSourceIndirect("thrown", p_76356_0_, p_76356_1_)).setProjectile();
-    }
+	/**
+	 * returns EntityDamageSourceIndirect of a fireball
+	 */
+	public static DamageSource causeFireballDamage(EntityFireball p_76362_0_,
+			Entity p_76362_1_) {
+		return p_76362_1_ == null ? new EntityDamageSourceIndirect("onFire",
+				p_76362_0_, p_76362_0_).setFireDamage().setProjectile()
+				: new EntityDamageSourceIndirect("fireball", p_76362_0_,
+						p_76362_1_).setFireDamage().setProjectile();
+	}
 
-    public static DamageSource causeIndirectMagicDamage(Entity p_76354_0_, Entity p_76354_1_)
-    {
-        return (new EntityDamageSourceIndirect("indirectMagic", p_76354_0_, p_76354_1_)).setDamageBypassesArmor().setMagicDamage();
-    }
+	public static DamageSource causeIndirectMagicDamage(Entity p_76354_0_,
+			Entity p_76354_1_) {
+		return new EntityDamageSourceIndirect("indirectMagic", p_76354_0_,
+				p_76354_1_).setDamageBypassesArmor().setMagicDamage();
+	}
 
-    /**
-     * Returns the EntityDamageSource of the Thorns enchantment
-     */
-    public static DamageSource causeThornsDamage(Entity p_92087_0_)
-    {
-        return (new EntityDamageSource("thorns", p_92087_0_)).setMagicDamage();
-    }
+	public static DamageSource causeMobDamage(EntityLivingBase p_76358_0_) {
+		return new EntityDamageSource("mob", p_76358_0_);
+	}
 
-    public static DamageSource setExplosionSource(Explosion p_94539_0_)
-    {
-        return p_94539_0_ != null && p_94539_0_.getExplosivePlacedBy() != null ? (new EntityDamageSource("explosion.player", p_94539_0_.getExplosivePlacedBy())).setDifficultyScaled().setExplosion() : (new DamageSource("explosion")).setDifficultyScaled().setExplosion();
-    }
+	/**
+	 * returns an EntityDamageSource of type player
+	 */
+	public static DamageSource causePlayerDamage(EntityPlayer p_76365_0_) {
+		return new EntityDamageSource("player", p_76365_0_);
+	}
 
-    /**
-     * Returns true if the damage is projectile based.
-     */
-    public boolean isProjectile()
-    {
-        return this.projectile;
-    }
+	/**
+	 * Returns the EntityDamageSource of the Thorns enchantment
+	 */
+	public static DamageSource causeThornsDamage(Entity p_92087_0_) {
+		return new EntityDamageSource("thorns", p_92087_0_).setMagicDamage();
+	}
 
-    /**
-     * Define the damage type as projectile based.
-     */
-    public DamageSource setProjectile()
-    {
-        this.projectile = true;
-        return this;
-    }
+	public static DamageSource causeThrownDamage(Entity p_76356_0_,
+			Entity p_76356_1_) {
+		return new EntityDamageSourceIndirect("thrown", p_76356_0_, p_76356_1_)
+				.setProjectile();
+	}
 
-    public boolean isExplosion()
-    {
-        return this.explosion;
-    }
+	public static DamageSource setExplosionSource(Explosion p_94539_0_) {
+		return p_94539_0_ != null && p_94539_0_.getExplosivePlacedBy() != null ? new EntityDamageSource(
+				"explosion.player", p_94539_0_.getExplosivePlacedBy())
+				.setDifficultyScaled().setExplosion() : new DamageSource(
+				"explosion").setDifficultyScaled().setExplosion();
+	}
 
-    public DamageSource setExplosion()
-    {
-        this.explosion = true;
-        return this;
-    }
+	/**
+	 * Whether or not the damage ignores modification by potion effects or
+	 * enchantments.
+	 */
+	private boolean damageIsAbsolute;
+	public String damageType;
 
-    public boolean isUnblockable()
-    {
-        return this.isUnblockable;
-    }
+	/**
+	 * Whether this damage source will have its damage amount scaled based on
+	 * the current difficulty.
+	 */
+	private boolean difficultyScaled;
 
-    /**
-     * How much satiate(food) is consumed by this DamageSource
-     */
-    public float getHungerDamage()
-    {
-        return this.hungerDamage;
-    }
+	private boolean explosion;
 
-    public boolean canHarmInCreative()
-    {
-        return this.isDamageAllowedInCreativeMode;
-    }
+	/** This kind of damage is based on fire or not. */
+	private boolean fireDamage;
 
-    /**
-     * Whether or not the damage ignores modification by potion effects or enchantments.
-     */
-    public boolean isDamageAbsolute()
-    {
-        return this.damageIsAbsolute;
-    }
+	private float hungerDamage = 0.3F;
 
-    protected DamageSource(String p_i1566_1_)
-    {
-        this.damageType = p_i1566_1_;
-    }
+	private boolean isDamageAllowedInCreativeMode;
 
-    public Entity getSourceOfDamage()
-    {
-        return this.getEntity();
-    }
+	/** This kind of damage can be blocked or not. */
+	private boolean isUnblockable;
 
-    public Entity getEntity()
-    {
-        return null;
-    }
+	private boolean magicDamage;
 
-    protected DamageSource setDamageBypassesArmor()
-    {
-        this.isUnblockable = true;
-        this.hungerDamage = 0.0F;
-        return this;
-    }
+	/** This kind of damage is based on a projectile or not. */
+	private boolean projectile;
 
-    protected DamageSource setDamageAllowedInCreativeMode()
-    {
-        this.isDamageAllowedInCreativeMode = true;
-        return this;
-    }
+	protected DamageSource(String p_i1566_1_) {
+		damageType = p_i1566_1_;
+	}
 
-    /**
-     * Sets a value indicating whether the damage is absolute (ignores modification by potion effects or enchantments),
-     * and also clears out hunger damage.
-     */
-    protected DamageSource setDamageIsAbsolute()
-    {
-        this.damageIsAbsolute = true;
-        this.hungerDamage = 0.0F;
-        return this;
-    }
+	public boolean canHarmInCreative() {
+		return isDamageAllowedInCreativeMode;
+	}
 
-    /**
-     * Define the damage type as fire based.
-     */
-    protected DamageSource setFireDamage()
-    {
-        this.fireDamage = true;
-        return this;
-    }
+	public IChatComponent func_151519_b(EntityLivingBase p_151519_1_) {
+		final EntityLivingBase var2 = p_151519_1_.func_94060_bK();
+		final String var3 = "death.attack." + damageType;
+		final String var4 = var3 + ".player";
+		return var2 != null && StatCollector.canTranslate(var4) ? new ChatComponentTranslation(
+				var4, new Object[] { p_151519_1_.func_145748_c_(),
+						var2.func_145748_c_() })
+				: new ChatComponentTranslation(var3,
+						new Object[] { p_151519_1_.func_145748_c_() });
+	}
 
-    public IChatComponent func_151519_b(EntityLivingBase p_151519_1_)
-    {
-        EntityLivingBase var2 = p_151519_1_.func_94060_bK();
-        String var3 = "death.attack." + this.damageType;
-        String var4 = var3 + ".player";
-        return var2 != null && StatCollector.canTranslate(var4) ? new ChatComponentTranslation(var4, new Object[] {p_151519_1_.func_145748_c_(), var2.func_145748_c_()}): new ChatComponentTranslation(var3, new Object[] {p_151519_1_.func_145748_c_()});
-    }
+	/**
+	 * Return the name of damage type.
+	 */
+	public String getDamageType() {
+		return damageType;
+	}
 
-    /**
-     * Returns true if the damage is fire based.
-     */
-    public boolean isFireDamage()
-    {
-        return this.fireDamage;
-    }
+	public Entity getEntity() {
+		return null;
+	}
 
-    /**
-     * Return the name of damage type.
-     */
-    public String getDamageType()
-    {
-        return this.damageType;
-    }
+	/**
+	 * How much satiate(food) is consumed by this DamageSource
+	 */
+	public float getHungerDamage() {
+		return hungerDamage;
+	}
 
-    /**
-     * Set whether this damage source will have its damage amount scaled based on the current difficulty.
-     */
-    public DamageSource setDifficultyScaled()
-    {
-        this.difficultyScaled = true;
-        return this;
-    }
+	public Entity getSourceOfDamage() {
+		return getEntity();
+	}
 
-    /**
-     * Return whether this damage source will have its damage amount scaled based on the current difficulty.
-     */
-    public boolean isDifficultyScaled()
-    {
-        return this.difficultyScaled;
-    }
+	/**
+	 * Whether or not the damage ignores modification by potion effects or
+	 * enchantments.
+	 */
+	public boolean isDamageAbsolute() {
+		return damageIsAbsolute;
+	}
 
-    /**
-     * Returns true if the damage is magic based.
-     */
-    public boolean isMagicDamage()
-    {
-        return this.magicDamage;
-    }
+	/**
+	 * Return whether this damage source will have its damage amount scaled
+	 * based on the current difficulty.
+	 */
+	public boolean isDifficultyScaled() {
+		return difficultyScaled;
+	}
 
-    /**
-     * Define the damage type as magic based.
-     */
-    public DamageSource setMagicDamage()
-    {
-        this.magicDamage = true;
-        return this;
-    }
+	public boolean isExplosion() {
+		return explosion;
+	}
+
+	/**
+	 * Returns true if the damage is fire based.
+	 */
+	public boolean isFireDamage() {
+		return fireDamage;
+	}
+
+	/**
+	 * Returns true if the damage is magic based.
+	 */
+	public boolean isMagicDamage() {
+		return magicDamage;
+	}
+
+	/**
+	 * Returns true if the damage is projectile based.
+	 */
+	public boolean isProjectile() {
+		return projectile;
+	}
+
+	public boolean isUnblockable() {
+		return isUnblockable;
+	}
+
+	protected DamageSource setDamageAllowedInCreativeMode() {
+		isDamageAllowedInCreativeMode = true;
+		return this;
+	}
+
+	protected DamageSource setDamageBypassesArmor() {
+		isUnblockable = true;
+		hungerDamage = 0.0F;
+		return this;
+	}
+
+	/**
+	 * Sets a value indicating whether the damage is absolute (ignores
+	 * modification by potion effects or enchantments), and also clears out
+	 * hunger damage.
+	 */
+	protected DamageSource setDamageIsAbsolute() {
+		damageIsAbsolute = true;
+		hungerDamage = 0.0F;
+		return this;
+	}
+
+	/**
+	 * Set whether this damage source will have its damage amount scaled based
+	 * on the current difficulty.
+	 */
+	public DamageSource setDifficultyScaled() {
+		difficultyScaled = true;
+		return this;
+	}
+
+	public DamageSource setExplosion() {
+		explosion = true;
+		return this;
+	}
+
+	/**
+	 * Define the damage type as fire based.
+	 */
+	protected DamageSource setFireDamage() {
+		fireDamage = true;
+		return this;
+	}
+
+	/**
+	 * Define the damage type as magic based.
+	 */
+	public DamageSource setMagicDamage() {
+		magicDamage = true;
+		return this;
+	}
+
+	/**
+	 * Define the damage type as projectile based.
+	 */
+	public DamageSource setProjectile() {
+		projectile = true;
+		return this;
+	}
 }

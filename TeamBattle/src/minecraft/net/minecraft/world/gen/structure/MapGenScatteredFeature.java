@@ -5,157 +5,151 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
+
 import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
-public class MapGenScatteredFeature extends MapGenStructure
-{
-    private static List biomelist = Arrays.asList(new BiomeGenBase[] {BiomeGenBase.desert, BiomeGenBase.desertHills, BiomeGenBase.jungle, BiomeGenBase.jungleHills, BiomeGenBase.swampland});
+public class MapGenScatteredFeature extends MapGenStructure {
+	public static class Start extends StructureStart {
 
-    /** contains possible spawns for scattered features */
-    private List scatteredFeatureSpawnList;
+		public Start() {
+		}
 
-    /** the maximum distance between scattered features */
-    private int maxDistanceBetweenScatteredFeatures;
+		public Start(World p_i2060_1_, Random p_i2060_2_, int p_i2060_3_,
+				int p_i2060_4_) {
+			super(p_i2060_3_, p_i2060_4_);
+			final BiomeGenBase var5 = p_i2060_1_.getBiomeGenForCoords(
+					p_i2060_3_ * 16 + 8, p_i2060_4_ * 16 + 8);
 
-    /** the minimum distance between scattered features */
-    private int minDistanceBetweenScatteredFeatures;
-    private static final String __OBFID = "CL_00000471";
+			if (var5 != BiomeGenBase.jungle && var5 != BiomeGenBase.jungleHills) {
+				if (var5 == BiomeGenBase.swampland) {
+					final ComponentScatteredFeaturePieces.SwampHut var7 = new ComponentScatteredFeaturePieces.SwampHut(
+							p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
+					components.add(var7);
+				} else {
+					final ComponentScatteredFeaturePieces.DesertPyramid var8 = new ComponentScatteredFeaturePieces.DesertPyramid(
+							p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
+					components.add(var8);
+				}
+			} else {
+				final ComponentScatteredFeaturePieces.JunglePyramid var6 = new ComponentScatteredFeaturePieces.JunglePyramid(
+						p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
+				components.add(var6);
+			}
 
-    public MapGenScatteredFeature()
-    {
-        this.scatteredFeatureSpawnList = new ArrayList();
-        this.maxDistanceBetweenScatteredFeatures = 32;
-        this.minDistanceBetweenScatteredFeatures = 8;
-        this.scatteredFeatureSpawnList.add(new BiomeGenBase.SpawnListEntry(EntityWitch.class, 1, 1, 1));
-    }
+			updateBoundingBox();
+		}
+	}
 
-    public MapGenScatteredFeature(Map p_i2061_1_)
-    {
-        this();
-        Iterator var2 = p_i2061_1_.entrySet().iterator();
+	private static List biomelist = Arrays.asList(new BiomeGenBase[] {
+			BiomeGenBase.desert, BiomeGenBase.desertHills, BiomeGenBase.jungle,
+			BiomeGenBase.jungleHills, BiomeGenBase.swampland });
 
-        while (var2.hasNext())
-        {
-            Entry var3 = (Entry)var2.next();
+	/** the maximum distance between scattered features */
+	private int maxDistanceBetweenScatteredFeatures;
 
-            if (((String)var3.getKey()).equals("distance"))
-            {
-                this.maxDistanceBetweenScatteredFeatures = MathHelper.parseIntWithDefaultAndMax((String)var3.getValue(), this.maxDistanceBetweenScatteredFeatures, this.minDistanceBetweenScatteredFeatures + 1);
-            }
-        }
-    }
+	/** the minimum distance between scattered features */
+	private final int minDistanceBetweenScatteredFeatures;
 
-    public String func_143025_a()
-    {
-        return "Temple";
-    }
+	/** contains possible spawns for scattered features */
+	private final List scatteredFeatureSpawnList;
 
-    protected boolean canSpawnStructureAtCoords(int p_75047_1_, int p_75047_2_)
-    {
-        int var3 = p_75047_1_;
-        int var4 = p_75047_2_;
+	public MapGenScatteredFeature() {
+		scatteredFeatureSpawnList = new ArrayList();
+		maxDistanceBetweenScatteredFeatures = 32;
+		minDistanceBetweenScatteredFeatures = 8;
+		scatteredFeatureSpawnList.add(new BiomeGenBase.SpawnListEntry(
+				EntityWitch.class, 1, 1, 1));
+	}
 
-        if (p_75047_1_ < 0)
-        {
-            p_75047_1_ -= this.maxDistanceBetweenScatteredFeatures - 1;
-        }
+	public MapGenScatteredFeature(Map p_i2061_1_) {
+		this();
+		final Iterator var2 = p_i2061_1_.entrySet().iterator();
 
-        if (p_75047_2_ < 0)
-        {
-            p_75047_2_ -= this.maxDistanceBetweenScatteredFeatures - 1;
-        }
+		while (var2.hasNext()) {
+			final Entry var3 = (Entry) var2.next();
 
-        int var5 = p_75047_1_ / this.maxDistanceBetweenScatteredFeatures;
-        int var6 = p_75047_2_ / this.maxDistanceBetweenScatteredFeatures;
-        Random var7 = this.worldObj.setRandomSeed(var5, var6, 14357617);
-        var5 *= this.maxDistanceBetweenScatteredFeatures;
-        var6 *= this.maxDistanceBetweenScatteredFeatures;
-        var5 += var7.nextInt(this.maxDistanceBetweenScatteredFeatures - this.minDistanceBetweenScatteredFeatures);
-        var6 += var7.nextInt(this.maxDistanceBetweenScatteredFeatures - this.minDistanceBetweenScatteredFeatures);
+			if (((String) var3.getKey()).equals("distance")) {
+				maxDistanceBetweenScatteredFeatures = MathHelper
+						.parseIntWithDefaultAndMax((String) var3.getValue(),
+								maxDistanceBetweenScatteredFeatures,
+								minDistanceBetweenScatteredFeatures + 1);
+			}
+		}
+	}
 
-        if (var3 == var5 && var4 == var6)
-        {
-            BiomeGenBase var8 = this.worldObj.getWorldChunkManager().getBiomeGenAt(var3 * 16 + 8, var4 * 16 + 8);
-            Iterator var9 = biomelist.iterator();
+	@Override
+	protected boolean canSpawnStructureAtCoords(int p_75047_1_, int p_75047_2_) {
+		final int var3 = p_75047_1_;
+		final int var4 = p_75047_2_;
 
-            while (var9.hasNext())
-            {
-                BiomeGenBase var10 = (BiomeGenBase)var9.next();
+		if (p_75047_1_ < 0) {
+			p_75047_1_ -= maxDistanceBetweenScatteredFeatures - 1;
+		}
 
-                if (var8 == var10)
-                {
-                    return true;
-                }
-            }
-        }
+		if (p_75047_2_ < 0) {
+			p_75047_2_ -= maxDistanceBetweenScatteredFeatures - 1;
+		}
 
-        return false;
-    }
+		int var5 = p_75047_1_ / maxDistanceBetweenScatteredFeatures;
+		int var6 = p_75047_2_ / maxDistanceBetweenScatteredFeatures;
+		final Random var7 = worldObj.setRandomSeed(var5, var6, 14357617);
+		var5 *= maxDistanceBetweenScatteredFeatures;
+		var6 *= maxDistanceBetweenScatteredFeatures;
+		var5 += var7.nextInt(maxDistanceBetweenScatteredFeatures
+				- minDistanceBetweenScatteredFeatures);
+		var6 += var7.nextInt(maxDistanceBetweenScatteredFeatures
+				- minDistanceBetweenScatteredFeatures);
 
-    protected StructureStart getStructureStart(int p_75049_1_, int p_75049_2_)
-    {
-        return new MapGenScatteredFeature.Start(this.worldObj, this.rand, p_75049_1_, p_75049_2_);
-    }
+		if (var3 == var5 && var4 == var6) {
+			final BiomeGenBase var8 = worldObj.getWorldChunkManager()
+					.getBiomeGenAt(var3 * 16 + 8, var4 * 16 + 8);
+			final Iterator var9 = biomelist.iterator();
 
-    public boolean func_143030_a(int p_143030_1_, int p_143030_2_, int p_143030_3_)
-    {
-        StructureStart var4 = this.func_143028_c(p_143030_1_, p_143030_2_, p_143030_3_);
+			while (var9.hasNext()) {
+				final BiomeGenBase var10 = (BiomeGenBase) var9.next();
 
-        if (var4 != null && var4 instanceof MapGenScatteredFeature.Start && !var4.components.isEmpty())
-        {
-            StructureComponent var5 = (StructureComponent)var4.components.getFirst();
-            return var5 instanceof ComponentScatteredFeaturePieces.SwampHut;
-        }
-        else
-        {
-            return false;
-        }
-    }
+				if (var8 == var10)
+					return true;
+			}
+		}
 
-    /**
-     * returns possible spawns for scattered features
-     */
-    public List getScatteredFeatureSpawnList()
-    {
-        return this.scatteredFeatureSpawnList;
-    }
+		return false;
+	}
 
-    public static class Start extends StructureStart
-    {
-        private static final String __OBFID = "CL_00000472";
+	@Override
+	public String func_143025_a() {
+		return "Temple";
+	}
 
-        public Start() {}
+	public boolean func_143030_a(int p_143030_1_, int p_143030_2_,
+			int p_143030_3_) {
+		final StructureStart var4 = func_143028_c(p_143030_1_, p_143030_2_,
+				p_143030_3_);
 
-        public Start(World p_i2060_1_, Random p_i2060_2_, int p_i2060_3_, int p_i2060_4_)
-        {
-            super(p_i2060_3_, p_i2060_4_);
-            BiomeGenBase var5 = p_i2060_1_.getBiomeGenForCoords(p_i2060_3_ * 16 + 8, p_i2060_4_ * 16 + 8);
+		if (var4 != null && var4 instanceof MapGenScatteredFeature.Start
+				&& !var4.components.isEmpty()) {
+			final StructureComponent var5 = (StructureComponent) var4.components
+					.getFirst();
+			return var5 instanceof ComponentScatteredFeaturePieces.SwampHut;
+		} else
+			return false;
+	}
 
-            if (var5 != BiomeGenBase.jungle && var5 != BiomeGenBase.jungleHills)
-            {
-                if (var5 == BiomeGenBase.swampland)
-                {
-                    ComponentScatteredFeaturePieces.SwampHut var7 = new ComponentScatteredFeaturePieces.SwampHut(p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
-                    this.components.add(var7);
-                }
-                else
-                {
-                    ComponentScatteredFeaturePieces.DesertPyramid var8 = new ComponentScatteredFeaturePieces.DesertPyramid(p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
-                    this.components.add(var8);
-                }
-            }
-            else
-            {
-                ComponentScatteredFeaturePieces.JunglePyramid var6 = new ComponentScatteredFeaturePieces.JunglePyramid(p_i2060_2_, p_i2060_3_ * 16, p_i2060_4_ * 16);
-                this.components.add(var6);
-            }
+	/**
+	 * returns possible spawns for scattered features
+	 */
+	public List getScatteredFeatureSpawnList() {
+		return scatteredFeatureSpawnList;
+	}
 
-            this.updateBoundingBox();
-        }
-    }
+	@Override
+	protected StructureStart getStructureStart(int p_75049_1_, int p_75049_2_) {
+		return new MapGenScatteredFeature.Start(worldObj, rand, p_75049_1_,
+				p_75049_2_);
+	}
 }

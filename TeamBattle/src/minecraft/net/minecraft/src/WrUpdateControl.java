@@ -1,22 +1,20 @@
 package net.minecraft.src;
 
-public class WrUpdateControl implements IWrUpdateControl
-{
-    private boolean hasForge;
-    private int renderPass;
+public class WrUpdateControl implements IWrUpdateControl {
+	private final boolean hasForge;
 
-    public WrUpdateControl()
-    {
-        this.hasForge = Reflector.ForgeHooksClient.exists();
-        this.renderPass = 0;
-    }
+	public WrUpdateControl() {
+		hasForge = Reflector.ForgeHooksClient.exists();
+	}
 
-    public void resume() {}
+	@Override
+	public void pause() {
+	}
 
-    public void pause() {}
+	@Override
+	public void resume() {
+	}
 
-    public void setRenderPass(int renderPass)
-    {
-        this.renderPass = renderPass;
-    }
+	public void setRenderPass(int renderPass) {
+	}
 }

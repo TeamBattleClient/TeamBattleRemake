@@ -1,0 +1,534 @@
+package net.minecraft.client.renderer;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.util.PriorityQueue;
+
+import ml.balen.Balen.LateMod;
+import ml.balen.Balen.event.events.EventBlockOpacity;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.shader.TesselatorVertexState;
+import net.minecraft.client.util.QuadComparator;
+import net.minecraft.src.Config;
+import net.minecraft.src.VertexData;
+
+import org.lwjgl.opengl.GL11;
+
+public class Tessellator {
+	/** The static instance of the Tessellator. */
+	public static Tessellator instance = new Tessellator(524288);
+
+	private static boolean littleEndianByteOrder = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
+
+	public static boolean renderingWorldRenderer = false;
+
+	/**
+	 * The number of vertices manually added to the given draw call. This
+	 * differs from vertexCount because it adds extra vertices when converting
+	 * quads to triangles.
+	 */
+	private int addedVertices;
+
+	public boolean autoGrow;
+
+	private int brightness;
+
+	/** The size of the buffers used (in integers). */
+	private int bufferSize;
+
+	/** The byte buffer used for GL allocation. */
+	private ByteBuffer byteBuffer;
+	/** The color (RGBA) value to be used for the following draw call. */
+	private int color;
+
+	public boolean defaultTexture;
+
+	/** The draw mode currently being used by the tessellator. */
+	public int drawMode;
+
+	/** The same memory as byteBuffer, but referenced as an float buffer. */
+	private FloatBuffer floatBuffer;
+	private boolean hasBrightness;
+
+	/**
+	 * Whether the current draw object for this tessellator has color values.
+	 */
+	private boolean hasColor;
+
+	/**
+	 * Whether the current draw object for this tessellator has normal values.
+	 */
+	private boolean hasNormals;
+
+	/**
+	 * Whether the current draw object for this tessellator has texture
+	 * coordinates.
+	 */
+	private boolean hasTexture;
+
+	/** The same memory as byteBuffer, but referenced as an integer buffer. */
+	private IntBuffer intBuffer;
+
+	/** Disables all color information for the following draw call. */
+	private boolean isColorDisabled;
+
+	/** Whether this tessellator is currently in draw mode. */
+	public boolean isDrawing;
+
+	/** The normal to be applied to the face being drawn. */
+	private int normal;
+
+	/** Raw integer array. */
+	private int[] rawBuffer;
+
+	/** The index into the raw buffer to be used for the next data. */
+	private int rawBufferIndex;
+
+	private boolean renderingChunk;
+
+	/** The same memory as byteBuffer, but referenced as an short buffer. */
+	private ShortBuffer shortBuffer;
+
+	public int textureID;
+
+	/** The first coordinate to be used for the texture. */
+	private double textureU;
+	/** The second coordinate to be used for the texture. */
+	private double textureV;
+	/**
+	 * The number of vertices to be drawn in the next draw call. Reset to 0
+	 * between draw calls.
+	 */
+	private int vertexCount;
+	private VertexData[] vertexDatas;
+	private TextureAtlasSprite[] vertexQuadIcons;
+	/**
+	 * An offset to be applied along the x-axis for all vertices in this draw
+	 * call.
+	 */
+	public double xOffset;
+	/**
+	 * An offset to be applied along the y-axis for all vertices in this draw
+	 * call.
+	 */
+	public double yOffset;
+	/**
+	 * An offset to be applied along the z-axis for all vertices in this draw
+	 * call.
+	 */
+	public double zOffset;
+
+	public Tessellator() {
+		this(65536);
+		defaultTexture = false;
+	}
+
+	public Tessellator(int par1) {
+		renderingChunk = false;
+		defaultTexture = true;
+		textureID = 0;
+		autoGrow = true;
+		vertexDatas = null;
+		vertexQuadIcons = null;
+		bufferSize = par1;
+		byteBuffer = GLAllocation.createDirectByteBuffer(par1 * 4);
+		intBuffer = byteBuffer.asIntBuffer();
+		floatBuffer = byteBuffer.asFloatBuffer();
+		shortBuffer = byteBuffer.asShortBuffer();
+		rawBuffer = new int[par1];
+		vertexDatas = new VertexData[4];
+
+		for (int ix = 0; ix < vertexDatas.length; ++ix) {
+			vertexDatas[ix] = new VertexData();
+		}
+	}
+
+	/**
+	 * Offsets the translation for all vertices in the current draw call.
+	 */
+	public void addTranslation(float par1, float par2, float par3) {
+		xOffset += par1;
+		yOffset += par2;
+		zOffset += par3;
+	}
+
+	/**
+	 * Adds a vertex with the specified x,y,z to the current draw call. It will
+	 * trigger a draw() if the buffer gets full.
+	 */
+	public void addVertex(double par1, double par3, double par5) {
+		if (autoGrow && rawBufferIndex >= bufferSize - 32) {
+			Config.dbg("Expand tessellator buffer, old: " + bufferSize
+					+ ", new: " + bufferSize * 2);
+			bufferSize *= 2;
+			final int[] newRawBuffer = new int[bufferSize];
+			System.arraycopy(rawBuffer, 0, newRawBuffer, 0, rawBuffer.length);
+			rawBuffer = newRawBuffer;
+			byteBuffer = GLAllocation.createDirectByteBuffer(bufferSize * 4);
+			intBuffer = byteBuffer.asIntBuffer();
+			floatBuffer = byteBuffer.asFloatBuffer();
+			shortBuffer = byteBuffer.asShortBuffer();
+
+			if (vertexQuadIcons != null) {
+				final TextureAtlasSprite[] newVertexQuadIcons = new TextureAtlasSprite[bufferSize / 4];
+				System.arraycopy(vertexQuadIcons, 0, newVertexQuadIcons, 0,
+						vertexQuadIcons.length);
+				vertexQuadIcons = newVertexQuadIcons;
+			}
+		}
+
+		++addedVertices;
+
+		if (hasTexture) {
+			rawBuffer[rawBufferIndex + 3] = Float
+					.floatToRawIntBits((float) textureU);
+			rawBuffer[rawBufferIndex + 4] = Float
+					.floatToRawIntBits((float) textureV);
+		}
+
+		if (hasBrightness) {
+			rawBuffer[rawBufferIndex + 7] = brightness;
+		}
+
+		if (hasColor) {
+			rawBuffer[rawBufferIndex + 5] = color;
+		}
+
+		if (hasNormals) {
+			rawBuffer[rawBufferIndex + 6] = normal;
+		}
+
+		rawBuffer[rawBufferIndex + 0] = Float
+				.floatToRawIntBits((float) (par1 + xOffset));
+		rawBuffer[rawBufferIndex + 1] = Float
+				.floatToRawIntBits((float) (par3 + yOffset));
+		rawBuffer[rawBufferIndex + 2] = Float
+				.floatToRawIntBits((float) (par5 + zOffset));
+		rawBufferIndex += 8;
+		++vertexCount;
+
+		if (!autoGrow && addedVertices % 4 == 0
+				&& rawBufferIndex >= bufferSize - 32) {
+			this.draw();
+			isDrawing = true;
+		}
+	}
+
+	/**
+	 * Adds a vertex specifying both x,y,z and the texture u,v for it.
+	 */
+	public void addVertexWithUV(double x, double y, double z, double u, double v) {
+		setTextureUV(u, v);
+		addVertex(x, y, z);
+	}
+
+	/**
+	 * Disables colors for the current draw call.
+	 */
+	public void disableColor() {
+		isColorDisabled = true;
+	}
+
+	/**
+	 * Draws the data set up in this tessellator and resets the state to prepare
+	 * for new drawing.
+	 */
+	public int draw() {
+		if (!isDrawing)
+			throw new IllegalStateException("Not tesselating!");
+		else {
+			isDrawing = false;
+
+			if (vertexCount > 0
+					&& (!renderingChunk || !Config.isMultiTexture())) {
+				intBuffer.clear();
+				intBuffer.put(rawBuffer, 0, rawBufferIndex);
+				byteBuffer.position(0);
+				byteBuffer.limit(rawBufferIndex * 4);
+
+				if (hasTexture) {
+					floatBuffer.position(3);
+					GL11.glTexCoordPointer(2, 32, floatBuffer);
+					GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+				}
+
+				if (hasBrightness) {
+					OpenGlHelper
+							.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+					shortBuffer.position(14);
+					GL11.glTexCoordPointer(2, 32, shortBuffer);
+					GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+					OpenGlHelper
+							.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+				}
+
+				if (hasColor) {
+					byteBuffer.position(20);
+					GL11.glColorPointer(4, true, 32, byteBuffer);
+					GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+				}
+
+				if (hasNormals) {
+					byteBuffer.position(24);
+					GL11.glNormalPointer(32, byteBuffer);
+					GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+				}
+
+				floatBuffer.position(0);
+				GL11.glVertexPointer(3, 32, floatBuffer);
+				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+				GL11.glDrawArrays(drawMode, 0, vertexCount);
+				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+
+				if (hasTexture) {
+					GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+				}
+
+				if (hasBrightness) {
+					OpenGlHelper
+							.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
+					GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+					OpenGlHelper
+							.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
+				}
+
+				if (hasColor) {
+					GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+				}
+
+				if (hasNormals) {
+					GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+				}
+			}
+
+			final int var1 = rawBufferIndex * 4;
+			reset();
+			return var1;
+		}
+	}
+
+	public void func_154352_a(byte p_154352_1_, byte p_154352_2_,
+			byte p_154352_3_) {
+		setColorOpaque(p_154352_1_ & 255, p_154352_2_ & 255, p_154352_3_ & 255);
+	}
+
+	public TesselatorVertexState getVertexState(float p_147564_1_,
+			float p_147564_2_, float p_147564_3_) {
+		if (rawBufferIndex < 1)
+			return null;
+		else {
+			final int[] var4 = new int[rawBufferIndex];
+			final PriorityQueue var5 = new PriorityQueue(rawBufferIndex,
+					new QuadComparator(rawBuffer,
+							p_147564_1_ + (float) xOffset, p_147564_2_
+									+ (float) yOffset, p_147564_3_
+									+ (float) zOffset));
+			final byte var6 = 32;
+			int var7;
+
+			for (var7 = 0; var7 < rawBufferIndex; var7 += var6) {
+				var5.add(Integer.valueOf(var7));
+			}
+
+			for (var7 = 0; !var5.isEmpty(); var7 += var6) {
+				final int var8 = ((Integer) var5.remove()).intValue();
+
+				for (int var9 = 0; var9 < var6; ++var9) {
+					var4[var7 + var9] = rawBuffer[var8 + var9];
+				}
+			}
+
+			System.arraycopy(var4, 0, rawBuffer, 0, var4.length);
+			return new TesselatorVertexState(var4, rawBufferIndex, vertexCount,
+					hasTexture, hasBrightness, hasNormals, hasColor);
+		}
+	}
+
+	public boolean isRenderingChunk() {
+		return renderingChunk;
+	}
+
+	/**
+	 * Clears the tessellator state in preparation for new drawing.
+	 */
+	private void reset() {
+		vertexCount = 0;
+		byteBuffer.clear();
+		rawBufferIndex = 0;
+		addedVertices = 0;
+	}
+
+	public void setBrightness(int par1) {
+		hasBrightness = true;
+		brightness = par1;
+	}
+
+	/**
+	 * Sets the RGB values as specified, and sets alpha to opaque.
+	 */
+	public void setColorOpaque(int par1, int par2, int par3) {
+		final EventBlockOpacity event = new EventBlockOpacity(255);
+		LateMod.getEventManager().call(event);
+		setColorRGBA(par1, par2, par3, event.getBlockOpacity());
+	}
+
+	/**
+	 * Sets the RGB values as specified, converting from floats between 0 and 1
+	 * to integers from 0-255.
+	 */
+	public void setColorOpaque_F(float par1, float par2, float par3) {
+		setColorOpaque((int) (par1 * 255.0F), (int) (par2 * 255.0F),
+				(int) (par3 * 255.0F));
+	}
+
+	/**
+	 * Sets the color to the given opaque value (stored as byte values packed in
+	 * an integer).
+	 */
+	public void setColorOpaque_I(int par1) {
+		final int var2 = par1 >> 16 & 255;
+		final int var3 = par1 >> 8 & 255;
+		final int var4 = par1 & 255;
+		setColorOpaque(var2, var3, var4);
+	}
+
+	/**
+	 * Sets the RGBA values for the color. Also clamps them to 0-255.
+	 */
+	public void setColorRGBA(int par1, int par2, int par3, int par4) {
+		if (!isColorDisabled) {
+			if (par1 > 255) {
+				par1 = 255;
+			}
+
+			if (par2 > 255) {
+				par2 = 255;
+			}
+
+			if (par3 > 255) {
+				par3 = 255;
+			}
+
+			if (par4 > 255) {
+				par4 = 255;
+			}
+
+			if (par1 < 0) {
+				par1 = 0;
+			}
+
+			if (par2 < 0) {
+				par2 = 0;
+			}
+
+			if (par3 < 0) {
+				par3 = 0;
+			}
+
+			if (par4 < 0) {
+				par4 = 0;
+			}
+
+			hasColor = true;
+
+			if (littleEndianByteOrder) {
+				color = par4 << 24 | par3 << 16 | par2 << 8 | par1;
+			} else {
+				color = par1 << 24 | par2 << 16 | par3 << 8 | par4;
+			}
+		}
+	}
+
+	/**
+	 * Sets the RGBA values for the color, converting from floats between 0 and
+	 * 1 to integers from 0-255.
+	 */
+	public void setColorRGBA_F(float par1, float par2, float par3, float par4) {
+		setColorRGBA((int) (par1 * 255.0F), (int) (par2 * 255.0F),
+				(int) (par3 * 255.0F), (int) (par4 * 255.0F));
+	}
+
+	/**
+	 * Sets the color to the given color (packed as bytes in integer) and alpha
+	 * values.
+	 */
+	public void setColorRGBA_I(int par1, int par2) {
+		final int var3 = par1 >> 16 & 255;
+		final int var4 = par1 >> 8 & 255;
+		final int var5 = par1 & 255;
+		setColorRGBA(var3, var4, var5, par2);
+	}
+
+	/**
+	 * Sets the normal for the current draw call.
+	 */
+	public void setNormal(float par1, float par2, float par3) {
+		hasNormals = true;
+		final byte var4 = (byte) (int) (par1 * 127.0F);
+		final byte var5 = (byte) (int) (par2 * 127.0F);
+		final byte var6 = (byte) (int) (par3 * 127.0F);
+		normal = var4 & 255 | (var5 & 255) << 8 | (var6 & 255) << 16;
+	}
+
+	public void setRenderingChunk(boolean renderingChunk) {
+		this.renderingChunk = renderingChunk;
+	}
+
+	/**
+	 * Sets the texture coordinates.
+	 */
+	public void setTextureUV(double par1, double par3) {
+		hasTexture = true;
+		textureU = par1;
+		textureV = par3;
+	}
+
+	/**
+	 * Sets the translation for all vertices in the current draw call.
+	 */
+	public void setTranslation(double par1, double par3, double par5) {
+		xOffset = par1;
+		yOffset = par3;
+		zOffset = par5;
+	}
+
+	public void setVertexState(TesselatorVertexState p_147565_1_) {
+		System.arraycopy(p_147565_1_.getRawBuffer(), 0, rawBuffer, 0,
+				p_147565_1_.getRawBuffer().length);
+		rawBufferIndex = p_147565_1_.getRawBufferIndex();
+		vertexCount = p_147565_1_.getVertexCount();
+		hasTexture = p_147565_1_.getHasTexture();
+		hasBrightness = p_147565_1_.getHasBrightness();
+		hasColor = p_147565_1_.getHasColor();
+		hasNormals = p_147565_1_.getHasNormals();
+	}
+
+	/**
+	 * Resets tessellator state and prepares for drawing (with the specified
+	 * draw mode).
+	 */
+	public void startDrawing(int par1) {
+		if (isDrawing)
+			throw new IllegalStateException("Already tesselating!");
+		else {
+			isDrawing = true;
+			reset();
+			drawMode = par1;
+			hasNormals = false;
+			hasColor = false;
+			hasTexture = false;
+			hasBrightness = false;
+			isColorDisabled = false;
+		}
+	}
+
+	/**
+	 * Sets draw mode in the tessellator to draw quads.
+	 */
+	public void startDrawingQuads() {
+		startDrawing(7);
+	}
+}

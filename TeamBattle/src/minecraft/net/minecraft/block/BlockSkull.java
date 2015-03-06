@@ -2,6 +2,7 @@ package net.minecraft.block;
 
 import java.util.Iterator;
 import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,305 +25,407 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSkull extends BlockContainer
-{
-    private static final String __OBFID = "CL_00000307";
+public class BlockSkull extends BlockContainer {
 
-    protected BlockSkull()
-    {
-        super(Material.circuits);
-        this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
-    }
+	protected BlockSkull() {
+		super(Material.circuits);
+		setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
+	}
 
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return -1;
-    }
+	@Override
+	public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_,
+			int p_149749_4_, Block p_149749_5_, int p_149749_6_) {
+		if (!p_149749_1_.isClient) {
+			if ((p_149749_6_ & 8) == 0) {
+				final ItemStack var7 = new ItemStack(Items.skull, 1,
+						getDamageValue(p_149749_1_, p_149749_2_, p_149749_3_,
+								p_149749_4_));
+				final TileEntitySkull var8 = (TileEntitySkull) p_149749_1_
+						.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
 
-    public boolean isOpaqueCube()
-    {
-        return false;
-    }
+				if (var8.func_145904_a() == 3 && var8.func_152108_a() != null) {
+					var7.setTagCompound(new NBTTagCompound());
+					final NBTTagCompound var9 = new NBTTagCompound();
+					NBTUtil.func_152460_a(var9, var8.func_152108_a());
+					var7.getTagCompound().setTag("SkullOwner", var9);
+				}
 
-    public boolean renderAsNormalBlock()
-    {
-        return false;
-    }
+				dropBlockAsItem_do(p_149749_1_, p_149749_2_, p_149749_3_,
+						p_149749_4_, var7);
+			}
 
-    public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_, int p_149719_2_, int p_149719_3_, int p_149719_4_)
-    {
-        int var5 = p_149719_1_.getBlockMetadata(p_149719_2_, p_149719_3_, p_149719_4_) & 7;
+			super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_,
+					p_149749_4_, p_149749_5_, p_149749_6_);
+		}
+	}
 
-        switch (var5)
-        {
-            case 1:
-            default:
-                this.setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
-                break;
+	/**
+	 * Returns a new instance of a block's tile entity class. Called on placing
+	 * the block.
+	 */
+	@Override
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+		return new TileEntitySkull();
+	}
 
-            case 2:
-                this.setBlockBounds(0.25F, 0.25F, 0.5F, 0.75F, 0.75F, 1.0F);
-                break;
+	/**
+	 * Determines the damage on the item the block drops. Used in cloth and
+	 * wood.
+	 */
+	@Override
+	public int damageDropped(int p_149692_1_) {
+		return p_149692_1_;
+	}
 
-            case 3:
-                this.setBlockBounds(0.25F, 0.25F, 0.0F, 0.75F, 0.75F, 0.5F);
-                break;
+	/**
+	 * Drops the block items with a specified chance of dropping the specified
+	 * items
+	 */
+	@Override
+	public void dropBlockAsItemWithChance(World p_149690_1_, int p_149690_2_,
+			int p_149690_3_, int p_149690_4_, int p_149690_5_,
+			float p_149690_6_, int p_149690_7_) {
+	}
 
-            case 4:
-                this.setBlockBounds(0.5F, 0.25F, 0.25F, 1.0F, 0.75F, 0.75F);
-                break;
+	public void func_149965_a(World p_149965_1_, int p_149965_2_,
+			int p_149965_3_, int p_149965_4_, TileEntitySkull p_149965_5_) {
+		if (p_149965_5_.func_145904_a() == 1 && p_149965_3_ >= 2
+				&& p_149965_1_.difficultySetting != EnumDifficulty.PEACEFUL
+				&& !p_149965_1_.isClient) {
+			int var6;
+			EntityWither var7;
+			Iterator var8;
+			EntityPlayer var9;
+			int var10;
 
-            case 5:
-                this.setBlockBounds(0.0F, 0.25F, 0.25F, 0.5F, 0.75F, 0.75F);
-        }
-    }
+			for (var6 = -2; var6 <= 0; ++var6) {
+				if (p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1,
+						p_149965_4_ + var6) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1,
+								p_149965_4_ + var6 + 1) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 2,
+								p_149965_4_ + var6 + 1) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1,
+								p_149965_4_ + var6 + 2) == Blocks.soul_sand
+						&& func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_,
+								p_149965_4_ + var6, 1)
+						&& func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_,
+								p_149965_4_ + var6 + 1, 1)
+						&& func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_,
+								p_149965_4_ + var6 + 2, 1)) {
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_,
+							p_149965_3_, p_149965_4_ + var6, 8, 2);
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_,
+							p_149965_3_, p_149965_4_ + var6 + 1, 8, 2);
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_,
+							p_149965_3_, p_149965_4_ + var6 + 2, 8, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_
+							+ var6, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_
+							+ var6 + 1, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_
+							+ var6 + 2, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6 + 1, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6 + 2, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 2,
+							p_149965_4_ + var6 + 1, getBlockById(0), 0, 2);
 
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_, int p_149668_2_, int p_149668_3_, int p_149668_4_)
-    {
-        this.setBlockBoundsBasedOnState(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
-        return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_, p_149668_3_, p_149668_4_);
-    }
+					if (!p_149965_1_.isClient) {
+						var7 = new EntityWither(p_149965_1_);
+						var7.setLocationAndAngles(p_149965_2_ + 0.5D,
+								p_149965_3_ - 1.45D, p_149965_4_ + var6 + 1.5D,
+								90.0F, 0.0F);
+						var7.renderYawOffset = 90.0F;
+						var7.func_82206_m();
 
-    /**
-     * Called when the block is placed in the world.
-     */
-    public void onBlockPlacedBy(World p_149689_1_, int p_149689_2_, int p_149689_3_, int p_149689_4_, EntityLivingBase p_149689_5_, ItemStack p_149689_6_)
-    {
-        int var7 = MathHelper.floor_double((double)(p_149689_5_.rotationYaw * 4.0F / 360.0F) + 2.5D) & 3;
-        p_149689_1_.setBlockMetadataWithNotify(p_149689_2_, p_149689_3_, p_149689_4_, var7, 2);
-    }
+						if (!p_149965_1_.isClient) {
+							var8 = p_149965_1_.getEntitiesWithinAABB(
+									EntityPlayer.class,
+									var7.boundingBox
+											.expand(50.0D, 50.0D, 50.0D))
+									.iterator();
 
-    /**
-     * Returns a new instance of a block's tile entity class. Called on placing the block.
-     */
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
-    {
-        return new TileEntitySkull();
-    }
+							while (var8.hasNext()) {
+								var9 = (EntityPlayer) var8.next();
+								var9.triggerAchievement(AchievementList.field_150963_I);
+							}
+						}
 
-    /**
-     * Gets an item for the block being called on. Args: world, x, y, z
-     */
-    public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_, int p_149694_4_)
-    {
-        return Items.skull;
-    }
+						p_149965_1_.spawnEntityInWorld(var7);
+					}
 
-    /**
-     * Get the block's damage value (for use with pick block).
-     */
-    public int getDamageValue(World p_149643_1_, int p_149643_2_, int p_149643_3_, int p_149643_4_)
-    {
-        TileEntity var5 = p_149643_1_.getTileEntity(p_149643_2_, p_149643_3_, p_149643_4_);
-        return var5 != null && var5 instanceof TileEntitySkull ? ((TileEntitySkull)var5).func_145904_a() : super.getDamageValue(p_149643_1_, p_149643_2_, p_149643_3_, p_149643_4_);
-    }
+					for (var10 = 0; var10 < 120; ++var10) {
+						p_149965_1_.spawnParticle(
+								"snowballpoof",
+								p_149965_2_ + p_149965_1_.rand.nextDouble(),
+								p_149965_3_ - 2 + p_149965_1_.rand.nextDouble()
+										* 3.9D,
+								p_149965_4_ + var6 + 1
+										+ p_149965_1_.rand.nextDouble(), 0.0D,
+								0.0D, 0.0D);
+					}
 
-    /**
-     * Determines the damage on the item the block drops. Used in cloth and wood.
-     */
-    public int damageDropped(int p_149692_1_)
-    {
-        return p_149692_1_;
-    }
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_,
+							p_149965_4_ + var6, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_,
+							p_149965_4_ + var6 + 1, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_,
+							p_149965_4_ + var6 + 2, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6 + 1, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1,
+							p_149965_4_ + var6 + 2, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 2,
+							p_149965_4_ + var6 + 1, getBlockById(0));
+					return;
+				}
+			}
 
-    /**
-     * Drops the block items with a specified chance of dropping the specified items
-     */
-    public void dropBlockAsItemWithChance(World p_149690_1_, int p_149690_2_, int p_149690_3_, int p_149690_4_, int p_149690_5_, float p_149690_6_, int p_149690_7_) {}
+			for (var6 = -2; var6 <= 0; ++var6) {
+				if (p_149965_1_.getBlock(p_149965_2_ + var6, p_149965_3_ - 1,
+						p_149965_4_) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_ + var6 + 1,
+								p_149965_3_ - 1, p_149965_4_) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_ + var6 + 1,
+								p_149965_3_ - 2, p_149965_4_) == Blocks.soul_sand
+						&& p_149965_1_.getBlock(p_149965_2_ + var6 + 2,
+								p_149965_3_ - 1, p_149965_4_) == Blocks.soul_sand
+						&& func_149966_a(p_149965_1_, p_149965_2_ + var6,
+								p_149965_3_, p_149965_4_, 1)
+						&& func_149966_a(p_149965_1_, p_149965_2_ + var6 + 1,
+								p_149965_3_, p_149965_4_, 1)
+						&& func_149966_a(p_149965_1_, p_149965_2_ + var6 + 2,
+								p_149965_3_, p_149965_4_, 1)) {
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6,
+							p_149965_3_, p_149965_4_, 8, 2);
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6
+							+ 1, p_149965_3_, p_149965_4_, 8, 2);
+					p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6
+							+ 2, p_149965_3_, p_149965_4_, 8, 2);
+					p_149965_1_.setBlock(p_149965_2_ + var6, p_149965_3_,
+							p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_ + var6 + 1, p_149965_3_,
+							p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_ + var6 + 2, p_149965_3_,
+							p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_.setBlock(p_149965_2_ + var6, p_149965_3_ - 1,
+							p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_
+							.setBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 1,
+									p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_
+							.setBlock(p_149965_2_ + var6 + 2, p_149965_3_ - 1,
+									p_149965_4_, getBlockById(0), 0, 2);
+					p_149965_1_
+							.setBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 2,
+									p_149965_4_, getBlockById(0), 0, 2);
 
-    /**
-     * Called when the block is attempted to be harvested
-     */
-    public void onBlockHarvested(World p_149681_1_, int p_149681_2_, int p_149681_3_, int p_149681_4_, int p_149681_5_, EntityPlayer p_149681_6_)
-    {
-        if (p_149681_6_.capabilities.isCreativeMode)
-        {
-            p_149681_5_ |= 8;
-            p_149681_1_.setBlockMetadataWithNotify(p_149681_2_, p_149681_3_, p_149681_4_, p_149681_5_, 4);
-        }
+					if (!p_149965_1_.isClient) {
+						var7 = new EntityWither(p_149965_1_);
+						var7.setLocationAndAngles(p_149965_2_ + var6 + 1.5D,
+								p_149965_3_ - 1.45D, p_149965_4_ + 0.5D, 0.0F,
+								0.0F);
+						var7.func_82206_m();
 
-        super.onBlockHarvested(p_149681_1_, p_149681_2_, p_149681_3_, p_149681_4_, p_149681_5_, p_149681_6_);
-    }
+						if (!p_149965_1_.isClient) {
+							var8 = p_149965_1_.getEntitiesWithinAABB(
+									EntityPlayer.class,
+									var7.boundingBox
+											.expand(50.0D, 50.0D, 50.0D))
+									.iterator();
 
-    public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_, int p_149749_6_)
-    {
-        if (!p_149749_1_.isClient)
-        {
-            if ((p_149749_6_ & 8) == 0)
-            {
-                ItemStack var7 = new ItemStack(Items.skull, 1, this.getDamageValue(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_));
-                TileEntitySkull var8 = (TileEntitySkull)p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+							while (var8.hasNext()) {
+								var9 = (EntityPlayer) var8.next();
+								var9.triggerAchievement(AchievementList.field_150963_I);
+							}
+						}
 
-                if (var8.func_145904_a() == 3 && var8.func_152108_a() != null)
-                {
-                    var7.setTagCompound(new NBTTagCompound());
-                    NBTTagCompound var9 = new NBTTagCompound();
-                    NBTUtil.func_152460_a(var9, var8.func_152108_a());
-                    var7.getTagCompound().setTag("SkullOwner", var9);
-                }
+						p_149965_1_.spawnEntityInWorld(var7);
+					}
 
-                this.dropBlockAsItem_do(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, var7);
-            }
+					for (var10 = 0; var10 < 120; ++var10) {
+						p_149965_1_.spawnParticle("snowballpoof", p_149965_2_
+								+ var6 + 1 + p_149965_1_.rand.nextDouble(),
+								p_149965_3_ - 2 + p_149965_1_.rand.nextDouble()
+										* 3.9D,
+								p_149965_4_ + p_149965_1_.rand.nextDouble(),
+								0.0D, 0.0D, 0.0D);
+					}
 
-            super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
-        }
-    }
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6,
+							p_149965_3_, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1,
+							p_149965_3_, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 2,
+							p_149965_3_, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6,
+							p_149965_3_ - 1, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1,
+							p_149965_3_ - 1, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 2,
+							p_149965_3_ - 1, p_149965_4_, getBlockById(0));
+					p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1,
+							p_149965_3_ - 2, p_149965_4_, getBlockById(0));
+					return;
+				}
+			}
+		}
+	}
 
-    public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-    {
-        return Items.skull;
-    }
+	private boolean func_149966_a(World p_149966_1_, int p_149966_2_,
+			int p_149966_3_, int p_149966_4_, int p_149966_5_) {
+		if (p_149966_1_.getBlock(p_149966_2_, p_149966_3_, p_149966_4_) != this)
+			return false;
+		else {
+			final TileEntity var6 = p_149966_1_.getTileEntity(p_149966_2_,
+					p_149966_3_, p_149966_4_);
+			return var6 != null && var6 instanceof TileEntitySkull ? ((TileEntitySkull) var6)
+					.func_145904_a() == p_149966_5_ : false;
+		}
+	}
 
-    public void func_149965_a(World p_149965_1_, int p_149965_2_, int p_149965_3_, int p_149965_4_, TileEntitySkull p_149965_5_)
-    {
-        if (p_149965_5_.func_145904_a() == 1 && p_149965_3_ >= 2 && p_149965_1_.difficultySetting != EnumDifficulty.PEACEFUL && !p_149965_1_.isClient)
-        {
-            int var6;
-            EntityWither var7;
-            Iterator var8;
-            EntityPlayer var9;
-            int var10;
+	/**
+	 * Returns a bounding box from the pool of bounding boxes (this means this
+	 * box can change after the pool has been cleared to be reused)
+	 */
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World p_149668_1_,
+			int p_149668_2_, int p_149668_3_, int p_149668_4_) {
+		setBlockBoundsBasedOnState(p_149668_1_, p_149668_2_, p_149668_3_,
+				p_149668_4_);
+		return super.getCollisionBoundingBoxFromPool(p_149668_1_, p_149668_2_,
+				p_149668_3_, p_149668_4_);
+	}
 
-            for (var6 = -2; var6 <= 0; ++var6)
-            {
-                if (p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 1) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 2, p_149965_4_ + var6 + 1) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 2) == Blocks.soul_sand && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + var6, 1) && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 1, 1) && this.func_149966_a(p_149965_1_, p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 2, 1))
-                {
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_, p_149965_3_, p_149965_4_ + var6, 8, 2);
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 1, 8, 2);
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 2, 8, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_ + var6, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 1, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 2, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 1, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 2, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_, p_149965_3_ - 2, p_149965_4_ + var6 + 1, getBlockById(0), 0, 2);
+	/**
+	 * Get the block's damage value (for use with pick block).
+	 */
+	@Override
+	public int getDamageValue(World p_149643_1_, int p_149643_2_,
+			int p_149643_3_, int p_149643_4_) {
+		final TileEntity var5 = p_149643_1_.getTileEntity(p_149643_2_,
+				p_149643_3_, p_149643_4_);
+		return var5 != null && var5 instanceof TileEntitySkull ? ((TileEntitySkull) var5)
+				.func_145904_a() : super.getDamageValue(p_149643_1_,
+				p_149643_2_, p_149643_3_, p_149643_4_);
+	}
 
-                    if (!p_149965_1_.isClient)
-                    {
-                        var7 = new EntityWither(p_149965_1_);
-                        var7.setLocationAndAngles((double)p_149965_2_ + 0.5D, (double)p_149965_3_ - 1.45D, (double)(p_149965_4_ + var6) + 1.5D, 90.0F, 0.0F);
-                        var7.renderYawOffset = 90.0F;
-                        var7.func_82206_m();
+	/**
+	 * Gets the block's texture. Args: side, meta
+	 */
+	@Override
+	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
+		return Blocks.soul_sand.getBlockTextureFromSide(p_149691_1_);
+	}
 
-                        if (!p_149965_1_.isClient)
-                        {
-                            var8 = p_149965_1_.getEntitiesWithinAABB(EntityPlayer.class, var7.boundingBox.expand(50.0D, 50.0D, 50.0D)).iterator();
+	/**
+	 * Gets an item for the block being called on. Args: world, x, y, z
+	 */
+	@Override
+	public Item getItem(World p_149694_1_, int p_149694_2_, int p_149694_3_,
+			int p_149694_4_) {
+		return Items.skull;
+	}
 
-                            while (var8.hasNext())
-                            {
-                                var9 = (EntityPlayer)var8.next();
-                                var9.triggerAchievement(AchievementList.field_150963_I);
-                            }
-                        }
+	@Override
+	public Item getItemDropped(int p_149650_1_, Random p_149650_2_,
+			int p_149650_3_) {
+		return Items.skull;
+	}
 
-                        p_149965_1_.spawnEntityInWorld(var7);
-                    }
+	/**
+	 * Gets the icon name of the ItemBlock corresponding to this block. Used by
+	 * hoppers.
+	 */
+	@Override
+	public String getItemIconName() {
+		return getTextureName() + "_" + ItemSkull.field_94587_a[0];
+	}
 
-                    for (var10 = 0; var10 < 120; ++var10)
-                    {
-                        p_149965_1_.spawnParticle("snowballpoof", (double)p_149965_2_ + p_149965_1_.rand.nextDouble(), (double)(p_149965_3_ - 2) + p_149965_1_.rand.nextDouble() * 3.9D, (double)(p_149965_4_ + var6 + 1) + p_149965_1_.rand.nextDouble(), 0.0D, 0.0D, 0.0D);
-                    }
+	/**
+	 * The type of render function that is called for this block
+	 */
+	@Override
+	public int getRenderType() {
+		return -1;
+	}
 
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_, p_149965_4_ + var6, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 1, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_, p_149965_4_ + var6 + 2, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 1, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 1, p_149965_4_ + var6 + 2, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_, p_149965_3_ - 2, p_149965_4_ + var6 + 1, getBlockById(0));
-                    return;
-                }
-            }
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
 
-            for (var6 = -2; var6 <= 0; ++var6)
-            {
-                if (p_149965_1_.getBlock(p_149965_2_ + var6, p_149965_3_ - 1, p_149965_4_) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 1, p_149965_4_) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 2, p_149965_4_) == Blocks.soul_sand && p_149965_1_.getBlock(p_149965_2_ + var6 + 2, p_149965_3_ - 1, p_149965_4_) == Blocks.soul_sand && this.func_149966_a(p_149965_1_, p_149965_2_ + var6, p_149965_3_, p_149965_4_, 1) && this.func_149966_a(p_149965_1_, p_149965_2_ + var6 + 1, p_149965_3_, p_149965_4_, 1) && this.func_149966_a(p_149965_1_, p_149965_2_ + var6 + 2, p_149965_3_, p_149965_4_, 1))
-                {
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6, p_149965_3_, p_149965_4_, 8, 2);
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6 + 1, p_149965_3_, p_149965_4_, 8, 2);
-                    p_149965_1_.setBlockMetadataWithNotify(p_149965_2_ + var6 + 2, p_149965_3_, p_149965_4_, 8, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6, p_149965_3_, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6 + 1, p_149965_3_, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6 + 2, p_149965_3_, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6, p_149965_3_ - 1, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 1, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6 + 2, p_149965_3_ - 1, p_149965_4_, getBlockById(0), 0, 2);
-                    p_149965_1_.setBlock(p_149965_2_ + var6 + 1, p_149965_3_ - 2, p_149965_4_, getBlockById(0), 0, 2);
+	/**
+	 * Called when the block is attempted to be harvested
+	 */
+	@Override
+	public void onBlockHarvested(World p_149681_1_, int p_149681_2_,
+			int p_149681_3_, int p_149681_4_, int p_149681_5_,
+			EntityPlayer p_149681_6_) {
+		if (p_149681_6_.capabilities.isCreativeMode) {
+			p_149681_5_ |= 8;
+			p_149681_1_.setBlockMetadataWithNotify(p_149681_2_, p_149681_3_,
+					p_149681_4_, p_149681_5_, 4);
+		}
 
-                    if (!p_149965_1_.isClient)
-                    {
-                        var7 = new EntityWither(p_149965_1_);
-                        var7.setLocationAndAngles((double)(p_149965_2_ + var6) + 1.5D, (double)p_149965_3_ - 1.45D, (double)p_149965_4_ + 0.5D, 0.0F, 0.0F);
-                        var7.func_82206_m();
+		super.onBlockHarvested(p_149681_1_, p_149681_2_, p_149681_3_,
+				p_149681_4_, p_149681_5_, p_149681_6_);
+	}
 
-                        if (!p_149965_1_.isClient)
-                        {
-                            var8 = p_149965_1_.getEntitiesWithinAABB(EntityPlayer.class, var7.boundingBox.expand(50.0D, 50.0D, 50.0D)).iterator();
+	/**
+	 * Called when the block is placed in the world.
+	 */
+	@Override
+	public void onBlockPlacedBy(World p_149689_1_, int p_149689_2_,
+			int p_149689_3_, int p_149689_4_, EntityLivingBase p_149689_5_,
+			ItemStack p_149689_6_) {
+		final int var7 = MathHelper
+				.floor_double(p_149689_5_.rotationYaw * 4.0F / 360.0F + 2.5D) & 3;
+		p_149689_1_.setBlockMetadataWithNotify(p_149689_2_, p_149689_3_,
+				p_149689_4_, var7, 2);
+	}
 
-                            while (var8.hasNext())
-                            {
-                                var9 = (EntityPlayer)var8.next();
-                                var9.triggerAchievement(AchievementList.field_150963_I);
-                            }
-                        }
+	@Override
+	public void registerBlockIcons(IIconRegister p_149651_1_) {
+	}
 
-                        p_149965_1_.spawnEntityInWorld(var7);
-                    }
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
 
-                    for (var10 = 0; var10 < 120; ++var10)
-                    {
-                        p_149965_1_.spawnParticle("snowballpoof", (double)(p_149965_2_ + var6 + 1) + p_149965_1_.rand.nextDouble(), (double)(p_149965_3_ - 2) + p_149965_1_.rand.nextDouble() * 3.9D, (double)p_149965_4_ + p_149965_1_.rand.nextDouble(), 0.0D, 0.0D, 0.0D);
-                    }
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_,
+			int p_149719_2_, int p_149719_3_, int p_149719_4_) {
+		final int var5 = p_149719_1_.getBlockMetadata(p_149719_2_, p_149719_3_,
+				p_149719_4_) & 7;
 
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6, p_149965_3_, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1, p_149965_3_, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 2, p_149965_3_, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6, p_149965_3_ - 1, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1, p_149965_3_ - 1, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 2, p_149965_3_ - 1, p_149965_4_, getBlockById(0));
-                    p_149965_1_.notifyBlockChange(p_149965_2_ + var6 + 1, p_149965_3_ - 2, p_149965_4_, getBlockById(0));
-                    return;
-                }
-            }
-        }
-    }
+		switch (var5) {
+		case 1:
+		default:
+			setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
+			break;
 
-    private boolean func_149966_a(World p_149966_1_, int p_149966_2_, int p_149966_3_, int p_149966_4_, int p_149966_5_)
-    {
-        if (p_149966_1_.getBlock(p_149966_2_, p_149966_3_, p_149966_4_) != this)
-        {
-            return false;
-        }
-        else
-        {
-            TileEntity var6 = p_149966_1_.getTileEntity(p_149966_2_, p_149966_3_, p_149966_4_);
-            return var6 != null && var6 instanceof TileEntitySkull ? ((TileEntitySkull)var6).func_145904_a() == p_149966_5_ : false;
-        }
-    }
+		case 2:
+			setBlockBounds(0.25F, 0.25F, 0.5F, 0.75F, 0.75F, 1.0F);
+			break;
 
-    public void registerBlockIcons(IIconRegister p_149651_1_) {}
+		case 3:
+			setBlockBounds(0.25F, 0.25F, 0.0F, 0.75F, 0.75F, 0.5F);
+			break;
 
-    /**
-     * Gets the block's texture. Args: side, meta
-     */
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_)
-    {
-        return Blocks.soul_sand.getBlockTextureFromSide(p_149691_1_);
-    }
+		case 4:
+			setBlockBounds(0.5F, 0.25F, 0.25F, 1.0F, 0.75F, 0.75F);
+			break;
 
-    /**
-     * Gets the icon name of the ItemBlock corresponding to this block. Used by hoppers.
-     */
-    public String getItemIconName()
-    {
-        return this.getTextureName() + "_" + ItemSkull.field_94587_a[0];
-    }
+		case 5:
+			setBlockBounds(0.0F, 0.25F, 0.25F, 0.5F, 0.75F, 0.75F);
+		}
+	}
 }

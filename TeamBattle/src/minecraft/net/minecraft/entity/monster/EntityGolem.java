@@ -4,57 +4,57 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.world.World;
 
-public abstract class EntityGolem extends EntityCreature implements IAnimals
-{
-    private static final String __OBFID = "CL_00001644";
+public abstract class EntityGolem extends EntityCreature implements IAnimals {
 
-    public EntityGolem(World p_i1686_1_)
-    {
-        super(p_i1686_1_);
-    }
+	public EntityGolem(World p_i1686_1_) {
+		super(p_i1686_1_);
+	}
 
-    /**
-     * Called when the mob is falling. Calculates and applies fall damage.
-     */
-    protected void fall(float p_70069_1_) {}
+	/**
+	 * Determines if an entity can be despawned, used on idle far away entities
+	 */
+	@Override
+	protected boolean canDespawn() {
+		return false;
+	}
 
-    /**
-     * Returns the sound this mob makes while it's alive.
-     */
-    protected String getLivingSound()
-    {
-        return "none";
-    }
+	/**
+	 * Called when the mob is falling. Calculates and applies fall damage.
+	 */
+	@Override
+	protected void fall(float p_70069_1_) {
+	}
 
-    /**
-     * Returns the sound this mob makes when it is hurt.
-     */
-    protected String getHurtSound()
-    {
-        return "none";
-    }
+	/**
+	 * Returns the sound this mob makes on death.
+	 */
+	@Override
+	protected String getDeathSound() {
+		return "none";
+	}
 
-    /**
-     * Returns the sound this mob makes on death.
-     */
-    protected String getDeathSound()
-    {
-        return "none";
-    }
+	/**
+	 * Returns the sound this mob makes when it is hurt.
+	 */
+	@Override
+	protected String getHurtSound() {
+		return "none";
+	}
 
-    /**
-     * Get number of ticks, at least during which the living entity will be silent.
-     */
-    public int getTalkInterval()
-    {
-        return 120;
-    }
+	/**
+	 * Returns the sound this mob makes while it's alive.
+	 */
+	@Override
+	protected String getLivingSound() {
+		return "none";
+	}
 
-    /**
-     * Determines if an entity can be despawned, used on idle far away entities
-     */
-    protected boolean canDespawn()
-    {
-        return false;
-    }
+	/**
+	 * Get number of ticks, at least during which the living entity will be
+	 * silent.
+	 */
+	@Override
+	public int getTalkInterval() {
+		return 120;
+	}
 }

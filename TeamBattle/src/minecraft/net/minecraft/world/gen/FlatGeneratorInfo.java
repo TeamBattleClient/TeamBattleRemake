@@ -6,320 +6,271 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.biome.BiomeGenBase;
 
-public class FlatGeneratorInfo
-{
-    /** List of layers on this preset. */
-    private final List flatLayers = new ArrayList();
+public class FlatGeneratorInfo {
+	public static FlatGeneratorInfo createFlatGeneratorFromString(
+			String p_82651_0_) {
+		if (p_82651_0_ == null)
+			return getDefaultFlatGenerator();
+		else {
+			final String[] var1 = p_82651_0_.split(";", -1);
+			final int var2 = var1.length == 1 ? 0 : MathHelper
+					.parseIntWithDefault(var1[0], 0);
 
-    /** List of world features enabled on this preset. */
-    private final Map worldFeatures = new HashMap();
-    private int biomeToUse;
-    private static final String __OBFID = "CL_00000440";
+			if (var2 >= 0 && var2 <= 2) {
+				final FlatGeneratorInfo var3 = new FlatGeneratorInfo();
+				int var4 = var1.length == 1 ? 0 : 1;
+				final List var5 = func_82652_b(var1[var4++]);
 
-    /**
-     * Return the biome used on this preset.
-     */
-    public int getBiome()
-    {
-        return this.biomeToUse;
-    }
+				if (var5 != null && !var5.isEmpty()) {
+					var3.getFlatLayers().addAll(var5);
+					var3.func_82645_d();
+					int var6 = BiomeGenBase.plains.biomeID;
 
-    /**
-     * Set the biome used on this preset.
-     */
-    public void setBiome(int p_82647_1_)
-    {
-        this.biomeToUse = p_82647_1_;
-    }
+					if (var2 > 0 && var1.length > var4) {
+						var6 = MathHelper.parseIntWithDefault(var1[var4++],
+								var6);
+					}
 
-    /**
-     * Return the list of world features enabled on this preset.
-     */
-    public Map getWorldFeatures()
-    {
-        return this.worldFeatures;
-    }
+					var3.setBiome(var6);
 
-    /**
-     * Return the list of layers on this preset.
-     */
-    public List getFlatLayers()
-    {
-        return this.flatLayers;
-    }
+					if (var2 > 0 && var1.length > var4) {
+						final String[] var7 = var1[var4++].toLowerCase().split(
+								",");
+						final String[] var8 = var7;
+						final int var9 = var7.length;
 
-    public void func_82645_d()
-    {
-        int var1 = 0;
-        FlatLayerInfo var3;
+						for (int var10 = 0; var10 < var9; ++var10) {
+							final String var11 = var8[var10];
+							final String[] var12 = var11.split("\\(", 2);
+							final HashMap var13 = new HashMap();
 
-        for (Iterator var2 = this.flatLayers.iterator(); var2.hasNext(); var1 += var3.getLayerCount())
-        {
-            var3 = (FlatLayerInfo)var2.next();
-            var3.setMinY(var1);
-        }
-    }
+							if (var12[0].length() > 0) {
+								var3.getWorldFeatures().put(var12[0], var13);
 
-    public String toString()
-    {
-        StringBuilder var1 = new StringBuilder();
-        var1.append(2);
-        var1.append(";");
-        int var2;
+								if (var12.length > 1 && var12[1].endsWith(")")
+										&& var12[1].length() > 1) {
+									final String[] var14 = var12[1].substring(
+											0, var12[1].length() - 1)
+											.split(" ");
 
-        for (var2 = 0; var2 < this.flatLayers.size(); ++var2)
-        {
-            if (var2 > 0)
-            {
-                var1.append(",");
-            }
+									for (final String element : var14) {
+										final String[] var16 = element.split(
+												"=", 2);
 
-            var1.append(((FlatLayerInfo)this.flatLayers.get(var2)).toString());
-        }
+										if (var16.length == 2) {
+											var13.put(var16[0], var16[1]);
+										}
+									}
+								}
+							}
+						}
+					} else {
+						var3.getWorldFeatures().put("village", new HashMap());
+					}
 
-        var1.append(";");
-        var1.append(this.biomeToUse);
+					return var3;
+				} else
+					return getDefaultFlatGenerator();
+			} else
+				return getDefaultFlatGenerator();
+		}
+	}
 
-        if (!this.worldFeatures.isEmpty())
-        {
-            var1.append(";");
-            var2 = 0;
-            Iterator var3 = this.worldFeatures.entrySet().iterator();
+	private static FlatLayerInfo func_82646_a(String p_82646_0_, int p_82646_1_) {
+		String[] var2 = p_82646_0_.split("x", 2);
+		int var3 = 1;
+		int var5 = 0;
 
-            while (var3.hasNext())
-            {
-                Entry var4 = (Entry)var3.next();
+		if (var2.length == 2) {
+			try {
+				var3 = Integer.parseInt(var2[0]);
 
-                if (var2++ > 0)
-                {
-                    var1.append(",");
-                }
+				if (p_82646_1_ + var3 >= 256) {
+					var3 = 256 - p_82646_1_;
+				}
 
-                var1.append(((String)var4.getKey()).toLowerCase());
-                Map var5 = (Map)var4.getValue();
+				if (var3 < 0) {
+					var3 = 0;
+				}
+			} catch (final Throwable var7) {
+				return null;
+			}
+		}
 
-                if (!var5.isEmpty())
-                {
-                    var1.append("(");
-                    int var6 = 0;
-                    Iterator var7 = var5.entrySet().iterator();
+		int var4;
 
-                    while (var7.hasNext())
-                    {
-                        Entry var8 = (Entry)var7.next();
+		try {
+			final String var6 = var2[var2.length - 1];
+			var2 = var6.split(":", 2);
+			var4 = Integer.parseInt(var2[0]);
 
-                        if (var6++ > 0)
-                        {
-                            var1.append(" ");
-                        }
+			if (var2.length > 1) {
+				var5 = Integer.parseInt(var2[1]);
+			}
 
-                        var1.append((String)var8.getKey());
-                        var1.append("=");
-                        var1.append((String)var8.getValue());
-                    }
+			if (Block.getBlockById(var4) == Blocks.air) {
+				var4 = 0;
+				var5 = 0;
+			}
 
-                    var1.append(")");
-                }
-            }
-        }
-        else
-        {
-            var1.append(";");
-        }
+			if (var5 < 0 || var5 > 15) {
+				var5 = 0;
+			}
+		} catch (final Throwable var8) {
+			return null;
+		}
 
-        return var1.toString();
-    }
+		final FlatLayerInfo var9 = new FlatLayerInfo(var3,
+				Block.getBlockById(var4), var5);
+		var9.setMinY(p_82646_1_);
+		return var9;
+	}
 
-    private static FlatLayerInfo func_82646_a(String p_82646_0_, int p_82646_1_)
-    {
-        String[] var2 = p_82646_0_.split("x", 2);
-        int var3 = 1;
-        int var5 = 0;
+	private static List func_82652_b(String p_82652_0_) {
+		if (p_82652_0_ != null && p_82652_0_.length() >= 1) {
+			final ArrayList var1 = new ArrayList();
+			final String[] var2 = p_82652_0_.split(",");
+			int var3 = 0;
+			final String[] var4 = var2;
+			final int var5 = var2.length;
 
-        if (var2.length == 2)
-        {
-            try
-            {
-                var3 = Integer.parseInt(var2[0]);
+			for (int var6 = 0; var6 < var5; ++var6) {
+				final String var7 = var4[var6];
+				final FlatLayerInfo var8 = func_82646_a(var7, var3);
 
-                if (p_82646_1_ + var3 >= 256)
-                {
-                    var3 = 256 - p_82646_1_;
-                }
+				if (var8 == null)
+					return null;
 
-                if (var3 < 0)
-                {
-                    var3 = 0;
-                }
-            }
-            catch (Throwable var7)
-            {
-                return null;
-            }
-        }
+				var1.add(var8);
+				var3 += var8.getLayerCount();
+			}
 
-        int var4;
+			return var1;
+		} else
+			return null;
+	}
 
-        try
-        {
-            String var6 = var2[var2.length - 1];
-            var2 = var6.split(":", 2);
-            var4 = Integer.parseInt(var2[0]);
+	public static FlatGeneratorInfo getDefaultFlatGenerator() {
+		final FlatGeneratorInfo var0 = new FlatGeneratorInfo();
+		var0.setBiome(BiomeGenBase.plains.biomeID);
+		var0.getFlatLayers().add(new FlatLayerInfo(1, Blocks.bedrock));
+		var0.getFlatLayers().add(new FlatLayerInfo(2, Blocks.dirt));
+		var0.getFlatLayers().add(new FlatLayerInfo(1, Blocks.grass));
+		var0.func_82645_d();
+		var0.getWorldFeatures().put("village", new HashMap());
+		return var0;
+	}
 
-            if (var2.length > 1)
-            {
-                var5 = Integer.parseInt(var2[1]);
-            }
+	private int biomeToUse;
 
-            if (Block.getBlockById(var4) == Blocks.air)
-            {
-                var4 = 0;
-                var5 = 0;
-            }
+	/** List of layers on this preset. */
+	private final List flatLayers = new ArrayList();
 
-            if (var5 < 0 || var5 > 15)
-            {
-                var5 = 0;
-            }
-        }
-        catch (Throwable var8)
-        {
-            return null;
-        }
+	/** List of world features enabled on this preset. */
+	private final Map worldFeatures = new HashMap();
 
-        FlatLayerInfo var9 = new FlatLayerInfo(var3, Block.getBlockById(var4), var5);
-        var9.setMinY(p_82646_1_);
-        return var9;
-    }
+	public void func_82645_d() {
+		int var1 = 0;
+		FlatLayerInfo var3;
 
-    private static List func_82652_b(String p_82652_0_)
-    {
-        if (p_82652_0_ != null && p_82652_0_.length() >= 1)
-        {
-            ArrayList var1 = new ArrayList();
-            String[] var2 = p_82652_0_.split(",");
-            int var3 = 0;
-            String[] var4 = var2;
-            int var5 = var2.length;
+		for (final Iterator var2 = flatLayers.iterator(); var2.hasNext(); var1 += var3
+				.getLayerCount()) {
+			var3 = (FlatLayerInfo) var2.next();
+			var3.setMinY(var1);
+		}
+	}
 
-            for (int var6 = 0; var6 < var5; ++var6)
-            {
-                String var7 = var4[var6];
-                FlatLayerInfo var8 = func_82646_a(var7, var3);
+	/**
+	 * Return the biome used on this preset.
+	 */
+	public int getBiome() {
+		return biomeToUse;
+	}
 
-                if (var8 == null)
-                {
-                    return null;
-                }
+	/**
+	 * Return the list of layers on this preset.
+	 */
+	public List getFlatLayers() {
+		return flatLayers;
+	}
 
-                var1.add(var8);
-                var3 += var8.getLayerCount();
-            }
+	/**
+	 * Return the list of world features enabled on this preset.
+	 */
+	public Map getWorldFeatures() {
+		return worldFeatures;
+	}
 
-            return var1;
-        }
-        else
-        {
-            return null;
-        }
-    }
+	/**
+	 * Set the biome used on this preset.
+	 */
+	public void setBiome(int p_82647_1_) {
+		biomeToUse = p_82647_1_;
+	}
 
-    public static FlatGeneratorInfo createFlatGeneratorFromString(String p_82651_0_)
-    {
-        if (p_82651_0_ == null)
-        {
-            return getDefaultFlatGenerator();
-        }
-        else
-        {
-            String[] var1 = p_82651_0_.split(";", -1);
-            int var2 = var1.length == 1 ? 0 : MathHelper.parseIntWithDefault(var1[0], 0);
+	@Override
+	public String toString() {
+		final StringBuilder var1 = new StringBuilder();
+		var1.append(2);
+		var1.append(";");
+		int var2;
 
-            if (var2 >= 0 && var2 <= 2)
-            {
-                FlatGeneratorInfo var3 = new FlatGeneratorInfo();
-                int var4 = var1.length == 1 ? 0 : 1;
-                List var5 = func_82652_b(var1[var4++]);
+		for (var2 = 0; var2 < flatLayers.size(); ++var2) {
+			if (var2 > 0) {
+				var1.append(",");
+			}
 
-                if (var5 != null && !var5.isEmpty())
-                {
-                    var3.getFlatLayers().addAll(var5);
-                    var3.func_82645_d();
-                    int var6 = BiomeGenBase.plains.biomeID;
+			var1.append(((FlatLayerInfo) flatLayers.get(var2)).toString());
+		}
 
-                    if (var2 > 0 && var1.length > var4)
-                    {
-                        var6 = MathHelper.parseIntWithDefault(var1[var4++], var6);
-                    }
+		var1.append(";");
+		var1.append(biomeToUse);
 
-                    var3.setBiome(var6);
+		if (!worldFeatures.isEmpty()) {
+			var1.append(";");
+			var2 = 0;
+			final Iterator var3 = worldFeatures.entrySet().iterator();
 
-                    if (var2 > 0 && var1.length > var4)
-                    {
-                        String[] var7 = var1[var4++].toLowerCase().split(",");
-                        String[] var8 = var7;
-                        int var9 = var7.length;
+			while (var3.hasNext()) {
+				final Entry var4 = (Entry) var3.next();
 
-                        for (int var10 = 0; var10 < var9; ++var10)
-                        {
-                            String var11 = var8[var10];
-                            String[] var12 = var11.split("\\(", 2);
-                            HashMap var13 = new HashMap();
+				if (var2++ > 0) {
+					var1.append(",");
+				}
 
-                            if (var12[0].length() > 0)
-                            {
-                                var3.getWorldFeatures().put(var12[0], var13);
+				var1.append(((String) var4.getKey()).toLowerCase());
+				final Map var5 = (Map) var4.getValue();
 
-                                if (var12.length > 1 && var12[1].endsWith(")") && var12[1].length() > 1)
-                                {
-                                    String[] var14 = var12[1].substring(0, var12[1].length() - 1).split(" ");
+				if (!var5.isEmpty()) {
+					var1.append("(");
+					int var6 = 0;
+					final Iterator var7 = var5.entrySet().iterator();
 
-                                    for (int var15 = 0; var15 < var14.length; ++var15)
-                                    {
-                                        String[] var16 = var14[var15].split("=", 2);
+					while (var7.hasNext()) {
+						final Entry var8 = (Entry) var7.next();
 
-                                        if (var16.length == 2)
-                                        {
-                                            var13.put(var16[0], var16[1]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var3.getWorldFeatures().put("village", new HashMap());
-                    }
+						if (var6++ > 0) {
+							var1.append(" ");
+						}
 
-                    return var3;
-                }
-                else
-                {
-                    return getDefaultFlatGenerator();
-                }
-            }
-            else
-            {
-                return getDefaultFlatGenerator();
-            }
-        }
-    }
+						var1.append((String) var8.getKey());
+						var1.append("=");
+						var1.append((String) var8.getValue());
+					}
 
-    public static FlatGeneratorInfo getDefaultFlatGenerator()
-    {
-        FlatGeneratorInfo var0 = new FlatGeneratorInfo();
-        var0.setBiome(BiomeGenBase.plains.biomeID);
-        var0.getFlatLayers().add(new FlatLayerInfo(1, Blocks.bedrock));
-        var0.getFlatLayers().add(new FlatLayerInfo(2, Blocks.dirt));
-        var0.getFlatLayers().add(new FlatLayerInfo(1, Blocks.grass));
-        var0.func_82645_d();
-        var0.getWorldFeatures().put("village", new HashMap());
-        return var0;
-    }
+					var1.append(")");
+				}
+			}
+		} else {
+			var1.append(";");
+		}
+
+		return var1.toString();
+	}
 }

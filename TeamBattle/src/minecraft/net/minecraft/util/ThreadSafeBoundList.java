@@ -4,62 +4,55 @@ import java.lang.reflect.Array;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ThreadSafeBoundList
-{
-    private final Object[] field_152759_a;
-    private final Class field_152760_b;
-    private final ReadWriteLock field_152761_c = new ReentrantReadWriteLock();
-    private int field_152762_d;
-    private int field_152763_e;
-    private static final String __OBFID = "CL_00001868";
+public class ThreadSafeBoundList {
+	private final Object[] field_152759_a;
+	private final Class field_152760_b;
+	private final ReadWriteLock field_152761_c = new ReentrantReadWriteLock();
+	private int field_152762_d;
+	private int field_152763_e;
 
-    public ThreadSafeBoundList(Class p_i1126_1_, int p_i1126_2_)
-    {
-        this.field_152760_b = p_i1126_1_;
-        this.field_152759_a = (Object[])((Object[])Array.newInstance(p_i1126_1_, p_i1126_2_));
-    }
+	public ThreadSafeBoundList(Class p_i1126_1_, int p_i1126_2_) {
+		field_152760_b = p_i1126_1_;
+		field_152759_a = (Object[]) Array.newInstance(p_i1126_1_, p_i1126_2_);
+	}
 
-    public Object func_152757_a(Object p_152757_1_)
-    {
-        this.field_152761_c.writeLock().lock();
-        this.field_152759_a[this.field_152763_e] = p_152757_1_;
-        this.field_152763_e = (this.field_152763_e + 1) % this.func_152758_b();
+	public Object[] func_152756_c() {
+		final Object[] var1 = (Object[]) Array.newInstance(field_152760_b,
+				field_152762_d);
+		field_152761_c.readLock().lock();
 
-        if (this.field_152762_d < this.func_152758_b())
-        {
-            ++this.field_152762_d;
-        }
+		for (int var2 = 0; var2 < field_152762_d; ++var2) {
+			int var3 = (field_152763_e - field_152762_d + var2)
+					% func_152758_b();
 
-        this.field_152761_c.writeLock().unlock();
-        return p_152757_1_;
-    }
+			if (var3 < 0) {
+				var3 += func_152758_b();
+			}
 
-    public int func_152758_b()
-    {
-        this.field_152761_c.readLock().lock();
-        int var1 = this.field_152759_a.length;
-        this.field_152761_c.readLock().unlock();
-        return var1;
-    }
+			var1[var2] = field_152759_a[var3];
+		}
 
-    public Object[] func_152756_c()
-    {
-        Object[] var1 = (Object[])((Object[])Array.newInstance(this.field_152760_b, this.field_152762_d));
-        this.field_152761_c.readLock().lock();
+		field_152761_c.readLock().unlock();
+		return var1;
+	}
 
-        for (int var2 = 0; var2 < this.field_152762_d; ++var2)
-        {
-            int var3 = (this.field_152763_e - this.field_152762_d + var2) % this.func_152758_b();
+	public Object func_152757_a(Object p_152757_1_) {
+		field_152761_c.writeLock().lock();
+		field_152759_a[field_152763_e] = p_152757_1_;
+		field_152763_e = (field_152763_e + 1) % func_152758_b();
 
-            if (var3 < 0)
-            {
-                var3 += this.func_152758_b();
-            }
+		if (field_152762_d < func_152758_b()) {
+			++field_152762_d;
+		}
 
-            var1[var2] = this.field_152759_a[var3];
-        }
+		field_152761_c.writeLock().unlock();
+		return p_152757_1_;
+	}
 
-        this.field_152761_c.readLock().unlock();
-        return var1;
-    }
+	public int func_152758_b() {
+		field_152761_c.readLock().lock();
+		final int var1 = field_152759_a.length;
+		field_152761_c.readLock().unlock();
+		return var1;
+	}
 }

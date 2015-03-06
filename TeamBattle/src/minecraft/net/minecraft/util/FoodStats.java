@@ -6,158 +6,139 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.EnumDifficulty;
 
-public class FoodStats
-{
-    /** The player's food level. */
-    private int foodLevel = 20;
+public class FoodStats {
+	/** The player's food exhaustion. */
+	private float foodExhaustionLevel;
 
-    /** The player's food saturation. */
-    private float foodSaturationLevel = 5.0F;
+	/** The player's food level. */
+	private int foodLevel = 20;
 
-    /** The player's food exhaustion. */
-    private float foodExhaustionLevel;
+	/** The player's food saturation. */
+	private float foodSaturationLevel = 5.0F;
 
-    /** The player's food timer value. */
-    private int foodTimer;
-    private int prevFoodLevel = 20;
-    private static final String __OBFID = "CL_00001729";
+	/** The player's food timer value. */
+	private int foodTimer;
+	private int prevFoodLevel = 20;
 
-    /**
-     * Args: int foodLevel, float foodSaturationModifier
-     */
-    public void addStats(int p_75122_1_, float p_75122_2_)
-    {
-        this.foodLevel = Math.min(p_75122_1_ + this.foodLevel, 20);
-        this.foodSaturationLevel = Math.min(this.foodSaturationLevel + (float)p_75122_1_ * p_75122_2_ * 2.0F, (float)this.foodLevel);
-    }
+	/**
+	 * adds input to foodExhaustionLevel to a max of 40
+	 */
+	public void addExhaustion(float p_75113_1_) {
+		foodExhaustionLevel = Math.min(foodExhaustionLevel + p_75113_1_, 40.0F);
+	}
 
-    public void func_151686_a(ItemFood p_151686_1_, ItemStack p_151686_2_)
-    {
-        this.addStats(p_151686_1_.func_150905_g(p_151686_2_), p_151686_1_.func_150906_h(p_151686_2_));
-    }
+	/**
+	 * Args: int foodLevel, float foodSaturationModifier
+	 */
+	public void addStats(int p_75122_1_, float p_75122_2_) {
+		foodLevel = Math.min(p_75122_1_ + foodLevel, 20);
+		foodSaturationLevel = Math.min(foodSaturationLevel + p_75122_1_
+				* p_75122_2_ * 2.0F, foodLevel);
+	}
 
-    /**
-     * Handles the food game logic.
-     */
-    public void onUpdate(EntityPlayer p_75118_1_)
-    {
-        EnumDifficulty var2 = p_75118_1_.worldObj.difficultySetting;
-        this.prevFoodLevel = this.foodLevel;
+	public void func_151686_a(ItemFood p_151686_1_, ItemStack p_151686_2_) {
+		addStats(p_151686_1_.func_150905_g(p_151686_2_),
+				p_151686_1_.func_150906_h(p_151686_2_));
+	}
 
-        if (this.foodExhaustionLevel > 4.0F)
-        {
-            this.foodExhaustionLevel -= 4.0F;
+	/**
+	 * Get the player's food level.
+	 */
+	public int getFoodLevel() {
+		return foodLevel;
+	}
 
-            if (this.foodSaturationLevel > 0.0F)
-            {
-                this.foodSaturationLevel = Math.max(this.foodSaturationLevel - 1.0F, 0.0F);
-            }
-            else if (var2 != EnumDifficulty.PEACEFUL)
-            {
-                this.foodLevel = Math.max(this.foodLevel - 1, 0);
-            }
-        }
+	public int getPrevFoodLevel() {
+		return prevFoodLevel;
+	}
 
-        if (p_75118_1_.worldObj.getGameRules().getGameRuleBooleanValue("naturalRegeneration") && this.foodLevel >= 18 && p_75118_1_.shouldHeal())
-        {
-            ++this.foodTimer;
+	/**
+	 * Get the player's food saturation level.
+	 */
+	public float getSaturationLevel() {
+		return foodSaturationLevel;
+	}
 
-            if (this.foodTimer >= 80)
-            {
-                p_75118_1_.heal(1.0F);
-                this.addExhaustion(3.0F);
-                this.foodTimer = 0;
-            }
-        }
-        else if (this.foodLevel <= 0)
-        {
-            ++this.foodTimer;
+	/**
+	 * If foodLevel is not max.
+	 */
+	public boolean needFood() {
+		return foodLevel < 20;
+	}
 
-            if (this.foodTimer >= 80)
-            {
-                if (p_75118_1_.getHealth() > 10.0F || var2 == EnumDifficulty.HARD || p_75118_1_.getHealth() > 1.0F && var2 == EnumDifficulty.NORMAL)
-                {
-                    p_75118_1_.attackEntityFrom(DamageSource.starve, 1.0F);
-                }
+	/**
+	 * Handles the food game logic.
+	 */
+	public void onUpdate(EntityPlayer p_75118_1_) {
+		final EnumDifficulty var2 = p_75118_1_.worldObj.difficultySetting;
+		prevFoodLevel = foodLevel;
 
-                this.foodTimer = 0;
-            }
-        }
-        else
-        {
-            this.foodTimer = 0;
-        }
-    }
+		if (foodExhaustionLevel > 4.0F) {
+			foodExhaustionLevel -= 4.0F;
 
-    /**
-     * Reads food stats from an NBT object.
-     */
-    public void readNBT(NBTTagCompound p_75112_1_)
-    {
-        if (p_75112_1_.func_150297_b("foodLevel", 99))
-        {
-            this.foodLevel = p_75112_1_.getInteger("foodLevel");
-            this.foodTimer = p_75112_1_.getInteger("foodTickTimer");
-            this.foodSaturationLevel = p_75112_1_.getFloat("foodSaturationLevel");
-            this.foodExhaustionLevel = p_75112_1_.getFloat("foodExhaustionLevel");
-        }
-    }
+			if (foodSaturationLevel > 0.0F) {
+				foodSaturationLevel = Math
+						.max(foodSaturationLevel - 1.0F, 0.0F);
+			} else if (var2 != EnumDifficulty.PEACEFUL) {
+				foodLevel = Math.max(foodLevel - 1, 0);
+			}
+		}
 
-    /**
-     * Writes food stats to an NBT object.
-     */
-    public void writeNBT(NBTTagCompound p_75117_1_)
-    {
-        p_75117_1_.setInteger("foodLevel", this.foodLevel);
-        p_75117_1_.setInteger("foodTickTimer", this.foodTimer);
-        p_75117_1_.setFloat("foodSaturationLevel", this.foodSaturationLevel);
-        p_75117_1_.setFloat("foodExhaustionLevel", this.foodExhaustionLevel);
-    }
+		if (p_75118_1_.worldObj.getGameRules().getGameRuleBooleanValue(
+				"naturalRegeneration")
+				&& foodLevel >= 18 && p_75118_1_.shouldHeal()) {
+			++foodTimer;
 
-    /**
-     * Get the player's food level.
-     */
-    public int getFoodLevel()
-    {
-        return this.foodLevel;
-    }
+			if (foodTimer >= 80) {
+				p_75118_1_.heal(1.0F);
+				addExhaustion(3.0F);
+				foodTimer = 0;
+			}
+		} else if (foodLevel <= 0) {
+			++foodTimer;
 
-    public int getPrevFoodLevel()
-    {
-        return this.prevFoodLevel;
-    }
+			if (foodTimer >= 80) {
+				if (p_75118_1_.getHealth() > 10.0F
+						|| var2 == EnumDifficulty.HARD
+						|| p_75118_1_.getHealth() > 1.0F
+						&& var2 == EnumDifficulty.NORMAL) {
+					p_75118_1_.attackEntityFrom(DamageSource.starve, 1.0F);
+				}
 
-    /**
-     * If foodLevel is not max.
-     */
-    public boolean needFood()
-    {
-        return this.foodLevel < 20;
-    }
+				foodTimer = 0;
+			}
+		} else {
+			foodTimer = 0;
+		}
+	}
 
-    /**
-     * adds input to foodExhaustionLevel to a max of 40
-     */
-    public void addExhaustion(float p_75113_1_)
-    {
-        this.foodExhaustionLevel = Math.min(this.foodExhaustionLevel + p_75113_1_, 40.0F);
-    }
+	/**
+	 * Reads food stats from an NBT object.
+	 */
+	public void readNBT(NBTTagCompound p_75112_1_) {
+		if (p_75112_1_.func_150297_b("foodLevel", 99)) {
+			foodLevel = p_75112_1_.getInteger("foodLevel");
+			foodTimer = p_75112_1_.getInteger("foodTickTimer");
+			foodSaturationLevel = p_75112_1_.getFloat("foodSaturationLevel");
+			foodExhaustionLevel = p_75112_1_.getFloat("foodExhaustionLevel");
+		}
+	}
 
-    /**
-     * Get the player's food saturation level.
-     */
-    public float getSaturationLevel()
-    {
-        return this.foodSaturationLevel;
-    }
+	public void setFoodLevel(int p_75114_1_) {
+		foodLevel = p_75114_1_;
+	}
 
-    public void setFoodLevel(int p_75114_1_)
-    {
-        this.foodLevel = p_75114_1_;
-    }
+	public void setFoodSaturationLevel(float p_75119_1_) {
+		foodSaturationLevel = p_75119_1_;
+	}
 
-    public void setFoodSaturationLevel(float p_75119_1_)
-    {
-        this.foodSaturationLevel = p_75119_1_;
-    }
+	/**
+	 * Writes food stats to an NBT object.
+	 */
+	public void writeNBT(NBTTagCompound p_75117_1_) {
+		p_75117_1_.setInteger("foodLevel", foodLevel);
+		p_75117_1_.setInteger("foodTickTimer", foodTimer);
+		p_75117_1_.setFloat("foodSaturationLevel", foodSaturationLevel);
+		p_75117_1_.setFloat("foodExhaustionLevel", foodExhaustionLevel);
+	}
 }

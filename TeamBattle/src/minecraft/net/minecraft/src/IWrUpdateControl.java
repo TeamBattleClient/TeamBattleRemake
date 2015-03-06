@@ -1,8 +1,7 @@
 package net.minecraft.src;
 
-public interface IWrUpdateControl
-{
-    void pause();
+public interface IWrUpdateControl {
+	void pause();
 
-    void resume();
+	void resume();
 }

@@ -1,0 +1,7 @@
+package event.events;
+
+import ml.balen.Balen.event.Event;
+
+public final class EventTick extends Event {
+
+}

@@ -4,145 +4,108 @@ import java.util.AbstractSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import net.minecraft.util.LongHashMap;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.NextTickListEntry;
 
-public class NextTickHashSet extends AbstractSet
-{
-    private LongHashMap longHashMap = new LongHashMap();
-    private int size = 0;
-    private HashSet emptySet = new HashSet();
+public class NextTickHashSet extends AbstractSet {
+	private final HashSet emptySet = new HashSet();
+	private final LongHashMap longHashMap = new LongHashMap();
+	private int size = 0;
 
-    public NextTickHashSet(Set oldSet)
-    {
-        this.addAll(oldSet);
-    }
+	public NextTickHashSet(Set oldSet) {
+		addAll(oldSet);
+	}
 
-    public int size()
-    {
-        return this.size;
-    }
+	@Override
+	public boolean add(Object obj) {
+		if (!(obj instanceof NextTickListEntry))
+			return false;
+		else {
+			final NextTickListEntry entry = (NextTickListEntry) obj;
 
-    public boolean contains(Object obj)
-    {
-        if (!(obj instanceof NextTickListEntry))
-        {
-            return false;
-        }
-        else
-        {
-            NextTickListEntry entry = (NextTickListEntry)obj;
+			final long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4,
+					entry.zCoord >> 4);
+			HashSet set = (HashSet) longHashMap.getValueByKey(key);
 
-            if (entry == null)
-            {
-                return false;
-            }
-            else
-            {
-                long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4, entry.zCoord >> 4);
-                HashSet set = (HashSet)this.longHashMap.getValueByKey(key);
-                return set == null ? false : set.contains(entry);
-            }
-        }
-    }
+			if (set == null) {
+				set = new HashSet();
+				longHashMap.add(key, set);
+			}
 
-    public boolean add(Object obj)
-    {
-        if (!(obj instanceof NextTickListEntry))
-        {
-            return false;
-        }
-        else
-        {
-            NextTickListEntry entry = (NextTickListEntry)obj;
+			final boolean added = set.add(entry);
 
-            if (entry == null)
-            {
-                return false;
-            }
-            else
-            {
-                long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4, entry.zCoord >> 4);
-                HashSet set = (HashSet)this.longHashMap.getValueByKey(key);
+			if (added) {
+				++size;
+			}
 
-                if (set == null)
-                {
-                    set = new HashSet();
-                    this.longHashMap.add(key, set);
-                }
+			return added;
+		}
+	}
 
-                boolean added = set.add(entry);
+	@Override
+	public boolean contains(Object obj) {
+		if (!(obj instanceof NextTickListEntry))
+			return false;
+		else {
+			final NextTickListEntry entry = (NextTickListEntry) obj;
 
-                if (added)
-                {
-                    ++this.size;
-                }
+			final long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4,
+					entry.zCoord >> 4);
+			final HashSet set = (HashSet) longHashMap.getValueByKey(key);
+			return set == null ? false : set.contains(entry);
+		}
+	}
 
-                return added;
-            }
-        }
-    }
+	public Iterator getNextTickEntries(int chunkX, int chunkZ) {
+		final HashSet set = getNextTickEntriesSet(chunkX, chunkZ);
+		return set.iterator();
+	}
 
-    public boolean remove(Object obj)
-    {
-        if (!(obj instanceof NextTickListEntry))
-        {
-            return false;
-        }
-        else
-        {
-            NextTickListEntry entry = (NextTickListEntry)obj;
+	public HashSet getNextTickEntriesSet(int chunkX, int chunkZ) {
+		final long key = ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
+		HashSet set = (HashSet) longHashMap.getValueByKey(key);
 
-            if (entry == null)
-            {
-                return false;
-            }
-            else
-            {
-                long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4, entry.zCoord >> 4);
-                HashSet set = (HashSet)this.longHashMap.getValueByKey(key);
+		if (set == null) {
+			set = emptySet;
+		}
 
-                if (set == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    boolean removed = set.remove(entry);
+		return set;
+	}
 
-                    if (removed)
-                    {
-                        --this.size;
-                    }
+	@Override
+	public Iterator iterator() {
+		throw new UnsupportedOperationException("Not implemented");
+	}
 
-                    return removed;
-                }
-            }
-        }
-    }
+	@Override
+	public boolean remove(Object obj) {
+		if (!(obj instanceof NextTickListEntry))
+			return false;
+		else {
+			final NextTickListEntry entry = (NextTickListEntry) obj;
 
-    public Iterator getNextTickEntries(int chunkX, int chunkZ)
-    {
-        HashSet set = this.getNextTickEntriesSet(chunkX, chunkZ);
-        return set.iterator();
-    }
+			final long key = ChunkCoordIntPair.chunkXZ2Int(entry.xCoord >> 4,
+					entry.zCoord >> 4);
+			final HashSet set = (HashSet) longHashMap.getValueByKey(key);
 
-    public HashSet getNextTickEntriesSet(int chunkX, int chunkZ)
-    {
-        long key = ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
-        HashSet set = (HashSet)this.longHashMap.getValueByKey(key);
+			if (set == null)
+				return false;
+			else {
+				final boolean removed = set.remove(entry);
 
-        if (set == null)
-        {
-            set = this.emptySet;
-        }
+				if (removed) {
+					--size;
+				}
 
-        return set;
-    }
+				return removed;
+			}
+		}
+	}
 
-    public Iterator iterator()
-    {
-        throw new UnsupportedOperationException("Not implemented");
-    }
+	@Override
+	public int size() {
+		return size;
+	}
 }

@@ -1,147 +1,131 @@
 package net.minecraft.world;
 
-public class WorldType
-{
-    /** List of world types. */
-    public static final WorldType[] worldTypes = new WorldType[16];
+public class WorldType {
+	/** List of world types. */
+	public static final WorldType[] worldTypes = new WorldType[16];
+	/** Default world type. */
+	public static final WorldType DEFAULT = new WorldType(0, "default", 1)
+			.setVersioned();
 
-    /** Default world type. */
-    public static final WorldType DEFAULT = (new WorldType(0, "default", 1)).setVersioned();
+	/** Default (1.1) world type. */
+	public static final WorldType DEFAULT_1_1 = new WorldType(8, "default_1_1",
+			0).setCanBeCreated(false);
 
-    /** Flat world type. */
-    public static final WorldType FLAT = new WorldType(1, "flat");
+	public static final WorldType field_151360_e = new WorldType(3, "amplified")
+			.func_151358_j();
 
-    /** Large Biome world Type. */
-    public static final WorldType LARGE_BIOMES = new WorldType(2, "largeBiomes");
-    public static final WorldType field_151360_e = (new WorldType(3, "amplified")).func_151358_j();
+	/** Flat world type. */
+	public static final WorldType FLAT = new WorldType(1, "flat");
+	/** Large Biome world Type. */
+	public static final WorldType LARGE_BIOMES = new WorldType(2, "largeBiomes");
 
-    /** Default (1.1) world type. */
-    public static final WorldType DEFAULT_1_1 = (new WorldType(8, "default_1_1", 0)).setCanBeCreated(false);
+	public static WorldType parseWorldType(String p_77130_0_) {
+		for (final WorldType worldType2 : worldTypes) {
+			if (worldType2 != null
+					&& worldType2.worldType.equalsIgnoreCase(p_77130_0_))
+				return worldType2;
+		}
 
-    /** ID for this world type. */
-    private final int worldTypeId;
+		return null;
+	}
 
-    /** 'default' or 'flat' */
-    private final String worldType;
+	/**
+	 * Whether this world type can be generated. Normally true; set to false for
+	 * out-of-date generator versions.
+	 */
+	private boolean canBeCreated;
 
-    /** The int version of the ChunkProvider that generated this world. */
-    private final int generatorVersion;
+	private boolean field_151361_l;
 
-    /**
-     * Whether this world type can be generated. Normally true; set to false for out-of-date generator versions.
-     */
-    private boolean canBeCreated;
+	/** The int version of the ChunkProvider that generated this world. */
+	private final int generatorVersion;
 
-    /** Whether this WorldType has a version or not. */
-    private boolean isWorldTypeVersioned;
-    private boolean field_151361_l;
-    private static final String __OBFID = "CL_00000150";
+	/** Whether this WorldType has a version or not. */
+	private boolean isWorldTypeVersioned;
+	/** 'default' or 'flat' */
+	private final String worldType;
 
-    private WorldType(int p_i1959_1_, String p_i1959_2_)
-    {
-        this(p_i1959_1_, p_i1959_2_, 0);
-    }
+	/** ID for this world type. */
+	private final int worldTypeId;
 
-    private WorldType(int p_i1960_1_, String p_i1960_2_, int p_i1960_3_)
-    {
-        this.worldType = p_i1960_2_;
-        this.generatorVersion = p_i1960_3_;
-        this.canBeCreated = true;
-        this.worldTypeId = p_i1960_1_;
-        worldTypes[p_i1960_1_] = this;
-    }
+	private WorldType(int p_i1959_1_, String p_i1959_2_) {
+		this(p_i1959_1_, p_i1959_2_, 0);
+	}
 
-    public String getWorldTypeName()
-    {
-        return this.worldType;
-    }
+	private WorldType(int p_i1960_1_, String p_i1960_2_, int p_i1960_3_) {
+		worldType = p_i1960_2_;
+		generatorVersion = p_i1960_3_;
+		canBeCreated = true;
+		worldTypeId = p_i1960_1_;
+		worldTypes[p_i1960_1_] = this;
+	}
 
-    /**
-     * Gets the translation key for the name of this world type.
-     */
-    public String getTranslateName()
-    {
-        return "generator." + this.worldType;
-    }
+	public boolean func_151357_h() {
+		return field_151361_l;
+	}
 
-    public String func_151359_c()
-    {
-        return this.getTranslateName() + ".info";
-    }
+	private WorldType func_151358_j() {
+		field_151361_l = true;
+		return this;
+	}
 
-    /**
-     * Returns generatorVersion.
-     */
-    public int getGeneratorVersion()
-    {
-        return this.generatorVersion;
-    }
+	public String func_151359_c() {
+		return getTranslateName() + ".info";
+	}
 
-    public WorldType getWorldTypeForGeneratorVersion(int p_77132_1_)
-    {
-        return this == DEFAULT && p_77132_1_ == 0 ? DEFAULT_1_1 : this;
-    }
+	/**
+	 * Gets whether this WorldType can be used to generate a new world.
+	 */
+	public boolean getCanBeCreated() {
+		return canBeCreated;
+	}
 
-    /**
-     * Sets canBeCreated to the provided value, and returns this.
-     */
-    private WorldType setCanBeCreated(boolean p_77124_1_)
-    {
-        this.canBeCreated = p_77124_1_;
-        return this;
-    }
+	/**
+	 * Returns generatorVersion.
+	 */
+	public int getGeneratorVersion() {
+		return generatorVersion;
+	}
 
-    /**
-     * Gets whether this WorldType can be used to generate a new world.
-     */
-    public boolean getCanBeCreated()
-    {
-        return this.canBeCreated;
-    }
+	/**
+	 * Gets the translation key for the name of this world type.
+	 */
+	public String getTranslateName() {
+		return "generator." + worldType;
+	}
 
-    /**
-     * Flags this world type as having an associated version.
-     */
-    private WorldType setVersioned()
-    {
-        this.isWorldTypeVersioned = true;
-        return this;
-    }
+	public WorldType getWorldTypeForGeneratorVersion(int p_77132_1_) {
+		return this == DEFAULT && p_77132_1_ == 0 ? DEFAULT_1_1 : this;
+	}
 
-    /**
-     * Returns true if this world Type has a version associated with it.
-     */
-    public boolean isVersioned()
-    {
-        return this.isWorldTypeVersioned;
-    }
+	public int getWorldTypeID() {
+		return worldTypeId;
+	}
 
-    public static WorldType parseWorldType(String p_77130_0_)
-    {
-        for (int var1 = 0; var1 < worldTypes.length; ++var1)
-        {
-            if (worldTypes[var1] != null && worldTypes[var1].worldType.equalsIgnoreCase(p_77130_0_))
-            {
-                return worldTypes[var1];
-            }
-        }
+	public String getWorldTypeName() {
+		return worldType;
+	}
 
-        return null;
-    }
+	/**
+	 * Returns true if this world Type has a version associated with it.
+	 */
+	public boolean isVersioned() {
+		return isWorldTypeVersioned;
+	}
 
-    public int getWorldTypeID()
-    {
-        return this.worldTypeId;
-    }
+	/**
+	 * Sets canBeCreated to the provided value, and returns this.
+	 */
+	private WorldType setCanBeCreated(boolean p_77124_1_) {
+		canBeCreated = p_77124_1_;
+		return this;
+	}
 
-    public boolean func_151357_h()
-    {
-        return this.field_151361_l;
-    }
-
-    private WorldType func_151358_j()
-    {
-        this.field_151361_l = true;
-        return this;
-    }
+	/**
+	 * Flags this world type as having an associated version.
+	 */
+	private WorldType setVersioned() {
+		isWorldTypeVersioned = true;
+		return this;
+	}
 }

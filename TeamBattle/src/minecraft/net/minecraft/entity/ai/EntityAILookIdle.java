@@ -2,62 +2,63 @@ package net.minecraft.entity.ai;
 
 import net.minecraft.entity.EntityLiving;
 
-public class EntityAILookIdle extends EntityAIBase
-{
-    /** The entity that is looking idle. */
-    private EntityLiving idleEntity;
+public class EntityAILookIdle extends EntityAIBase {
+	/** The entity that is looking idle. */
+	private final EntityLiving idleEntity;
 
-    /** X offset to look at */
-    private double lookX;
+	/**
+	 * A decrementing tick that stops the entity from being idle once it reaches
+	 * 0.
+	 */
+	private int idleTime;
 
-    /** Z offset to look at */
-    private double lookZ;
+	/** X offset to look at */
+	private double lookX;
 
-    /**
-     * A decrementing tick that stops the entity from being idle once it reaches 0.
-     */
-    private int idleTime;
-    private static final String __OBFID = "CL_00001607";
+	/** Z offset to look at */
+	private double lookZ;
 
-    public EntityAILookIdle(EntityLiving p_i1647_1_)
-    {
-        this.idleEntity = p_i1647_1_;
-        this.setMutexBits(3);
-    }
+	public EntityAILookIdle(EntityLiving p_i1647_1_) {
+		idleEntity = p_i1647_1_;
+		setMutexBits(3);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        return this.idleEntity.getRNG().nextFloat() < 0.02F;
-    }
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return idleTime >= 0;
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return this.idleTime >= 0;
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		return idleEntity.getRNG().nextFloat() < 0.02F;
+	}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        double var1 = (Math.PI * 2D) * this.idleEntity.getRNG().nextDouble();
-        this.lookX = Math.cos(var1);
-        this.lookZ = Math.sin(var1);
-        this.idleTime = 20 + this.idleEntity.getRNG().nextInt(20);
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		final double var1 = Math.PI * 2D * idleEntity.getRNG().nextDouble();
+		lookX = Math.cos(var1);
+		lookZ = Math.sin(var1);
+		idleTime = 20 + idleEntity.getRNG().nextInt(20);
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        --this.idleTime;
-        this.idleEntity.getLookHelper().setLookPosition(this.idleEntity.posX + this.lookX, this.idleEntity.posY + (double)this.idleEntity.getEyeHeight(), this.idleEntity.posZ + this.lookZ, 10.0F, (float)this.idleEntity.getVerticalFaceSpeed());
-    }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		--idleTime;
+		idleEntity.getLookHelper().setLookPosition(idleEntity.posX + lookX,
+				idleEntity.posY + idleEntity.getEyeHeight(),
+				idleEntity.posZ + lookZ, 10.0F,
+				idleEntity.getVerticalFaceSpeed());
+	}
 }

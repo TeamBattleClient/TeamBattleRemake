@@ -1,6 +1,5 @@
 package net.minecraft.entity.ai.attributes;
 
-import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,185 +8,171 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class ModifiableAttributeInstance implements IAttributeInstance
-{
-    /** The BaseAttributeMap this attributeInstance can be found in */
-    private final BaseAttributeMap attributeMap;
+import com.google.common.collect.Maps;
 
-    /** The Attribute this is an instance of */
-    private final IAttribute genericAttribute;
-    private final Map mapByOperation = Maps.newHashMap();
-    private final Map mapByName = Maps.newHashMap();
-    private final Map mapByUUID = Maps.newHashMap();
-    private double baseValue;
-    private boolean needsUpdate = true;
-    private double cachedValue;
-    private static final String __OBFID = "CL_00001567";
+public class ModifiableAttributeInstance implements IAttributeInstance {
+	/** The BaseAttributeMap this attributeInstance can be found in */
+	private final BaseAttributeMap attributeMap;
 
-    public ModifiableAttributeInstance(BaseAttributeMap p_i1608_1_, IAttribute p_i1608_2_)
-    {
-        this.attributeMap = p_i1608_1_;
-        this.genericAttribute = p_i1608_2_;
-        this.baseValue = p_i1608_2_.getDefaultValue();
+	private double baseValue;
+	private double cachedValue;
+	/** The Attribute this is an instance of */
+	private final IAttribute genericAttribute;
+	private final Map mapByName = Maps.newHashMap();
+	private final Map mapByOperation = Maps.newHashMap();
+	private final Map mapByUUID = Maps.newHashMap();
+	private boolean needsUpdate = true;
 
-        for (int var3 = 0; var3 < 3; ++var3)
-        {
-            this.mapByOperation.put(Integer.valueOf(var3), new HashSet());
-        }
-    }
+	public ModifiableAttributeInstance(BaseAttributeMap p_i1608_1_,
+			IAttribute p_i1608_2_) {
+		attributeMap = p_i1608_1_;
+		genericAttribute = p_i1608_2_;
+		baseValue = p_i1608_2_.getDefaultValue();
 
-    /**
-     * Get the Attribute this is an instance of
-     */
-    public IAttribute getAttribute()
-    {
-        return this.genericAttribute;
-    }
+		for (int var3 = 0; var3 < 3; ++var3) {
+			mapByOperation.put(Integer.valueOf(var3), new HashSet());
+		}
+	}
 
-    public double getBaseValue()
-    {
-        return this.baseValue;
-    }
+	@Override
+	public void applyModifier(AttributeModifier p_111121_1_) {
+		if (getModifier(p_111121_1_.getID()) != null)
+			throw new IllegalArgumentException(
+					"Modifier is already applied on this attribute!");
+		else {
+			Object var2 = mapByName.get(p_111121_1_.getName());
 
-    public void setBaseValue(double p_111128_1_)
-    {
-        if (p_111128_1_ != this.getBaseValue())
-        {
-            this.baseValue = p_111128_1_;
-            this.flagForUpdate();
-        }
-    }
+			if (var2 == null) {
+				var2 = new HashSet();
+				mapByName.put(p_111121_1_.getName(), var2);
+			}
 
-    public Collection getModifiersByOperation(int p_111130_1_)
-    {
-        return (Collection)this.mapByOperation.get(Integer.valueOf(p_111130_1_));
-    }
+			((Set) mapByOperation.get(Integer.valueOf(p_111121_1_
+					.getOperation()))).add(p_111121_1_);
+			((Set) var2).add(p_111121_1_);
+			mapByUUID.put(p_111121_1_.getID(), p_111121_1_);
+			flagForUpdate();
+		}
+	}
 
-    public Collection func_111122_c()
-    {
-        HashSet var1 = new HashSet();
+	private double computeValue() {
+		double var1 = getBaseValue();
+		AttributeModifier var4;
 
-        for (int var2 = 0; var2 < 3; ++var2)
-        {
-            var1.addAll(this.getModifiersByOperation(var2));
-        }
+		for (final Iterator var3 = getModifiersByOperation(0).iterator(); var3
+				.hasNext(); var1 += var4.getAmount()) {
+			var4 = (AttributeModifier) var3.next();
+		}
 
-        return var1;
-    }
+		double var7 = var1;
+		Iterator var5;
+		AttributeModifier var6;
 
-    /**
-     * Returns attribute modifier, if any, by the given UUID
-     */
-    public AttributeModifier getModifier(UUID p_111127_1_)
-    {
-        return (AttributeModifier)this.mapByUUID.get(p_111127_1_);
-    }
+		for (var5 = getModifiersByOperation(1).iterator(); var5.hasNext(); var7 += var1
+				* var6.getAmount()) {
+			var6 = (AttributeModifier) var5.next();
+		}
 
-    public void applyModifier(AttributeModifier p_111121_1_)
-    {
-        if (this.getModifier(p_111121_1_.getID()) != null)
-        {
-            throw new IllegalArgumentException("Modifier is already applied on this attribute!");
-        }
-        else
-        {
-            Object var2 = (Set)this.mapByName.get(p_111121_1_.getName());
+		for (var5 = getModifiersByOperation(2).iterator(); var5.hasNext(); var7 *= 1.0D + var6
+				.getAmount()) {
+			var6 = (AttributeModifier) var5.next();
+		}
 
-            if (var2 == null)
-            {
-                var2 = new HashSet();
-                this.mapByName.put(p_111121_1_.getName(), var2);
-            }
+		return genericAttribute.clampValue(var7);
+	}
 
-            ((Set)this.mapByOperation.get(Integer.valueOf(p_111121_1_.getOperation()))).add(p_111121_1_);
-            ((Set)var2).add(p_111121_1_);
-            this.mapByUUID.put(p_111121_1_.getID(), p_111121_1_);
-            this.flagForUpdate();
-        }
-    }
+	private void flagForUpdate() {
+		needsUpdate = true;
+		attributeMap.addAttributeInstance(this);
+	}
 
-    private void flagForUpdate()
-    {
-        this.needsUpdate = true;
-        this.attributeMap.addAttributeInstance(this);
-    }
+	@Override
+	public Collection func_111122_c() {
+		final HashSet var1 = new HashSet();
 
-    public void removeModifier(AttributeModifier p_111124_1_)
-    {
-        for (int var2 = 0; var2 < 3; ++var2)
-        {
-            Set var3 = (Set)this.mapByOperation.get(Integer.valueOf(var2));
-            var3.remove(p_111124_1_);
-        }
+		for (int var2 = 0; var2 < 3; ++var2) {
+			var1.addAll(getModifiersByOperation(var2));
+		}
 
-        Set var4 = (Set)this.mapByName.get(p_111124_1_.getName());
+		return var1;
+	}
 
-        if (var4 != null)
-        {
-            var4.remove(p_111124_1_);
+	/**
+	 * Get the Attribute this is an instance of
+	 */
+	@Override
+	public IAttribute getAttribute() {
+		return genericAttribute;
+	}
 
-            if (var4.isEmpty())
-            {
-                this.mapByName.remove(p_111124_1_.getName());
-            }
-        }
+	@Override
+	public double getAttributeValue() {
+		if (needsUpdate) {
+			cachedValue = computeValue();
+			needsUpdate = false;
+		}
 
-        this.mapByUUID.remove(p_111124_1_.getID());
-        this.flagForUpdate();
-    }
+		return cachedValue;
+	}
 
-    public void removeAllModifiers()
-    {
-        Collection var1 = this.func_111122_c();
+	@Override
+	public double getBaseValue() {
+		return baseValue;
+	}
 
-        if (var1 != null)
-        {
-            ArrayList var4 = new ArrayList(var1);
-            Iterator var2 = var4.iterator();
+	/**
+	 * Returns attribute modifier, if any, by the given UUID
+	 */
+	@Override
+	public AttributeModifier getModifier(UUID p_111127_1_) {
+		return (AttributeModifier) mapByUUID.get(p_111127_1_);
+	}
 
-            while (var2.hasNext())
-            {
-                AttributeModifier var3 = (AttributeModifier)var2.next();
-                this.removeModifier(var3);
-            }
-        }
-    }
+	public Collection getModifiersByOperation(int p_111130_1_) {
+		return (Collection) mapByOperation.get(Integer.valueOf(p_111130_1_));
+	}
 
-    public double getAttributeValue()
-    {
-        if (this.needsUpdate)
-        {
-            this.cachedValue = this.computeValue();
-            this.needsUpdate = false;
-        }
+	@Override
+	public void removeAllModifiers() {
+		final Collection var1 = func_111122_c();
 
-        return this.cachedValue;
-    }
+		if (var1 != null) {
+			final ArrayList var4 = new ArrayList(var1);
+			final Iterator var2 = var4.iterator();
 
-    private double computeValue()
-    {
-        double var1 = this.getBaseValue();
-        AttributeModifier var4;
+			while (var2.hasNext()) {
+				final AttributeModifier var3 = (AttributeModifier) var2.next();
+				removeModifier(var3);
+			}
+		}
+	}
 
-        for (Iterator var3 = this.getModifiersByOperation(0).iterator(); var3.hasNext(); var1 += var4.getAmount())
-        {
-            var4 = (AttributeModifier)var3.next();
-        }
+	@Override
+	public void removeModifier(AttributeModifier p_111124_1_) {
+		for (int var2 = 0; var2 < 3; ++var2) {
+			final Set var3 = (Set) mapByOperation.get(Integer.valueOf(var2));
+			var3.remove(p_111124_1_);
+		}
 
-        double var7 = var1;
-        Iterator var5;
-        AttributeModifier var6;
+		final Set var4 = (Set) mapByName.get(p_111124_1_.getName());
 
-        for (var5 = this.getModifiersByOperation(1).iterator(); var5.hasNext(); var7 += var1 * var6.getAmount())
-        {
-            var6 = (AttributeModifier)var5.next();
-        }
+		if (var4 != null) {
+			var4.remove(p_111124_1_);
 
-        for (var5 = this.getModifiersByOperation(2).iterator(); var5.hasNext(); var7 *= 1.0D + var6.getAmount())
-        {
-            var6 = (AttributeModifier)var5.next();
-        }
+			if (var4.isEmpty()) {
+				mapByName.remove(p_111124_1_.getName());
+			}
+		}
 
-        return this.genericAttribute.clampValue(var7);
-    }
+		mapByUUID.remove(p_111124_1_.getID());
+		flagForUpdate();
+	}
+
+	@Override
+	public void setBaseValue(double p_111128_1_) {
+		if (p_111128_1_ != getBaseValue()) {
+			baseValue = p_111128_1_;
+			flagForUpdate();
+		}
+	}
 }

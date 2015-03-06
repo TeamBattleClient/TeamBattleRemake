@@ -5,74 +5,80 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.village.Village;
 import net.minecraft.village.VillageDoorInfo;
 
-public class EntityAIRestrictOpenDoor extends EntityAIBase
-{
-    private EntityCreature entityObj;
-    private VillageDoorInfo frontDoor;
-    private static final String __OBFID = "CL_00001610";
+public class EntityAIRestrictOpenDoor extends EntityAIBase {
+	private final EntityCreature entityObj;
+	private VillageDoorInfo frontDoor;
 
-    public EntityAIRestrictOpenDoor(EntityCreature p_i1651_1_)
-    {
-        this.entityObj = p_i1651_1_;
-    }
+	public EntityAIRestrictOpenDoor(EntityCreature p_i1651_1_) {
+		entityObj = p_i1651_1_;
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (this.entityObj.worldObj.isDaytime())
-        {
-            return false;
-        }
-        else
-        {
-            Village var1 = this.entityObj.worldObj.villageCollectionObj.findNearestVillage(MathHelper.floor_double(this.entityObj.posX), MathHelper.floor_double(this.entityObj.posY), MathHelper.floor_double(this.entityObj.posZ), 16);
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return entityObj.worldObj.isDaytime() ? false
+				: !frontDoor.isDetachedFromVillageFlag
+						&& frontDoor.isInside(
+								MathHelper.floor_double(entityObj.posX),
+								MathHelper.floor_double(entityObj.posZ));
+	}
 
-            if (var1 == null)
-            {
-                return false;
-            }
-            else
-            {
-                this.frontDoor = var1.findNearestDoor(MathHelper.floor_double(this.entityObj.posX), MathHelper.floor_double(this.entityObj.posY), MathHelper.floor_double(this.entityObj.posZ));
-                return this.frontDoor == null ? false : (double)this.frontDoor.getInsideDistanceSquare(MathHelper.floor_double(this.entityObj.posX), MathHelper.floor_double(this.entityObj.posY), MathHelper.floor_double(this.entityObj.posZ)) < 2.25D;
-            }
-        }
-    }
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		entityObj.getNavigator().setBreakDoors(true);
+		entityObj.getNavigator().setEnterDoors(true);
+		frontDoor = null;
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return this.entityObj.worldObj.isDaytime() ? false : !this.frontDoor.isDetachedFromVillageFlag && this.frontDoor.isInside(MathHelper.floor_double(this.entityObj.posX), MathHelper.floor_double(this.entityObj.posZ));
-    }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		if (entityObj.worldObj.isDaytime())
+			return false;
+		else {
+			final Village var1 = entityObj.worldObj.villageCollectionObj
+					.findNearestVillage(
+							MathHelper.floor_double(entityObj.posX),
+							MathHelper.floor_double(entityObj.posY),
+							MathHelper.floor_double(entityObj.posZ), 16);
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.entityObj.getNavigator().setBreakDoors(false);
-        this.entityObj.getNavigator().setEnterDoors(false);
-    }
+			if (var1 == null)
+				return false;
+			else {
+				frontDoor = var1.findNearestDoor(
+						MathHelper.floor_double(entityObj.posX),
+						MathHelper.floor_double(entityObj.posY),
+						MathHelper.floor_double(entityObj.posZ));
+				return frontDoor == null ? false
+						: frontDoor.getInsideDistanceSquare(
+								MathHelper.floor_double(entityObj.posX),
+								MathHelper.floor_double(entityObj.posY),
+								MathHelper.floor_double(entityObj.posZ)) < 2.25D;
+			}
+		}
+	}
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.entityObj.getNavigator().setBreakDoors(true);
-        this.entityObj.getNavigator().setEnterDoors(true);
-        this.frontDoor = null;
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		entityObj.getNavigator().setBreakDoors(false);
+		entityObj.getNavigator().setEnterDoors(false);
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        this.frontDoor.incrementDoorOpeningRestrictionCounter();
-    }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		frontDoor.incrementDoorOpeningRestrictionCounter();
+	}
 }

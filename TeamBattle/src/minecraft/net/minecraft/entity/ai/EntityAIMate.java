@@ -3,6 +3,7 @@ package net.minecraft.entity.ai;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -12,150 +13,147 @@ import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
 
-public class EntityAIMate extends EntityAIBase
-{
-    private EntityAnimal theAnimal;
-    World theWorld;
-    private EntityAnimal targetMate;
+public class EntityAIMate extends EntityAIBase {
+	/** The speed the creature moves at during mating behavior. */
+	double moveSpeed;
+	/**
+	 * Delay preventing a baby from spawning immediately when two mate-able
+	 * animals find each other.
+	 */
+	int spawnBabyDelay;
+	private EntityAnimal targetMate;
 
-    /**
-     * Delay preventing a baby from spawning immediately when two mate-able animals find each other.
-     */
-    int spawnBabyDelay;
+	private final EntityAnimal theAnimal;
 
-    /** The speed the creature moves at during mating behavior. */
-    double moveSpeed;
-    private static final String __OBFID = "CL_00001578";
+	World theWorld;
 
-    public EntityAIMate(EntityAnimal p_i1619_1_, double p_i1619_2_)
-    {
-        this.theAnimal = p_i1619_1_;
-        this.theWorld = p_i1619_1_.worldObj;
-        this.moveSpeed = p_i1619_2_;
-        this.setMutexBits(3);
-    }
+	public EntityAIMate(EntityAnimal p_i1619_1_, double p_i1619_2_) {
+		theAnimal = p_i1619_1_;
+		theWorld = p_i1619_1_.worldObj;
+		moveSpeed = p_i1619_2_;
+		setMutexBits(3);
+	}
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (!this.theAnimal.isInLove())
-        {
-            return false;
-        }
-        else
-        {
-            this.targetMate = this.getNearbyMate();
-            return this.targetMate != null;
-        }
-    }
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return targetMate.isEntityAlive() && targetMate.isInLove()
+				&& spawnBabyDelay < 60;
+	}
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return this.targetMate.isEntityAlive() && this.targetMate.isInLove() && this.spawnBabyDelay < 60;
-    }
+	/**
+	 * Loops through nearby animals and finds another animal of the same type
+	 * that can be mated with. Returns the first valid mate found.
+	 */
+	private EntityAnimal getNearbyMate() {
+		final float var1 = 8.0F;
+		final List var2 = theWorld.getEntitiesWithinAABB(theAnimal.getClass(),
+				theAnimal.boundingBox.expand(var1, var1, var1));
+		double var3 = Double.MAX_VALUE;
+		EntityAnimal var5 = null;
+		final Iterator var6 = var2.iterator();
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.targetMate = null;
-        this.spawnBabyDelay = 0;
-    }
+		while (var6.hasNext()) {
+			final EntityAnimal var7 = (EntityAnimal) var6.next();
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        this.theAnimal.getLookHelper().setLookPositionWithEntity(this.targetMate, 10.0F, (float)this.theAnimal.getVerticalFaceSpeed());
-        this.theAnimal.getNavigator().tryMoveToEntityLiving(this.targetMate, this.moveSpeed);
-        ++this.spawnBabyDelay;
+			if (theAnimal.canMateWith(var7)
+					&& theAnimal.getDistanceSqToEntity(var7) < var3) {
+				var5 = var7;
+				var3 = theAnimal.getDistanceSqToEntity(var7);
+			}
+		}
 
-        if (this.spawnBabyDelay >= 60 && this.theAnimal.getDistanceSqToEntity(this.targetMate) < 9.0D)
-        {
-            this.spawnBaby();
-        }
-    }
+		return var5;
+	}
 
-    /**
-     * Loops through nearby animals and finds another animal of the same type that can be mated with. Returns the first
-     * valid mate found.
-     */
-    private EntityAnimal getNearbyMate()
-    {
-        float var1 = 8.0F;
-        List var2 = this.theWorld.getEntitiesWithinAABB(this.theAnimal.getClass(), this.theAnimal.boundingBox.expand((double)var1, (double)var1, (double)var1));
-        double var3 = Double.MAX_VALUE;
-        EntityAnimal var5 = null;
-        Iterator var6 = var2.iterator();
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		targetMate = null;
+		spawnBabyDelay = 0;
+	}
 
-        while (var6.hasNext())
-        {
-            EntityAnimal var7 = (EntityAnimal)var6.next();
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		if (!theAnimal.isInLove())
+			return false;
+		else {
+			targetMate = getNearbyMate();
+			return targetMate != null;
+		}
+	}
 
-            if (this.theAnimal.canMateWith(var7) && this.theAnimal.getDistanceSqToEntity(var7) < var3)
-            {
-                var5 = var7;
-                var3 = this.theAnimal.getDistanceSqToEntity(var7);
-            }
-        }
+	/**
+	 * Spawns a baby animal of the same type.
+	 */
+	private void spawnBaby() {
+		final EntityAgeable var1 = theAnimal.createChild(targetMate);
 
-        return var5;
-    }
+		if (var1 != null) {
+			EntityPlayer var2 = theAnimal.func_146083_cb();
 
-    /**
-     * Spawns a baby animal of the same type.
-     */
-    private void spawnBaby()
-    {
-        EntityAgeable var1 = this.theAnimal.createChild(this.targetMate);
+			if (var2 == null && targetMate.func_146083_cb() != null) {
+				var2 = targetMate.func_146083_cb();
+			}
 
-        if (var1 != null)
-        {
-            EntityPlayer var2 = this.theAnimal.func_146083_cb();
+			if (var2 != null) {
+				var2.triggerAchievement(StatList.field_151186_x);
 
-            if (var2 == null && this.targetMate.func_146083_cb() != null)
-            {
-                var2 = this.targetMate.func_146083_cb();
-            }
+				if (theAnimal instanceof EntityCow) {
+					var2.triggerAchievement(AchievementList.field_150962_H);
+				}
+			}
 
-            if (var2 != null)
-            {
-                var2.triggerAchievement(StatList.field_151186_x);
+			theAnimal.setGrowingAge(6000);
+			targetMate.setGrowingAge(6000);
+			theAnimal.resetInLove();
+			targetMate.resetInLove();
+			var1.setGrowingAge(-24000);
+			var1.setLocationAndAngles(theAnimal.posX, theAnimal.posY,
+					theAnimal.posZ, 0.0F, 0.0F);
+			theWorld.spawnEntityInWorld(var1);
+			final Random var3 = theAnimal.getRNG();
 
-                if (this.theAnimal instanceof EntityCow)
-                {
-                    var2.triggerAchievement(AchievementList.field_150962_H);
-                }
-            }
+			for (int var4 = 0; var4 < 7; ++var4) {
+				final double var5 = var3.nextGaussian() * 0.02D;
+				final double var7 = var3.nextGaussian() * 0.02D;
+				final double var9 = var3.nextGaussian() * 0.02D;
+				theWorld.spawnParticle("heart",
+						theAnimal.posX + var3.nextFloat() * theAnimal.width
+								* 2.0F - theAnimal.width, theAnimal.posY + 0.5D
+								+ var3.nextFloat() * theAnimal.height,
+						theAnimal.posZ + var3.nextFloat() * theAnimal.width
+								* 2.0F - theAnimal.width, var5, var7, var9);
+			}
 
-            this.theAnimal.setGrowingAge(6000);
-            this.targetMate.setGrowingAge(6000);
-            this.theAnimal.resetInLove();
-            this.targetMate.resetInLove();
-            var1.setGrowingAge(-24000);
-            var1.setLocationAndAngles(this.theAnimal.posX, this.theAnimal.posY, this.theAnimal.posZ, 0.0F, 0.0F);
-            this.theWorld.spawnEntityInWorld(var1);
-            Random var3 = this.theAnimal.getRNG();
+			if (theWorld.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
+				theWorld.spawnEntityInWorld(new EntityXPOrb(theWorld,
+						theAnimal.posX, theAnimal.posY, theAnimal.posZ, var3
+								.nextInt(7) + 1));
+			}
+		}
+	}
 
-            for (int var4 = 0; var4 < 7; ++var4)
-            {
-                double var5 = var3.nextGaussian() * 0.02D;
-                double var7 = var3.nextGaussian() * 0.02D;
-                double var9 = var3.nextGaussian() * 0.02D;
-                this.theWorld.spawnParticle("heart", this.theAnimal.posX + (double)(var3.nextFloat() * this.theAnimal.width * 2.0F) - (double)this.theAnimal.width, this.theAnimal.posY + 0.5D + (double)(var3.nextFloat() * this.theAnimal.height), this.theAnimal.posZ + (double)(var3.nextFloat() * this.theAnimal.width * 2.0F) - (double)this.theAnimal.width, var5, var7, var9);
-            }
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		theAnimal.getLookHelper().setLookPositionWithEntity(targetMate, 10.0F,
+				theAnimal.getVerticalFaceSpeed());
+		theAnimal.getNavigator().tryMoveToEntityLiving(targetMate, moveSpeed);
+		++spawnBabyDelay;
 
-            if (this.theWorld.getGameRules().getGameRuleBooleanValue("doMobLoot"))
-            {
-                this.theWorld.spawnEntityInWorld(new EntityXPOrb(this.theWorld, this.theAnimal.posX, this.theAnimal.posY, this.theAnimal.posZ, var3.nextInt(7) + 1));
-            }
-        }
-    }
+		if (spawnBabyDelay >= 60
+				&& theAnimal.getDistanceSqToEntity(targetMate) < 9.0D) {
+			spawnBaby();
+		}
+	}
 }

@@ -3,232 +3,199 @@ package net.minecraft.world;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.world.storage.WorldInfo;
 
-public final class WorldSettings
-{
-    /** The seed for the map. */
-    private final long seed;
+public final class WorldSettings {
+	public static enum GameType {
+		ADVENTURE("ADVENTURE", 3, 2, "adventure"), CREATIVE("CREATIVE", 2, 1,
+				"creative"), NOT_SET("NOT_SET", 0, -1, ""), SURVIVAL(
+				"SURVIVAL", 1, 0, "survival");
+		public static WorldSettings.GameType getByID(int p_77146_0_) {
+			final WorldSettings.GameType[] var1 = values();
+			final int var2 = var1.length;
 
-    /** The EnumGameType. */
-    private final WorldSettings.GameType theGameType;
+			for (int var3 = 0; var3 < var2; ++var3) {
+				final WorldSettings.GameType var4 = var1[var3];
 
-    /**
-     * Switch for the map features. 'true' for enabled, 'false' for disabled.
-     */
-    private final boolean mapFeaturesEnabled;
+				if (var4.id == p_77146_0_)
+					return var4;
+			}
 
-    /** True if hardcore mode is enabled */
-    private final boolean hardcoreEnabled;
-    private final WorldType terrainType;
+			return SURVIVAL;
+		}
 
-    /** True if Commands (cheats) are allowed. */
-    private boolean commandsAllowed;
+		public static WorldSettings.GameType getByName(String p_77142_0_) {
+			final WorldSettings.GameType[] var1 = values();
+			final int var2 = var1.length;
 
-    /** True if the Bonus Chest is enabled. */
-    private boolean bonusChestEnabled;
-    private String field_82751_h;
-    private static final String __OBFID = "CL_00000147";
+			for (int var3 = 0; var3 < var2; ++var3) {
+				final WorldSettings.GameType var4 = var1[var3];
 
-    public WorldSettings(long p_i1957_1_, WorldSettings.GameType p_i1957_3_, boolean p_i1957_4_, boolean p_i1957_5_, WorldType p_i1957_6_)
-    {
-        this.field_82751_h = "";
-        this.seed = p_i1957_1_;
-        this.theGameType = p_i1957_3_;
-        this.mapFeaturesEnabled = p_i1957_4_;
-        this.hardcoreEnabled = p_i1957_5_;
-        this.terrainType = p_i1957_6_;
-    }
+				if (var4.name.equals(p_77142_0_))
+					return var4;
+			}
 
-    public WorldSettings(WorldInfo p_i1958_1_)
-    {
-        this(p_i1958_1_.getSeed(), p_i1958_1_.getGameType(), p_i1958_1_.isMapFeaturesEnabled(), p_i1958_1_.isHardcoreModeEnabled(), p_i1958_1_.getTerrainType());
-    }
+			return SURVIVAL;
+		}
 
-    /**
-     * Enables the bonus chest.
-     */
-    public WorldSettings enableBonusChest()
-    {
-        this.bonusChestEnabled = true;
-        return this;
-    }
+		int id;
 
-    /**
-     * Enables Commands (cheats).
-     */
-    public WorldSettings enableCommands()
-    {
-        this.commandsAllowed = true;
-        return this;
-    }
+		String name;
 
-    public WorldSettings func_82750_a(String p_82750_1_)
-    {
-        this.field_82751_h = p_82750_1_;
-        return this;
-    }
+		private GameType(String p_i1956_1_, int p_i1956_2_, int p_i1956_3_,
+				String p_i1956_4_) {
+			id = p_i1956_3_;
+			name = p_i1956_4_;
+		}
 
-    /**
-     * Returns true if the Bonus Chest is enabled.
-     */
-    public boolean isBonusChestEnabled()
-    {
-        return this.bonusChestEnabled;
-    }
+		public void configurePlayerCapabilities(PlayerCapabilities p_77147_1_) {
+			if (this == CREATIVE) {
+				p_77147_1_.allowFlying = true;
+				p_77147_1_.isCreativeMode = true;
+				p_77147_1_.disableDamage = true;
+			} else {
+				p_77147_1_.allowFlying = false;
+				p_77147_1_.isCreativeMode = false;
+				p_77147_1_.disableDamage = false;
+				p_77147_1_.isFlying = false;
+			}
 
-    /**
-     * Returns the seed for the world.
-     */
-    public long getSeed()
-    {
-        return this.seed;
-    }
+			p_77147_1_.allowEdit = !isAdventure();
+		}
 
-    /**
-     * Gets the game type.
-     */
-    public WorldSettings.GameType getGameType()
-    {
-        return this.theGameType;
-    }
+		public int getID() {
+			return id;
+		}
 
-    /**
-     * Returns true if hardcore mode is enabled, otherwise false
-     */
-    public boolean getHardcoreEnabled()
-    {
-        return this.hardcoreEnabled;
-    }
+		public String getName() {
+			return name;
+		}
 
-    /**
-     * Get whether the map features (e.g. strongholds) generation is enabled or disabled.
-     */
-    public boolean isMapFeaturesEnabled()
-    {
-        return this.mapFeaturesEnabled;
-    }
+		public boolean isAdventure() {
+			return this == ADVENTURE;
+		}
 
-    public WorldType getTerrainType()
-    {
-        return this.terrainType;
-    }
+		public boolean isCreative() {
+			return this == CREATIVE;
+		}
 
-    /**
-     * Returns true if Commands (cheats) are allowed.
-     */
-    public boolean areCommandsAllowed()
-    {
-        return this.commandsAllowed;
-    }
+		public boolean isSurvivalOrAdventure() {
+			return this == SURVIVAL || this == ADVENTURE;
+		}
+	}
 
-    /**
-     * Gets the GameType by ID
-     */
-    public static WorldSettings.GameType getGameTypeById(int p_77161_0_)
-    {
-        return WorldSettings.GameType.getByID(p_77161_0_);
-    }
+	/**
+	 * Gets the GameType by ID
+	 */
+	public static WorldSettings.GameType getGameTypeById(int p_77161_0_) {
+		return WorldSettings.GameType.getByID(p_77161_0_);
+	}
 
-    public String func_82749_j()
-    {
-        return this.field_82751_h;
-    }
+	/** True if the Bonus Chest is enabled. */
+	private boolean bonusChestEnabled;
 
-    public static enum GameType
-    {
-        NOT_SET("NOT_SET", 0, -1, ""),
-        SURVIVAL("SURVIVAL", 1, 0, "survival"),
-        CREATIVE("CREATIVE", 2, 1, "creative"),
-        ADVENTURE("ADVENTURE", 3, 2, "adventure");
-        int id;
-        String name;
+	/** True if Commands (cheats) are allowed. */
+	private boolean commandsAllowed;
+	private String field_82751_h;
 
-        private static final WorldSettings.GameType[] $VALUES = new WorldSettings.GameType[]{NOT_SET, SURVIVAL, CREATIVE, ADVENTURE};
-        private static final String __OBFID = "CL_00000148";
+	/** True if hardcore mode is enabled */
+	private final boolean hardcoreEnabled;
 
-        private GameType(String p_i1956_1_, int p_i1956_2_, int p_i1956_3_, String p_i1956_4_)
-        {
-            this.id = p_i1956_3_;
-            this.name = p_i1956_4_;
-        }
+	/**
+	 * Switch for the map features. 'true' for enabled, 'false' for disabled.
+	 */
+	private final boolean mapFeaturesEnabled;
+	/** The seed for the map. */
+	private final long seed;
 
-        public int getID()
-        {
-            return this.id;
-        }
+	private final WorldType terrainType;
 
-        public String getName()
-        {
-            return this.name;
-        }
+	/** The EnumGameType. */
+	private final WorldSettings.GameType theGameType;
 
-        public void configurePlayerCapabilities(PlayerCapabilities p_77147_1_)
-        {
-            if (this == CREATIVE)
-            {
-                p_77147_1_.allowFlying = true;
-                p_77147_1_.isCreativeMode = true;
-                p_77147_1_.disableDamage = true;
-            }
-            else
-            {
-                p_77147_1_.allowFlying = false;
-                p_77147_1_.isCreativeMode = false;
-                p_77147_1_.disableDamage = false;
-                p_77147_1_.isFlying = false;
-            }
+	public WorldSettings(long p_i1957_1_, WorldSettings.GameType p_i1957_3_,
+			boolean p_i1957_4_, boolean p_i1957_5_, WorldType p_i1957_6_) {
+		field_82751_h = "";
+		seed = p_i1957_1_;
+		theGameType = p_i1957_3_;
+		mapFeaturesEnabled = p_i1957_4_;
+		hardcoreEnabled = p_i1957_5_;
+		terrainType = p_i1957_6_;
+	}
 
-            p_77147_1_.allowEdit = !this.isAdventure();
-        }
+	public WorldSettings(WorldInfo p_i1958_1_) {
+		this(p_i1958_1_.getSeed(), p_i1958_1_.getGameType(), p_i1958_1_
+				.isMapFeaturesEnabled(), p_i1958_1_.isHardcoreModeEnabled(),
+				p_i1958_1_.getTerrainType());
+	}
 
-        public boolean isAdventure()
-        {
-            return this == ADVENTURE;
-        }
+	/**
+	 * Returns true if Commands (cheats) are allowed.
+	 */
+	public boolean areCommandsAllowed() {
+		return commandsAllowed;
+	}
 
-        public boolean isCreative()
-        {
-            return this == CREATIVE;
-        }
+	/**
+	 * Enables the bonus chest.
+	 */
+	public WorldSettings enableBonusChest() {
+		bonusChestEnabled = true;
+		return this;
+	}
 
-        public boolean isSurvivalOrAdventure()
-        {
-            return this == SURVIVAL || this == ADVENTURE;
-        }
+	/**
+	 * Enables Commands (cheats).
+	 */
+	public WorldSettings enableCommands() {
+		commandsAllowed = true;
+		return this;
+	}
 
-        public static WorldSettings.GameType getByID(int p_77146_0_)
-        {
-            WorldSettings.GameType[] var1 = values();
-            int var2 = var1.length;
+	public String func_82749_j() {
+		return field_82751_h;
+	}
 
-            for (int var3 = 0; var3 < var2; ++var3)
-            {
-                WorldSettings.GameType var4 = var1[var3];
+	public WorldSettings func_82750_a(String p_82750_1_) {
+		field_82751_h = p_82750_1_;
+		return this;
+	}
 
-                if (var4.id == p_77146_0_)
-                {
-                    return var4;
-                }
-            }
+	/**
+	 * Gets the game type.
+	 */
+	public WorldSettings.GameType getGameType() {
+		return theGameType;
+	}
 
-            return SURVIVAL;
-        }
+	/**
+	 * Returns true if hardcore mode is enabled, otherwise false
+	 */
+	public boolean getHardcoreEnabled() {
+		return hardcoreEnabled;
+	}
 
-        public static WorldSettings.GameType getByName(String p_77142_0_)
-        {
-            WorldSettings.GameType[] var1 = values();
-            int var2 = var1.length;
+	/**
+	 * Returns the seed for the world.
+	 */
+	public long getSeed() {
+		return seed;
+	}
 
-            for (int var3 = 0; var3 < var2; ++var3)
-            {
-                WorldSettings.GameType var4 = var1[var3];
+	public WorldType getTerrainType() {
+		return terrainType;
+	}
 
-                if (var4.name.equals(p_77142_0_))
-                {
-                    return var4;
-                }
-            }
+	/**
+	 * Returns true if the Bonus Chest is enabled.
+	 */
+	public boolean isBonusChestEnabled() {
+		return bonusChestEnabled;
+	}
 
-            return SURVIVAL;
-        }
-    }
+	/**
+	 * Get whether the map features (e.g. strongholds) generation is enabled or
+	 * disabled.
+	 */
+	public boolean isMapFeaturesEnabled() {
+		return mapFeaturesEnabled;
+	}
 }

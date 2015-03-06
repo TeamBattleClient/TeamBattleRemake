@@ -1,58 +1,44 @@
 package net.minecraft.src;
 
-public class ReflectorClass
-{
-    private String targetClassName = null;
-    private boolean checked = false;
-    private Class targetClass = null;
+public class ReflectorClass {
+	private boolean checked = false;
+	private Class targetClass = null;
+	private String targetClassName = null;
 
-    public ReflectorClass(String targetClassName)
-    {
-        this.targetClassName = targetClassName;
-        Class cls = this.getTargetClass();
-    }
+	public ReflectorClass(Class targetClass) {
+		this.targetClass = targetClass;
+		targetClassName = targetClass.getName();
+		checked = true;
+	}
 
-    public ReflectorClass(Class targetClass)
-    {
-        this.targetClass = targetClass;
-        this.targetClassName = targetClass.getName();
-        this.checked = true;
-    }
+	public ReflectorClass(String targetClassName) {
+		this.targetClassName = targetClassName;
+		getTargetClass();
+	}
 
-    public Class getTargetClass()
-    {
-        if (this.checked)
-        {
-            return this.targetClass;
-        }
-        else
-        {
-            this.checked = true;
+	public boolean exists() {
+		return getTargetClass() != null;
+	}
 
-            try
-            {
-                this.targetClass = Class.forName(this.targetClassName);
-            }
-            catch (ClassNotFoundException var2)
-            {
-                Config.log("(Reflector) Class not present: " + this.targetClassName);
-            }
-            catch (Throwable var3)
-            {
-                var3.printStackTrace();
-            }
+	public Class getTargetClass() {
+		if (checked)
+			return targetClass;
+		else {
+			checked = true;
 
-            return this.targetClass;
-        }
-    }
+			try {
+				targetClass = Class.forName(targetClassName);
+			} catch (final ClassNotFoundException var2) {
+				Config.log("(Reflector) Class not present: " + targetClassName);
+			} catch (final Throwable var3) {
+				var3.printStackTrace();
+			}
 
-    public boolean exists()
-    {
-        return this.getTargetClass() != null;
-    }
+			return targetClass;
+		}
+	}
 
-    public String getTargetClassName()
-    {
-        return this.targetClassName;
-    }
+	public String getTargetClassName() {
+		return targetClassName;
+	}
 }

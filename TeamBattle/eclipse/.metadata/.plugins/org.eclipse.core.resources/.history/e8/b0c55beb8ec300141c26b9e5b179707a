@@ -1,0 +1,54 @@
+package me.client.modules.movement;
+
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.AxisAlignedBB;
+
+import org.lwjgl.input.Keyboard;
+
+import event.Event;
+import event.events.EventPreSendMotionUpdates;
+
+public class Jesus extends Module {
+
+	public Jesus() {
+		super("Waterwalk", "Waterwalk", ModuleCategory.MOVEMENT);
+		this.setKeybind(Keyboard.KEY_J);
+	}
+	
+	
+	
+	private boolean nextTick;
+	
+
+
+	
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+		if (BlockHelper.isInLiquid() && mc.thePlayer.isInsideOfMaterial(Material.air) && !mc.thePlayer.isSneaking()) {
+			mc.thePlayer.motionY = 0.08;
+		}
+		}
+	}
+	
+	
+	public void onEventPacketSent(Event event) {
+		final EventPacketSent sent = (EventPacketSent) event;
+		if (sent.getPacket() instanceof C03PacketPlayer) {
+			final C03PacketPlayer player = (C03PacketPlayer) sent.getPacket();
+			if (BlockHelper.isOnLiquid()) {
+				nextTick = !nextTick;
+				if (nextTick) {
+					player.field_149477_b -= 0.01;
+					player.field_149475_d -= 0.01;
+				}
+			}
+		}
+		
+	}
+
+
+
+}

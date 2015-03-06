@@ -5,89 +5,86 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class NBTTagIntArray extends NBTBase
-{
-    /** The array of saved integers */
-    private int[] intArray;
-    private static final String __OBFID = "CL_00001221";
+public class NBTTagIntArray extends NBTBase {
+	/** The array of saved integers */
+	private int[] intArray;
 
-    NBTTagIntArray() {}
+	NBTTagIntArray() {
+	}
 
-    public NBTTagIntArray(int[] p_i45132_1_)
-    {
-        this.intArray = p_i45132_1_;
-    }
+	public NBTTagIntArray(int[] p_i45132_1_) {
+		intArray = p_i45132_1_;
+	}
 
-    /**
-     * Write the actual data contents of the tag, implemented in NBT extension classes
-     */
-    void write(DataOutput p_74734_1_) throws IOException
-    {
-        p_74734_1_.writeInt(this.intArray.length);
+	/**
+	 * Creates a clone of the tag.
+	 */
+	@Override
+	public NBTBase copy() {
+		final int[] var1 = new int[intArray.length];
+		System.arraycopy(intArray, 0, var1, 0, intArray.length);
+		return new NBTTagIntArray(var1);
+	}
 
-        for (int var2 = 0; var2 < this.intArray.length; ++var2)
-        {
-            p_74734_1_.writeInt(this.intArray[var2]);
-        }
-    }
+	@Override
+	public boolean equals(Object p_equals_1_) {
+		return super.equals(p_equals_1_) ? Arrays.equals(intArray,
+				((NBTTagIntArray) p_equals_1_).intArray) : false;
+	}
 
-    void func_152446_a(DataInput p_152446_1_, int p_152446_2_, NBTSizeTracker p_152446_3_) throws IOException
-    {
-        int var4 = p_152446_1_.readInt();
-        p_152446_3_.func_152450_a((long)(32 * var4));
-        this.intArray = new int[var4];
+	public int[] func_150302_c() {
+		return intArray;
+	}
 
-        for (int var5 = 0; var5 < var4; ++var5)
-        {
-            this.intArray[var5] = p_152446_1_.readInt();
-        }
-    }
+	@Override
+	void func_152446_a(DataInput p_152446_1_, int p_152446_2_,
+			NBTSizeTracker p_152446_3_) throws IOException {
+		final int var4 = p_152446_1_.readInt();
+		p_152446_3_.func_152450_a(32 * var4);
+		intArray = new int[var4];
 
-    /**
-     * Gets the type byte for the tag.
-     */
-    public byte getId()
-    {
-        return (byte)11;
-    }
+		for (int var5 = 0; var5 < var4; ++var5) {
+			intArray[var5] = p_152446_1_.readInt();
+		}
+	}
 
-    public String toString()
-    {
-        String var1 = "[";
-        int[] var2 = this.intArray;
-        int var3 = var2.length;
+	/**
+	 * Gets the type byte for the tag.
+	 */
+	@Override
+	public byte getId() {
+		return (byte) 11;
+	}
 
-        for (int var4 = 0; var4 < var3; ++var4)
-        {
-            int var5 = var2[var4];
-            var1 = var1 + var5 + ",";
-        }
+	@Override
+	public int hashCode() {
+		return super.hashCode() ^ Arrays.hashCode(intArray);
+	}
 
-        return var1 + "]";
-    }
+	@Override
+	public String toString() {
+		String var1 = "[";
+		final int[] var2 = intArray;
+		final int var3 = var2.length;
 
-    /**
-     * Creates a clone of the tag.
-     */
-    public NBTBase copy()
-    {
-        int[] var1 = new int[this.intArray.length];
-        System.arraycopy(this.intArray, 0, var1, 0, this.intArray.length);
-        return new NBTTagIntArray(var1);
-    }
+		for (int var4 = 0; var4 < var3; ++var4) {
+			final int var5 = var2[var4];
+			var1 = var1 + var5 + ",";
+		}
 
-    public boolean equals(Object p_equals_1_)
-    {
-        return super.equals(p_equals_1_) ? Arrays.equals(this.intArray, ((NBTTagIntArray)p_equals_1_).intArray) : false;
-    }
+		return var1 + "]";
+	}
 
-    public int hashCode()
-    {
-        return super.hashCode() ^ Arrays.hashCode(this.intArray);
-    }
+	/**
+	 * Write the actual data contents of the tag, implemented in NBT extension
+	 * classes
+	 */
+	@Override
+	void write(DataOutput p_74734_1_) throws IOException {
+		p_74734_1_.writeInt(intArray.length);
 
-    public int[] func_150302_c()
-    {
-        return this.intArray;
-    }
+		for (final int element : intArray) {
+			p_74734_1_.writeInt(element);
+		}
+	}
 }

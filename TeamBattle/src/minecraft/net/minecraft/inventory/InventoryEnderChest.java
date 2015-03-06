@@ -6,88 +6,79 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityEnderChest;
 
-public class InventoryEnderChest extends InventoryBasic
-{
-    private TileEntityEnderChest associatedChest;
-    private static final String __OBFID = "CL_00001759";
+public class InventoryEnderChest extends InventoryBasic {
+	private TileEntityEnderChest associatedChest;
 
-    public InventoryEnderChest()
-    {
-        super("container.enderchest", false, 27);
-    }
+	public InventoryEnderChest() {
+		super("container.enderchest", false, 27);
+	}
 
-    public void func_146031_a(TileEntityEnderChest p_146031_1_)
-    {
-        this.associatedChest = p_146031_1_;
-    }
+	@Override
+	public void closeInventory() {
+		if (associatedChest != null) {
+			associatedChest.func_145970_b();
+		}
 
-    public void loadInventoryFromNBT(NBTTagList p_70486_1_)
-    {
-        int var2;
+		super.closeInventory();
+		associatedChest = null;
+	}
 
-        for (var2 = 0; var2 < this.getSizeInventory(); ++var2)
-        {
-            this.setInventorySlotContents(var2, (ItemStack)null);
-        }
+	public void func_146031_a(TileEntityEnderChest p_146031_1_) {
+		associatedChest = p_146031_1_;
+	}
 
-        for (var2 = 0; var2 < p_70486_1_.tagCount(); ++var2)
-        {
-            NBTTagCompound var3 = p_70486_1_.getCompoundTagAt(var2);
-            int var4 = var3.getByte("Slot") & 255;
+	/**
+	 * Do not make give this method the name canInteractWith because it clashes
+	 * with Container
+	 */
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+		return associatedChest != null
+				&& !associatedChest.func_145971_a(p_70300_1_) ? false : super
+				.isUseableByPlayer(p_70300_1_);
+	}
 
-            if (var4 >= 0 && var4 < this.getSizeInventory())
-            {
-                this.setInventorySlotContents(var4, ItemStack.loadItemStackFromNBT(var3));
-            }
-        }
-    }
+	public void loadInventoryFromNBT(NBTTagList p_70486_1_) {
+		int var2;
 
-    public NBTTagList saveInventoryToNBT()
-    {
-        NBTTagList var1 = new NBTTagList();
+		for (var2 = 0; var2 < getSizeInventory(); ++var2) {
+			setInventorySlotContents(var2, (ItemStack) null);
+		}
 
-        for (int var2 = 0; var2 < this.getSizeInventory(); ++var2)
-        {
-            ItemStack var3 = this.getStackInSlot(var2);
+		for (var2 = 0; var2 < p_70486_1_.tagCount(); ++var2) {
+			final NBTTagCompound var3 = p_70486_1_.getCompoundTagAt(var2);
+			final int var4 = var3.getByte("Slot") & 255;
 
-            if (var3 != null)
-            {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var2);
-                var3.writeToNBT(var4);
-                var1.appendTag(var4);
-            }
-        }
+			if (var4 >= 0 && var4 < getSizeInventory()) {
+				setInventorySlotContents(var4,
+						ItemStack.loadItemStackFromNBT(var3));
+			}
+		}
+	}
 
-        return var1;
-    }
+	@Override
+	public void openInventory() {
+		if (associatedChest != null) {
+			associatedChest.func_145969_a();
+		}
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     */
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
-    {
-        return this.associatedChest != null && !this.associatedChest.func_145971_a(p_70300_1_) ? false : super.isUseableByPlayer(p_70300_1_);
-    }
+		super.openInventory();
+	}
 
-    public void openInventory()
-    {
-        if (this.associatedChest != null)
-        {
-            this.associatedChest.func_145969_a();
-        }
+	public NBTTagList saveInventoryToNBT() {
+		final NBTTagList var1 = new NBTTagList();
 
-        super.openInventory();
-    }
+		for (int var2 = 0; var2 < getSizeInventory(); ++var2) {
+			final ItemStack var3 = getStackInSlot(var2);
 
-    public void closeInventory()
-    {
-        if (this.associatedChest != null)
-        {
-            this.associatedChest.func_145970_b();
-        }
+			if (var3 != null) {
+				final NBTTagCompound var4 = new NBTTagCompound();
+				var4.setByte("Slot", (byte) var2);
+				var3.writeToNBT(var4);
+				var1.appendTag(var4);
+			}
+		}
 
-        super.closeInventory();
-        this.associatedChest = null;
-    }
+		return var1;
+	}
 }

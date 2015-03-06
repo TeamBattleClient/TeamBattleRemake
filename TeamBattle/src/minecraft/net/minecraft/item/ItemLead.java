@@ -2,6 +2,7 @@ package net.minecraft.item;
 
 import java.util.Iterator;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLeashKnot;
@@ -10,69 +11,67 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class ItemLead extends Item
-{
-    private static final String __OBFID = "CL_00000045";
+public class ItemLead extends Item {
 
-    public ItemLead()
-    {
-        this.setCreativeTab(CreativeTabs.tabTools);
-    }
+	public static boolean func_150909_a(EntityPlayer p_150909_0_,
+			World p_150909_1_, int p_150909_2_, int p_150909_3_, int p_150909_4_) {
+		EntityLeashKnot var5 = EntityLeashKnot.getKnotForBlock(p_150909_1_,
+				p_150909_2_, p_150909_3_, p_150909_4_);
+		boolean var6 = false;
+		final double var7 = 7.0D;
+		final List var9 = p_150909_1_.getEntitiesWithinAABB(EntityLiving.class,
+				AxisAlignedBB.getBoundingBox(p_150909_2_ - var7, p_150909_3_
+						- var7, p_150909_4_ - var7, p_150909_2_ + var7,
+						p_150909_3_ + var7, p_150909_4_ + var7));
 
-    /**
-     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
-     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
-     */
-    public boolean onItemUse(ItemStack p_77648_1_, EntityPlayer p_77648_2_, World p_77648_3_, int p_77648_4_, int p_77648_5_, int p_77648_6_, int p_77648_7_, float p_77648_8_, float p_77648_9_, float p_77648_10_)
-    {
-        Block var11 = p_77648_3_.getBlock(p_77648_4_, p_77648_5_, p_77648_6_);
+		if (var9 != null) {
+			final Iterator var10 = var9.iterator();
 
-        if (var11.getRenderType() == 11)
-        {
-            if (p_77648_3_.isClient)
-            {
-                return true;
-            }
-            else
-            {
-                func_150909_a(p_77648_2_, p_77648_3_, p_77648_4_, p_77648_5_, p_77648_6_);
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
+			while (var10.hasNext()) {
+				final EntityLiving var11 = (EntityLiving) var10.next();
 
-    public static boolean func_150909_a(EntityPlayer p_150909_0_, World p_150909_1_, int p_150909_2_, int p_150909_3_, int p_150909_4_)
-    {
-        EntityLeashKnot var5 = EntityLeashKnot.getKnotForBlock(p_150909_1_, p_150909_2_, p_150909_3_, p_150909_4_);
-        boolean var6 = false;
-        double var7 = 7.0D;
-        List var9 = p_150909_1_.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox((double)p_150909_2_ - var7, (double)p_150909_3_ - var7, (double)p_150909_4_ - var7, (double)p_150909_2_ + var7, (double)p_150909_3_ + var7, (double)p_150909_4_ + var7));
+				if (var11.getLeashed()
+						&& var11.getLeashedToEntity() == p_150909_0_) {
+					if (var5 == null) {
+						var5 = EntityLeashKnot.func_110129_a(p_150909_1_,
+								p_150909_2_, p_150909_3_, p_150909_4_);
+					}
 
-        if (var9 != null)
-        {
-            Iterator var10 = var9.iterator();
+					var11.setLeashedToEntity(var5, true);
+					var6 = true;
+				}
+			}
+		}
 
-            while (var10.hasNext())
-            {
-                EntityLiving var11 = (EntityLiving)var10.next();
+		return var6;
+	}
 
-                if (var11.getLeashed() && var11.getLeashedToEntity() == p_150909_0_)
-                {
-                    if (var5 == null)
-                    {
-                        var5 = EntityLeashKnot.func_110129_a(p_150909_1_, p_150909_2_, p_150909_3_, p_150909_4_);
-                    }
+	public ItemLead() {
+		setCreativeTab(CreativeTabs.tabTools);
+	}
 
-                    var11.setLeashedToEntity(var5, true);
-                    var6 = true;
-                }
-            }
-        }
+	/**
+	 * Callback for item usage. If the item does something special on right
+	 * clicking, he will have one of those. Return True if something happen and
+	 * false if it don't. This is for ITEMS, not BLOCKS
+	 */
+	@Override
+	public boolean onItemUse(ItemStack p_77648_1_, EntityPlayer p_77648_2_,
+			World p_77648_3_, int p_77648_4_, int p_77648_5_, int p_77648_6_,
+			int p_77648_7_, float p_77648_8_, float p_77648_9_,
+			float p_77648_10_) {
+		final Block var11 = p_77648_3_.getBlock(p_77648_4_, p_77648_5_,
+				p_77648_6_);
 
-        return var6;
-    }
+		if (var11.getRenderType() == 11) {
+			if (p_77648_3_.isClient)
+				return true;
+			else {
+				func_150909_a(p_77648_2_, p_77648_3_, p_77648_4_, p_77648_5_,
+						p_77648_6_);
+				return true;
+			}
+		} else
+			return false;
+	}
 }

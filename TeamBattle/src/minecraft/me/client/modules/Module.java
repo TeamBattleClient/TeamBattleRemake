@@ -1,97 +1,109 @@
 package me.client.modules;
 
 import me.client.Client;
-import me.client.helpers.MinecraftHelper;
-import me.client.utils.Logger;
+import net.minecraft.client.Minecraft;
 
-import com.darkmagician6.eventapi.EventManager;
+import org.lwjgl.input.Keyboard;
 
-public class Module implements MinecraftHelper{
+import event.Listener;
 
-	private String modName;
-	private String modListName;
-	private String modDesc;
-	private int modKey;
-	private ModuleCategory modCategory;
-	private boolean enabled;
+public abstract class Module implements Listener {
+	protected static Minecraft mc = Minecraft.getMinecraft();
+	protected boolean enabled, visible;
+	protected int keybind, color;
+	protected final String name;
+	protected String tag;
 	
-	public Module(String modName, String listName, ModuleCategory category) {
-		this.modName = modName;
-		this.modListName = listName;
-		this.modCategory = category;
-		Client.instance.getLogger().log("Setting up mod: " + this.modName, Logger.LogType.NORMAL);
+	public Module(String name) {
+		this(name, 0, -1);
+		visible = false;
 	}
-	
-	public void onEnable() {}
-	public void onDisable() {}
-	public void onToggle() {}
-	
-	public void setEnabled(boolean state) {
-		this.enabled = state;
-		
-		if(this.isEnabled()) {
-			this.onEnable();
-		}else {
-			this.onDisable();
-		}
+
+	public Module(String name, int color) {
+		this(name, 0, color);
 	}
-	
-	public void toggle() {
-		this.setEnabled(!enabled);
-		this.onToggle();
+
+	public Module(String name, int keybind, int color) {
+		this.name = name;
+		tag = name;
+		this.keybind = keybind;
+		this.color = color;
+		enabled = false;
+		visible = true;
 	}
-	
-	/**
-	 * Getters
-	 */
-	public String getName() {
-		return modName;
+
+	public Module(String name, String keybind) {
+		this(name, Keyboard.getKeyIndex(keybind), -1);
+		visible = false;
 	}
-	
-	public String getListName() {
-		return this.modListName;
+
+	public int getColor() {
+		return color;
 	}
-	
-	public String getDesc() {
-		return this.modDesc;
-	}
-	
+
 	public int getKeybind() {
-		return this.modKey;
+		return keybind;
 	}
-	
-	public ModuleCategory getCategory() {
-		return this.modCategory;
+
+	public String getName() {
+		return name;
 	}
-	
+
+	public String getTag() {
+		return tag;
+	}
+
 	public boolean isEnabled() {
 		return enabled;
-	} 	
-	
-	/**
-	 * Setters
-	 */
-	public void setListName(String newName) {
-		this.modListName = newName;
-	}
-	
-	public void setDescription(String newDesc) {
-		this.modDesc = newDesc;
-	}
-	
-	public void setKeybind(int newKey) {
-		this.modKey = newKey;
 	}
 
-	@Override
-	public boolean isCancelled() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isVisible() {
+		return visible;
 	}
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		// TODO Auto-generated method stub
-		
+	public void onDisabled() {
+		Client.getEventManager().removeListener(this);
+	}
+
+	public void onEnabled() {
+		Client.getEventManager().addListener(this);
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+//deleted filemanager
+		if (this.enabled) {
+			onEnabled();
+		} else {
+			onDisabled();
+		}
+	}
+
+	public void setKeybind(int keybind) {
+		this.keybind = keybind;
+		//deleted filemanager
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public void toggle() {
+		enabled = !enabled;
+		//deleted filemanager 
+
+		if (enabled) {
+			onEnabled();
+		} else {
+			onDisabled();
+		}
 	}
 }

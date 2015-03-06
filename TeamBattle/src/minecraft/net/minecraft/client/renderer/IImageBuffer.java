@@ -2,9 +2,8 @@ package net.minecraft.client.renderer;
 
 import java.awt.image.BufferedImage;
 
-public interface IImageBuffer
-{
-    BufferedImage parseUserSkin(BufferedImage p_78432_1_);
+public interface IImageBuffer {
+	void func_152634_a();
 
-    void func_152634_a();
+	BufferedImage parseUserSkin(BufferedImage p_78432_1_);
 }

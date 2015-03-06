@@ -1,84 +1,74 @@
 package net.minecraft.village;
 
-public class VillageDoorInfo
-{
-    public final int posX;
-    public final int posY;
-    public final int posZ;
-    public final int insideDirectionX;
-    public final int insideDirectionZ;
-    public int lastActivityTimestamp;
-    public boolean isDetachedFromVillageFlag;
-    private int doorOpeningRestrictionCounter;
-    private static final String __OBFID = "CL_00001630";
+public class VillageDoorInfo {
+	private int doorOpeningRestrictionCounter;
+	public final int insideDirectionX;
+	public final int insideDirectionZ;
+	public boolean isDetachedFromVillageFlag;
+	public int lastActivityTimestamp;
+	public final int posX;
+	public final int posY;
+	public final int posZ;
 
-    public VillageDoorInfo(int p_i1673_1_, int p_i1673_2_, int p_i1673_3_, int p_i1673_4_, int p_i1673_5_, int p_i1673_6_)
-    {
-        this.posX = p_i1673_1_;
-        this.posY = p_i1673_2_;
-        this.posZ = p_i1673_3_;
-        this.insideDirectionX = p_i1673_4_;
-        this.insideDirectionZ = p_i1673_5_;
-        this.lastActivityTimestamp = p_i1673_6_;
-    }
+	public VillageDoorInfo(int p_i1673_1_, int p_i1673_2_, int p_i1673_3_,
+			int p_i1673_4_, int p_i1673_5_, int p_i1673_6_) {
+		posX = p_i1673_1_;
+		posY = p_i1673_2_;
+		posZ = p_i1673_3_;
+		insideDirectionX = p_i1673_4_;
+		insideDirectionZ = p_i1673_5_;
+		lastActivityTimestamp = p_i1673_6_;
+	}
 
-    /**
-     * Returns the squared distance between this door and the given coordinate.
-     */
-    public int getDistanceSquared(int p_75474_1_, int p_75474_2_, int p_75474_3_)
-    {
-        int var4 = p_75474_1_ - this.posX;
-        int var5 = p_75474_2_ - this.posY;
-        int var6 = p_75474_3_ - this.posZ;
-        return var4 * var4 + var5 * var5 + var6 * var6;
-    }
+	/**
+	 * Returns the squared distance between this door and the given coordinate.
+	 */
+	public int getDistanceSquared(int p_75474_1_, int p_75474_2_, int p_75474_3_) {
+		final int var4 = p_75474_1_ - posX;
+		final int var5 = p_75474_2_ - posY;
+		final int var6 = p_75474_3_ - posZ;
+		return var4 * var4 + var5 * var5 + var6 * var6;
+	}
 
-    /**
-     * Get the square of the distance from a location 2 blocks away from the door considered 'inside' and the given
-     * arguments
-     */
-    public int getInsideDistanceSquare(int p_75469_1_, int p_75469_2_, int p_75469_3_)
-    {
-        int var4 = p_75469_1_ - this.posX - this.insideDirectionX;
-        int var5 = p_75469_2_ - this.posY;
-        int var6 = p_75469_3_ - this.posZ - this.insideDirectionZ;
-        return var4 * var4 + var5 * var5 + var6 * var6;
-    }
+	public int getDoorOpeningRestrictionCounter() {
+		return doorOpeningRestrictionCounter;
+	}
 
-    public int getInsidePosX()
-    {
-        return this.posX + this.insideDirectionX;
-    }
+	/**
+	 * Get the square of the distance from a location 2 blocks away from the
+	 * door considered 'inside' and the given arguments
+	 */
+	public int getInsideDistanceSquare(int p_75469_1_, int p_75469_2_,
+			int p_75469_3_) {
+		final int var4 = p_75469_1_ - posX - insideDirectionX;
+		final int var5 = p_75469_2_ - posY;
+		final int var6 = p_75469_3_ - posZ - insideDirectionZ;
+		return var4 * var4 + var5 * var5 + var6 * var6;
+	}
 
-    public int getInsidePosY()
-    {
-        return this.posY;
-    }
+	public int getInsidePosX() {
+		return posX + insideDirectionX;
+	}
 
-    public int getInsidePosZ()
-    {
-        return this.posZ + this.insideDirectionZ;
-    }
+	public int getInsidePosY() {
+		return posY;
+	}
 
-    public boolean isInside(int p_75467_1_, int p_75467_2_)
-    {
-        int var3 = p_75467_1_ - this.posX;
-        int var4 = p_75467_2_ - this.posZ;
-        return var3 * this.insideDirectionX + var4 * this.insideDirectionZ >= 0;
-    }
+	public int getInsidePosZ() {
+		return posZ + insideDirectionZ;
+	}
 
-    public void resetDoorOpeningRestrictionCounter()
-    {
-        this.doorOpeningRestrictionCounter = 0;
-    }
+	public void incrementDoorOpeningRestrictionCounter() {
+		++doorOpeningRestrictionCounter;
+	}
 
-    public void incrementDoorOpeningRestrictionCounter()
-    {
-        ++this.doorOpeningRestrictionCounter;
-    }
+	public boolean isInside(int p_75467_1_, int p_75467_2_) {
+		final int var3 = p_75467_1_ - posX;
+		final int var4 = p_75467_2_ - posZ;
+		return var3 * insideDirectionX + var4 * insideDirectionZ >= 0;
+	}
 
-    public int getDoorOpeningRestrictionCounter()
-    {
-        return this.doorOpeningRestrictionCounter;
-    }
+	public void resetDoorOpeningRestrictionCounter() {
+		doorOpeningRestrictionCounter = 0;
+	}
 }

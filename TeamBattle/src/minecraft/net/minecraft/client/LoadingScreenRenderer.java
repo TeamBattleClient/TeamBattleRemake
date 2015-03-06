@@ -7,210 +7,200 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MinecraftError;
+
 import org.lwjgl.opengl.GL11;
 
-public class LoadingScreenRenderer implements IProgressUpdate
-{
-    private String field_73727_a = "";
+public class LoadingScreenRenderer implements IProgressUpdate {
+	/**
+	 * The text currently displayed (i.e. the argument to the last call to
+	 * printText or func_73722_d)
+	 */
+	private String currentlyDisplayedText = "";
 
-    /** A reference to the Minecraft object. */
-    private Minecraft mc;
+	private final ScaledResolution field_146587_f;
 
-    /**
-     * The text currently displayed (i.e. the argument to the last call to printText or func_73722_d)
-     */
-    private String currentlyDisplayedText = "";
-    private long field_73723_d = Minecraft.getSystemTime();
-    private boolean field_73724_e;
-    private ScaledResolution field_146587_f;
-    private Framebuffer field_146588_g;
-    private static final String __OBFID = "CL_00000655";
+	private final Framebuffer field_146588_g;
+	private long field_73723_d = Minecraft.getSystemTime();
+	private boolean field_73724_e;
+	private String field_73727_a = "";
+	/** A reference to the Minecraft object. */
+	private final Minecraft mc;
 
-    public LoadingScreenRenderer(Minecraft p_i1017_1_)
-    {
-        this.mc = p_i1017_1_;
-        this.field_146587_f = new ScaledResolution(p_i1017_1_, p_i1017_1_.displayWidth, p_i1017_1_.displayHeight);
-        this.field_146588_g = new Framebuffer(p_i1017_1_.displayWidth, p_i1017_1_.displayHeight, false);
-        this.field_146588_g.setFramebufferFilter(9728);
-    }
+	public LoadingScreenRenderer(Minecraft p_i1017_1_) {
+		mc = p_i1017_1_;
+		field_146587_f = new ScaledResolution(p_i1017_1_,
+				p_i1017_1_.displayWidth, p_i1017_1_.displayHeight);
+		field_146588_g = new Framebuffer(p_i1017_1_.displayWidth,
+				p_i1017_1_.displayHeight, false);
+		field_146588_g.setFramebufferFilter(9728);
+	}
 
-    /**
-     * this string, followed by "working..." and then the "% complete" are the 3 lines shown. This resets progress to 0,
-     * and the WorkingString to "working...".
-     */
-    public void resetProgressAndMessage(String p_73721_1_)
-    {
-        this.field_73724_e = false;
-        this.func_73722_d(p_73721_1_);
-    }
+	/**
+	 * "Saving level", or the loading,or downloading equivelent
+	 */
+	@Override
+	public void displayProgressMessage(String p_73720_1_) {
+		field_73724_e = true;
+		func_73722_d(p_73720_1_);
+	}
 
-    /**
-     * "Saving level", or the loading,or downloading equivelent
-     */
-    public void displayProgressMessage(String p_73720_1_)
-    {
-        this.field_73724_e = true;
-        this.func_73722_d(p_73720_1_);
-    }
+	@Override
+	public void func_146586_a() {
+	}
 
-    public void func_73722_d(String p_73722_1_)
-    {
-        this.currentlyDisplayedText = p_73722_1_;
+	public void func_73722_d(String p_73722_1_) {
+		currentlyDisplayedText = p_73722_1_;
 
-        if (!this.mc.running)
-        {
-            if (!this.field_73724_e)
-            {
-                throw new MinecraftError();
-            }
-        }
-        else
-        {
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            GL11.glMatrixMode(GL11.GL_PROJECTION);
-            GL11.glLoadIdentity();
+		if (!mc.running) {
+			if (!field_73724_e)
+				throw new MinecraftError();
+		} else {
+			GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+			GL11.glMatrixMode(GL11.GL_PROJECTION);
+			GL11.glLoadIdentity();
 
-            if (OpenGlHelper.isFramebufferEnabled())
-            {
-                int var2 = this.field_146587_f.getScaleFactor();
-                GL11.glOrtho(0.0D, (double)(this.field_146587_f.getScaledWidth() * var2), (double)(this.field_146587_f.getScaledHeight() * var2), 0.0D, 100.0D, 300.0D);
-            }
-            else
-            {
-                ScaledResolution var3 = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-                GL11.glOrtho(0.0D, var3.getScaledWidth_double(), var3.getScaledHeight_double(), 0.0D, 100.0D, 300.0D);
-            }
+			if (OpenGlHelper.isFramebufferEnabled()) {
+				final int var2 = field_146587_f.getScaleFactor();
+				GL11.glOrtho(0.0D, field_146587_f.getScaledWidth() * var2,
+						field_146587_f.getScaledHeight() * var2, 0.0D, 100.0D,
+						300.0D);
+			} else {
+				final ScaledResolution var3 = new ScaledResolution(mc,
+						mc.displayWidth, mc.displayHeight);
+				GL11.glOrtho(0.0D, var3.getScaledWidth_double(),
+						var3.getScaledHeight_double(), 0.0D, 100.0D, 300.0D);
+			}
 
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            GL11.glLoadIdentity();
-            GL11.glTranslatef(0.0F, 0.0F, -200.0F);
-        }
-    }
+			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GL11.glLoadIdentity();
+			GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+		}
+	}
 
-    /**
-     * This is called with "Working..." by resetProgressAndMessage
-     */
-    public void resetProgresAndWorkingMessage(String p_73719_1_)
-    {
-        if (!this.mc.running)
-        {
-            if (!this.field_73724_e)
-            {
-                throw new MinecraftError();
-            }
-        }
-        else
-        {
-            this.field_73723_d = 0L;
-            this.field_73727_a = p_73719_1_;
-            this.setLoadingProgress(-1);
-            this.field_73723_d = 0L;
-        }
-    }
+	/**
+	 * This is called with "Working..." by resetProgressAndMessage
+	 */
+	@Override
+	public void resetProgresAndWorkingMessage(String p_73719_1_) {
+		if (!mc.running) {
+			if (!field_73724_e)
+				throw new MinecraftError();
+		} else {
+			field_73723_d = 0L;
+			field_73727_a = p_73719_1_;
+			setLoadingProgress(-1);
+			field_73723_d = 0L;
+		}
+	}
 
-    /**
-     * Updates the progress bar on the loading screen to the specified amount. Args: loadProgress
-     */
-    public void setLoadingProgress(int p_73718_1_)
-    {
-        if (!this.mc.running)
-        {
-            if (!this.field_73724_e)
-            {
-                throw new MinecraftError();
-            }
-        }
-        else
-        {
-            long var2 = Minecraft.getSystemTime();
+	/**
+	 * this string, followed by "working..." and then the "% complete" are the 3
+	 * lines shown. This resets progress to 0, and the WorkingString to
+	 * "working...".
+	 */
+	@Override
+	public void resetProgressAndMessage(String p_73721_1_) {
+		field_73724_e = false;
+		func_73722_d(p_73721_1_);
+	}
 
-            if (var2 - this.field_73723_d >= 100L)
-            {
-                this.field_73723_d = var2;
-                ScaledResolution var4 = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-                int var5 = var4.getScaleFactor();
-                int var6 = var4.getScaledWidth();
-                int var7 = var4.getScaledHeight();
+	/**
+	 * Updates the progress bar on the loading screen to the specified amount.
+	 * Args: loadProgress
+	 */
+	@Override
+	public void setLoadingProgress(int p_73718_1_) {
+		if (!mc.running) {
+			if (!field_73724_e)
+				throw new MinecraftError();
+		} else {
+			final long var2 = Minecraft.getSystemTime();
 
-                if (OpenGlHelper.isFramebufferEnabled())
-                {
-                    this.field_146588_g.framebufferClear();
-                }
-                else
-                {
-                    GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-                }
+			if (var2 - field_73723_d >= 100L) {
+				field_73723_d = var2;
+				final ScaledResolution var4 = new ScaledResolution(mc,
+						mc.displayWidth, mc.displayHeight);
+				final int var5 = var4.getScaleFactor();
+				final int var6 = var4.getScaledWidth();
+				final int var7 = var4.getScaledHeight();
 
-                this.field_146588_g.bindFramebuffer(false);
-                GL11.glMatrixMode(GL11.GL_PROJECTION);
-                GL11.glLoadIdentity();
-                GL11.glOrtho(0.0D, var4.getScaledWidth_double(), var4.getScaledHeight_double(), 0.0D, 100.0D, 300.0D);
-                GL11.glMatrixMode(GL11.GL_MODELVIEW);
-                GL11.glLoadIdentity();
-                GL11.glTranslatef(0.0F, 0.0F, -200.0F);
+				if (OpenGlHelper.isFramebufferEnabled()) {
+					field_146588_g.framebufferClear();
+				} else {
+					GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+				}
 
-                if (!OpenGlHelper.isFramebufferEnabled())
-                {
-                    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-                }
+				field_146588_g.bindFramebuffer(false);
+				GL11.glMatrixMode(GL11.GL_PROJECTION);
+				GL11.glLoadIdentity();
+				GL11.glOrtho(0.0D, var4.getScaledWidth_double(),
+						var4.getScaledHeight_double(), 0.0D, 100.0D, 300.0D);
+				GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GL11.glLoadIdentity();
+				GL11.glTranslatef(0.0F, 0.0F, -200.0F);
 
-                Tessellator var8 = Tessellator.instance;
-                this.mc.getTextureManager().bindTexture(Gui.optionsBackground);
-                float var9 = 32.0F;
-                var8.startDrawingQuads();
-                var8.setColorOpaque_I(4210752);
-                var8.addVertexWithUV(0.0D, (double)var7, 0.0D, 0.0D, (double)((float)var7 / var9));
-                var8.addVertexWithUV((double)var6, (double)var7, 0.0D, (double)((float)var6 / var9), (double)((float)var7 / var9));
-                var8.addVertexWithUV((double)var6, 0.0D, 0.0D, (double)((float)var6 / var9), 0.0D);
-                var8.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
-                var8.draw();
+				if (!OpenGlHelper.isFramebufferEnabled()) {
+					GL11.glClear(GL11.GL_COLOR_BUFFER_BIT
+							| GL11.GL_DEPTH_BUFFER_BIT);
+				}
 
-                if (p_73718_1_ >= 0)
-                {
-                    byte var10 = 100;
-                    byte var11 = 2;
-                    int var12 = var6 / 2 - var10 / 2;
-                    int var13 = var7 / 2 + 16;
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
-                    var8.startDrawingQuads();
-                    var8.setColorOpaque_I(8421504);
-                    var8.addVertex((double)var12, (double)var13, 0.0D);
-                    var8.addVertex((double)var12, (double)(var13 + var11), 0.0D);
-                    var8.addVertex((double)(var12 + var10), (double)(var13 + var11), 0.0D);
-                    var8.addVertex((double)(var12 + var10), (double)var13, 0.0D);
-                    var8.setColorOpaque_I(8454016);
-                    var8.addVertex((double)var12, (double)var13, 0.0D);
-                    var8.addVertex((double)var12, (double)(var13 + var11), 0.0D);
-                    var8.addVertex((double)(var12 + p_73718_1_), (double)(var13 + var11), 0.0D);
-                    var8.addVertex((double)(var12 + p_73718_1_), (double)var13, 0.0D);
-                    var8.draw();
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
-                }
+				final Tessellator var8 = Tessellator.instance;
+				mc.getTextureManager().bindTexture(Gui.optionsBackground);
+				final float var9 = 32.0F;
+				var8.startDrawingQuads();
+				var8.setColorOpaque_I(4210752);
+				var8.addVertexWithUV(0.0D, var7, 0.0D, 0.0D, var7 / var9);
+				var8.addVertexWithUV(var6, var7, 0.0D, var6 / var9, var7 / var9);
+				var8.addVertexWithUV(var6, 0.0D, 0.0D, var6 / var9, 0.0D);
+				var8.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+				var8.draw();
 
-                GL11.glEnable(GL11.GL_BLEND);
-                OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-                this.mc.fontRenderer.drawStringWithShadow(this.currentlyDisplayedText, (var6 - this.mc.fontRenderer.getStringWidth(this.currentlyDisplayedText)) / 2, var7 / 2 - 4 - 16, 16777215);
-                this.mc.fontRenderer.drawStringWithShadow(this.field_73727_a, (var6 - this.mc.fontRenderer.getStringWidth(this.field_73727_a)) / 2, var7 / 2 - 4 + 8, 16777215);
-                this.field_146588_g.unbindFramebuffer();
+				if (p_73718_1_ >= 0) {
+					final byte var10 = 100;
+					final byte var11 = 2;
+					final int var12 = var6 / 2 - var10 / 2;
+					final int var13 = var7 / 2 + 16;
+					GL11.glDisable(GL11.GL_TEXTURE_2D);
+					var8.startDrawingQuads();
+					var8.setColorOpaque_I(8421504);
+					var8.addVertex(var12, var13, 0.0D);
+					var8.addVertex(var12, var13 + var11, 0.0D);
+					var8.addVertex(var12 + var10, var13 + var11, 0.0D);
+					var8.addVertex(var12 + var10, var13, 0.0D);
+					var8.setColorOpaque_I(8454016);
+					var8.addVertex(var12, var13, 0.0D);
+					var8.addVertex(var12, var13 + var11, 0.0D);
+					var8.addVertex(var12 + p_73718_1_, var13 + var11, 0.0D);
+					var8.addVertex(var12 + p_73718_1_, var13, 0.0D);
+					var8.draw();
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
+				}
 
-                if (OpenGlHelper.isFramebufferEnabled())
-                {
-                    this.field_146588_g.framebufferRender(var6 * var5, var7 * var5);
-                }
+				GL11.glEnable(GL11.GL_BLEND);
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+				mc.fontRenderer.drawStringWithShadow(currentlyDisplayedText,
+						(var6 - mc.fontRenderer
+								.getStringWidth(currentlyDisplayedText)) / 2,
+						var7 / 2 - 4 - 16, 16777215);
+				mc.fontRenderer
+						.drawStringWithShadow(field_73727_a,
+								(var6 - mc.fontRenderer
+										.getStringWidth(field_73727_a)) / 2,
+								var7 / 2 - 4 + 8, 16777215);
+				field_146588_g.unbindFramebuffer();
 
-                this.mc.func_147120_f();
+				if (OpenGlHelper.isFramebufferEnabled()) {
+					field_146588_g.framebufferRender(var6 * var5, var7 * var5);
+				}
 
-                try
-                {
-                    Thread.yield();
-                }
-                catch (Exception var14)
-                {
-                    ;
-                }
-            }
-        }
-    }
+				mc.func_147120_f();
 
-    public void func_146586_a() {}
+				try {
+					Thread.yield();
+				} catch (final Exception var14) {
+					;
+				}
+			}
+		}
+	}
 }

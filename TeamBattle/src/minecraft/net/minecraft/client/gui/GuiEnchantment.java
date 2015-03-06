@@ -1,6 +1,7 @@
 package net.minecraft.client.gui;
 
 import java.util.Random;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.model.ModelBook;
 import net.minecraft.client.renderer.RenderHelper;
@@ -13,250 +14,254 @@ import net.minecraft.util.EnchantmentNameParts;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.Project;
 
-public class GuiEnchantment extends GuiContainer
-{
-    private static final ResourceLocation field_147078_C = new ResourceLocation("textures/gui/container/enchanting_table.png");
-    private static final ResourceLocation field_147070_D = new ResourceLocation("textures/entity/enchanting_table_book.png");
-    private static final ModelBook field_147072_E = new ModelBook();
-    private Random field_147074_F = new Random();
-    private ContainerEnchantment field_147075_G;
-    public int field_147073_u;
-    public float field_147071_v;
-    public float field_147069_w;
-    public float field_147082_x;
-    public float field_147081_y;
-    public float field_147080_z;
-    public float field_147076_A;
-    ItemStack field_147077_B;
-    private String field_147079_H;
-    private static final String __OBFID = "CL_00000757";
+public class GuiEnchantment extends GuiContainer {
+	private static final ResourceLocation field_147070_D = new ResourceLocation(
+			"textures/entity/enchanting_table_book.png");
+	private static final ModelBook field_147072_E = new ModelBook();
+	private static final ResourceLocation field_147078_C = new ResourceLocation(
+			"textures/gui/container/enchanting_table.png");
+	public float field_147069_w;
+	public float field_147071_v;
+	public int field_147073_u;
+	private final Random field_147074_F = new Random();
+	private final ContainerEnchantment field_147075_G;
+	public float field_147076_A;
+	ItemStack field_147077_B;
+	private final String field_147079_H;
+	public float field_147080_z;
+	public float field_147081_y;
+	public float field_147082_x;
 
-    public GuiEnchantment(InventoryPlayer p_i1090_1_, World p_i1090_2_, int p_i1090_3_, int p_i1090_4_, int p_i1090_5_, String p_i1090_6_)
-    {
-        super(new ContainerEnchantment(p_i1090_1_, p_i1090_2_, p_i1090_3_, p_i1090_4_, p_i1090_5_));
-        this.field_147075_G = (ContainerEnchantment)this.field_147002_h;
-        this.field_147079_H = p_i1090_6_;
-    }
+	public GuiEnchantment(InventoryPlayer p_i1090_1_, World p_i1090_2_,
+			int p_i1090_3_, int p_i1090_4_, int p_i1090_5_, String p_i1090_6_) {
+		super(new ContainerEnchantment(p_i1090_1_, p_i1090_2_, p_i1090_3_,
+				p_i1090_4_, p_i1090_5_));
+		field_147075_G = (ContainerEnchantment) field_147002_h;
+		field_147079_H = p_i1090_6_;
+	}
 
-    protected void func_146979_b(int p_146979_1_, int p_146979_2_)
-    {
-        this.fontRendererObj.drawString(this.field_147079_H == null ? I18n.format("container.enchant", new Object[0]) : this.field_147079_H, 12, 5, 4210752);
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.field_147000_g - 96 + 2, 4210752);
-    }
+	@Override
+	protected void func_146976_a(float p_146976_1_, int p_146976_2_,
+			int p_146976_3_) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(field_147078_C);
+		final int var4 = (width - field_146999_f) / 2;
+		final int var5 = (height - field_147000_g) / 2;
+		drawTexturedModalRect(var4, var5, 0, 0, field_146999_f, field_147000_g);
+		GL11.glPushMatrix();
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glPushMatrix();
+		GL11.glLoadIdentity();
+		final ScaledResolution var6 = new ScaledResolution(mc, mc.displayWidth,
+				mc.displayHeight);
+		GL11.glViewport(
+				(var6.getScaledWidth() - 320) / 2 * var6.getScaleFactor(),
+				(var6.getScaledHeight() - 240) / 2 * var6.getScaleFactor(),
+				320 * var6.getScaleFactor(), 240 * var6.getScaleFactor());
+		GL11.glTranslatef(-0.34F, 0.23F, 0.0F);
+		Project.gluPerspective(90.0F, 1.3333334F, 9.0F, 80.0F);
+		final float var7 = 1.0F;
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glLoadIdentity();
+		RenderHelper.enableStandardItemLighting();
+		GL11.glTranslatef(0.0F, 3.3F, -16.0F);
+		GL11.glScalef(var7, var7, var7);
+		final float var8 = 5.0F;
+		GL11.glScalef(var8, var8, var8);
+		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+		mc.getTextureManager().bindTexture(field_147070_D);
+		GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
+		final float var9 = field_147076_A + (field_147080_z - field_147076_A)
+				* p_146976_1_;
+		GL11.glTranslatef((1.0F - var9) * 0.2F, (1.0F - var9) * 0.1F,
+				(1.0F - var9) * 0.25F);
+		GL11.glRotatef(-(1.0F - var9) * 90.0F - 90.0F, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+		float var10 = field_147069_w + (field_147071_v - field_147069_w)
+				* p_146976_1_ + 0.25F;
+		float var11 = field_147069_w + (field_147071_v - field_147069_w)
+				* p_146976_1_ + 0.75F;
+		var10 = (var10 - MathHelper.truncateDoubleToInt(var10)) * 1.6F - 0.3F;
+		var11 = (var11 - MathHelper.truncateDoubleToInt(var11)) * 1.6F - 0.3F;
 
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    public void updateScreen()
-    {
-        super.updateScreen();
-        this.func_147068_g();
-    }
+		if (var10 < 0.0F) {
+			var10 = 0.0F;
+		}
 
-    /**
-     * Called when the mouse is clicked.
-     */
-    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_)
-    {
-        super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
-        int var4 = (this.width - this.field_146999_f) / 2;
-        int var5 = (this.height - this.field_147000_g) / 2;
+		if (var11 < 0.0F) {
+			var11 = 0.0F;
+		}
 
-        for (int var6 = 0; var6 < 3; ++var6)
-        {
-            int var7 = p_73864_1_ - (var4 + 60);
-            int var8 = p_73864_2_ - (var5 + 14 + 19 * var6);
+		if (var10 > 1.0F) {
+			var10 = 1.0F;
+		}
 
-            if (var7 >= 0 && var8 >= 0 && var7 < 108 && var8 < 19 && this.field_147075_G.enchantItem(this.mc.thePlayer, var6))
-            {
-                this.mc.playerController.sendEnchantPacket(this.field_147075_G.windowId, var6);
-            }
-        }
-    }
+		if (var11 > 1.0F) {
+			var11 = 1.0F;
+		}
 
-    protected void func_146976_a(float p_146976_1_, int p_146976_2_, int p_146976_3_)
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(field_147078_C);
-        int var4 = (this.width - this.field_146999_f) / 2;
-        int var5 = (this.height - this.field_147000_g) / 2;
-        this.drawTexturedModalRect(var4, var5, 0, 0, this.field_146999_f, this.field_147000_g);
-        GL11.glPushMatrix();
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glPushMatrix();
-        GL11.glLoadIdentity();
-        ScaledResolution var6 = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        GL11.glViewport((var6.getScaledWidth() - 320) / 2 * var6.getScaleFactor(), (var6.getScaledHeight() - 240) / 2 * var6.getScaleFactor(), 320 * var6.getScaleFactor(), 240 * var6.getScaleFactor());
-        GL11.glTranslatef(-0.34F, 0.23F, 0.0F);
-        Project.gluPerspective(90.0F, 1.3333334F, 9.0F, 80.0F);
-        float var7 = 1.0F;
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
-        RenderHelper.enableStandardItemLighting();
-        GL11.glTranslatef(0.0F, 3.3F, -16.0F);
-        GL11.glScalef(var7, var7, var7);
-        float var8 = 5.0F;
-        GL11.glScalef(var8, var8, var8);
-        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(field_147070_D);
-        GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
-        float var9 = this.field_147076_A + (this.field_147080_z - this.field_147076_A) * p_146976_1_;
-        GL11.glTranslatef((1.0F - var9) * 0.2F, (1.0F - var9) * 0.1F, (1.0F - var9) * 0.25F);
-        GL11.glRotatef(-(1.0F - var9) * 90.0F - 90.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
-        float var10 = this.field_147069_w + (this.field_147071_v - this.field_147069_w) * p_146976_1_ + 0.25F;
-        float var11 = this.field_147069_w + (this.field_147071_v - this.field_147069_w) * p_146976_1_ + 0.75F;
-        var10 = (var10 - (float)MathHelper.truncateDoubleToInt((double)var10)) * 1.6F - 0.3F;
-        var11 = (var11 - (float)MathHelper.truncateDoubleToInt((double)var11)) * 1.6F - 0.3F;
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		field_147072_E.render((Entity) null, 0.0F, var10, var11, var9, 0.0F,
+				0.0625F);
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		RenderHelper.disableStandardItemLighting();
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glViewport(0, 0, mc.displayWidth, mc.displayHeight);
+		GL11.glPopMatrix();
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glPopMatrix();
+		RenderHelper.disableStandardItemLighting();
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		EnchantmentNameParts.instance
+				.reseedRandomGenerator(field_147075_G.nameSeed);
 
-        if (var10 < 0.0F)
-        {
-            var10 = 0.0F;
-        }
+		for (int var12 = 0; var12 < 3; ++var12) {
+			final String var13 = EnchantmentNameParts.instance
+					.generateNewRandomName();
+			zLevel = 0.0F;
+			mc.getTextureManager().bindTexture(field_147078_C);
+			final int var14 = field_147075_G.enchantLevels[var12];
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if (var11 < 0.0F)
-        {
-            var11 = 0.0F;
-        }
+			if (var14 == 0) {
+				drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0,
+						185, 108, 19);
+			} else {
+				final String var15 = "" + var14;
+				FontRenderer var16 = mc.standardGalacticFontRenderer;
+				int var17 = 6839882;
 
-        if (var10 > 1.0F)
-        {
-            var10 = 1.0F;
-        }
+				if (mc.thePlayer.experienceLevel < var14
+						&& !mc.thePlayer.capabilities.isCreativeMode) {
+					drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0,
+							185, 108, 19);
+					var16.drawSplitString(var13, var4 + 62, var5 + 16 + 19
+							* var12, 104, (var17 & 16711422) >> 1);
+					var16 = mc.fontRenderer;
+					var17 = 4226832;
+					var16.drawStringWithShadow(var15,
+							var4 + 62 + 104 - var16.getStringWidth(var15), var5
+									+ 16 + 19 * var12 + 7, var17);
+				} else {
+					final int var18 = p_146976_2_ - (var4 + 60);
+					final int var19 = p_146976_3_ - (var5 + 14 + 19 * var12);
 
-        if (var11 > 1.0F)
-        {
-            var11 = 1.0F;
-        }
+					if (var18 >= 0 && var19 >= 0 && var18 < 108 && var19 < 19) {
+						drawTexturedModalRect(var4 + 60,
+								var5 + 14 + 19 * var12, 0, 204, 108, 19);
+						var17 = 16777088;
+					} else {
+						drawTexturedModalRect(var4 + 60,
+								var5 + 14 + 19 * var12, 0, 166, 108, 19);
+					}
 
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        field_147072_E.render((Entity)null, 0.0F, var10, var11, var9, 0.0F, 0.0625F);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.disableStandardItemLighting();
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glViewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
-        GL11.glPopMatrix();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glPopMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        EnchantmentNameParts.instance.reseedRandomGenerator(this.field_147075_G.nameSeed);
+					var16.drawSplitString(var13, var4 + 62, var5 + 16 + 19
+							* var12, 104, var17);
+					var16 = mc.fontRenderer;
+					var17 = 8453920;
+					var16.drawStringWithShadow(var15,
+							var4 + 62 + 104 - var16.getStringWidth(var15), var5
+									+ 16 + 19 * var12 + 7, var17);
+				}
+			}
+		}
+	}
 
-        for (int var12 = 0; var12 < 3; ++var12)
-        {
-            String var13 = EnchantmentNameParts.instance.generateNewRandomName();
-            this.zLevel = 0.0F;
-            this.mc.getTextureManager().bindTexture(field_147078_C);
-            int var14 = this.field_147075_G.enchantLevels[var12];
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	@Override
+	protected void func_146979_b(int p_146979_1_, int p_146979_2_) {
+		fontRendererObj.drawString(
+				field_147079_H == null ? I18n.format("container.enchant",
+						new Object[0]) : field_147079_H, 12, 5, 4210752);
+		fontRendererObj.drawString(
+				I18n.format("container.inventory", new Object[0]), 8,
+				field_147000_g - 96 + 2, 4210752);
+	}
 
-            if (var14 == 0)
-            {
-                this.drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0, 185, 108, 19);
-            }
-            else
-            {
-                String var15 = "" + var14;
-                FontRenderer var16 = this.mc.standardGalacticFontRenderer;
-                int var17 = 6839882;
+	public void func_147068_g() {
+		final ItemStack var1 = field_147002_h.getSlot(0).getStack();
 
-                if (this.mc.thePlayer.experienceLevel < var14 && !this.mc.thePlayer.capabilities.isCreativeMode)
-                {
-                    this.drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0, 185, 108, 19);
-                    var16.drawSplitString(var13, var4 + 62, var5 + 16 + 19 * var12, 104, (var17 & 16711422) >> 1);
-                    var16 = this.mc.fontRenderer;
-                    var17 = 4226832;
-                    var16.drawStringWithShadow(var15, var4 + 62 + 104 - var16.getStringWidth(var15), var5 + 16 + 19 * var12 + 7, var17);
-                }
-                else
-                {
-                    int var18 = p_146976_2_ - (var4 + 60);
-                    int var19 = p_146976_3_ - (var5 + 14 + 19 * var12);
+		if (!ItemStack.areItemStacksEqual(var1, field_147077_B)) {
+			field_147077_B = var1;
 
-                    if (var18 >= 0 && var19 >= 0 && var18 < 108 && var19 < 19)
-                    {
-                        this.drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0, 204, 108, 19);
-                        var17 = 16777088;
-                    }
-                    else
-                    {
-                        this.drawTexturedModalRect(var4 + 60, var5 + 14 + 19 * var12, 0, 166, 108, 19);
-                    }
+			do {
+				field_147082_x += field_147074_F.nextInt(4)
+						- field_147074_F.nextInt(4);
+			} while (field_147071_v <= field_147082_x + 1.0F
+					&& field_147071_v >= field_147082_x - 1.0F);
+		}
 
-                    var16.drawSplitString(var13, var4 + 62, var5 + 16 + 19 * var12, 104, var17);
-                    var16 = this.mc.fontRenderer;
-                    var17 = 8453920;
-                    var16.drawStringWithShadow(var15, var4 + 62 + 104 - var16.getStringWidth(var15), var5 + 16 + 19 * var12 + 7, var17);
-                }
-            }
-        }
-    }
+		++field_147073_u;
+		field_147069_w = field_147071_v;
+		field_147076_A = field_147080_z;
+		boolean var2 = false;
 
-    public void func_147068_g()
-    {
-        ItemStack var1 = this.field_147002_h.getSlot(0).getStack();
+		for (int var3 = 0; var3 < 3; ++var3) {
+			if (field_147075_G.enchantLevels[var3] != 0) {
+				var2 = true;
+			}
+		}
 
-        if (!ItemStack.areItemStacksEqual(var1, this.field_147077_B))
-        {
-            this.field_147077_B = var1;
+		if (var2) {
+			field_147080_z += 0.2F;
+		} else {
+			field_147080_z -= 0.2F;
+		}
 
-            do
-            {
-                this.field_147082_x += (float)(this.field_147074_F.nextInt(4) - this.field_147074_F.nextInt(4));
-            }
-            while (this.field_147071_v <= this.field_147082_x + 1.0F && this.field_147071_v >= this.field_147082_x - 1.0F);
-        }
+		if (field_147080_z < 0.0F) {
+			field_147080_z = 0.0F;
+		}
 
-        ++this.field_147073_u;
-        this.field_147069_w = this.field_147071_v;
-        this.field_147076_A = this.field_147080_z;
-        boolean var2 = false;
+		if (field_147080_z > 1.0F) {
+			field_147080_z = 1.0F;
+		}
 
-        for (int var3 = 0; var3 < 3; ++var3)
-        {
-            if (this.field_147075_G.enchantLevels[var3] != 0)
-            {
-                var2 = true;
-            }
-        }
+		float var5 = (field_147082_x - field_147071_v) * 0.4F;
+		final float var4 = 0.2F;
 
-        if (var2)
-        {
-            this.field_147080_z += 0.2F;
-        }
-        else
-        {
-            this.field_147080_z -= 0.2F;
-        }
+		if (var5 < -var4) {
+			var5 = -var4;
+		}
 
-        if (this.field_147080_z < 0.0F)
-        {
-            this.field_147080_z = 0.0F;
-        }
+		if (var5 > var4) {
+			var5 = var4;
+		}
 
-        if (this.field_147080_z > 1.0F)
-        {
-            this.field_147080_z = 1.0F;
-        }
+		field_147081_y += (var5 - field_147081_y) * 0.9F;
+		field_147071_v += field_147081_y;
+	}
 
-        float var5 = (this.field_147082_x - this.field_147071_v) * 0.4F;
-        float var4 = 0.2F;
+	/**
+	 * Called when the mouse is clicked.
+	 */
+	@Override
+	protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
+		super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
+		final int var4 = (width - field_146999_f) / 2;
+		final int var5 = (height - field_147000_g) / 2;
 
-        if (var5 < -var4)
-        {
-            var5 = -var4;
-        }
+		for (int var6 = 0; var6 < 3; ++var6) {
+			final int var7 = p_73864_1_ - (var4 + 60);
+			final int var8 = p_73864_2_ - (var5 + 14 + 19 * var6);
 
-        if (var5 > var4)
-        {
-            var5 = var4;
-        }
+			if (var7 >= 0 && var8 >= 0 && var7 < 108 && var8 < 19
+					&& field_147075_G.enchantItem(mc.thePlayer, var6)) {
+				mc.playerController.sendEnchantPacket(field_147075_G.windowId,
+						var6);
+			}
+		}
+	}
 
-        this.field_147081_y += (var5 - this.field_147081_y) * 0.9F;
-        this.field_147071_v += this.field_147081_y;
-    }
+	/**
+	 * Called from the main game loop to update the screen.
+	 */
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		func_147068_g();
+	}
 }

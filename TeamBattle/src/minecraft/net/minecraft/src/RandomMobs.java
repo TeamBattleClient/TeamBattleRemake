@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -14,325 +15,274 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-public class RandomMobs
-{
-    private static Map textureVariantsMap = new HashMap();
-    private static RenderGlobal renderGlobal = null;
-    private static boolean initialized = false;
-    private static Random random = new Random();
-    private static Field fieldEntityUuid = getField(Entity.class, UUID.class);
-    private static boolean working = false;
+public class RandomMobs {
+	private static Field fieldEntityUuid = getField(Entity.class, UUID.class);
 
-    public static void entityLoaded(Entity entity)
-    {
-        if (entity instanceof EntityLiving)
-        {
-            EntityLiving el = (EntityLiving)entity;
-            WorldServer ws = Config.getWorldServer();
+	private static boolean initialized = false;
 
-            if (ws != null)
-            {
-                Entity es = ws.getEntityByID(entity.getEntityId());
+	private static Random random = new Random();
 
-                if (es instanceof EntityLiving)
-                {
-                    EntityLiving els = (EntityLiving)es;
+	private static RenderGlobal renderGlobal = null;
 
-                    if (fieldEntityUuid != null)
-                    {
-                        try
-                        {
-                            Object e = fieldEntityUuid.get(els);
-                            fieldEntityUuid.set(el, e);
-                        }
-                        catch (Exception var6)
-                        {
-                            var6.printStackTrace();
-                            fieldEntityUuid = null;
-                        }
-                    }
-                }
-            }
-        }
-    }
+	private static Map textureVariantsMap = new HashMap();
 
-    private static Field getField(Class cls, Class fieldType)
-    {
-        try
-        {
-            Field[] e = cls.getDeclaredFields();
+	private static boolean working = false;
 
-            for (int i = 0; i < e.length; ++i)
-            {
-                Field field = e[i];
-                Class type = field.getType();
+	public static void entityLoaded(Entity entity) {
+		if (entity instanceof EntityLiving) {
+			final EntityLiving el = (EntityLiving) entity;
+			final WorldServer ws = Config.getWorldServer();
 
-                if (type == fieldType)
-                {
-                    field.setAccessible(true);
-                    return field;
-                }
-            }
+			if (ws != null) {
+				final Entity es = ws.getEntityByID(entity.getEntityId());
 
-            return null;
-        }
-        catch (Exception var6)
-        {
-            var6.printStackTrace();
-            return null;
-        }
-    }
+				if (es instanceof EntityLiving) {
+					final EntityLiving els = (EntityLiving) es;
 
-    public static void worldChanged(World oldWorld, World newWorld)
-    {
-        if (newWorld != null)
-        {
-            List entityList = newWorld.getLoadedEntityList();
+					if (fieldEntityUuid != null) {
+						try {
+							final Object e = fieldEntityUuid.get(els);
+							fieldEntityUuid.set(el, e);
+						} catch (final Exception var6) {
+							var6.printStackTrace();
+							fieldEntityUuid = null;
+						}
+					}
+				}
+			}
+		}
+	}
 
-            for (int e = 0; e < entityList.size(); ++e)
-            {
-                Entity entity = (Entity)entityList.get(e);
-                entityLoaded(entity);
-            }
-        }
-    }
+	private static int getCountTextureVariants(String prefix, String suffix) {
+		final short maxNum = 1000;
 
-    public static ResourceLocation getTextureLocation(ResourceLocation loc)
-    {
-        if (working)
-        {
-            return loc;
-        }
-        else
-        {
-            ResourceLocation entity;
+		for (int num = 2; num < maxNum; ++num) {
+			final String variant = prefix + num + suffix;
+			final ResourceLocation loc = new ResourceLocation(variant);
 
-            try
-            {
-                working = true;
+			if (!Config.hasResource(loc))
+				return num - 1;
+		}
 
-                if (!initialized)
-                {
-                    initialize();
-                }
+		return maxNum;
+	}
 
-                if (renderGlobal != null)
-                {
-                    Entity entity1 = renderGlobal.renderedEntity;
-                    ResourceLocation name1;
+	private static Field getField(Class cls, Class fieldType) {
+		try {
+			final Field[] e = cls.getDeclaredFields();
 
-                    if (entity1 == null)
-                    {
-                        name1 = loc;
-                        return name1;
-                    }
+			for (final Field field : e) {
+				final Class type = field.getType();
 
-                    if (!(entity1 instanceof EntityLiving))
-                    {
-                        name1 = loc;
-                        return name1;
-                    }
+				if (type == fieldType) {
+					field.setAccessible(true);
+					return field;
+				}
+			}
 
-                    String name = loc.getResourcePath();
+			return null;
+		} catch (final Exception var6) {
+			var6.printStackTrace();
+			return null;
+		}
+	}
 
-                    if (!name.startsWith("textures/entity/"))
-                    {
-                        ResourceLocation uuidLow1 = loc;
-                        return uuidLow1;
-                    }
+	public static ResourceLocation getTextureLocation(ResourceLocation loc) {
+		if (working)
+			return loc;
+		else {
+			ResourceLocation name;
 
-                    long uuidLow = entity1.getUniqueID().getLeastSignificantBits();
-                    int id = (int)(uuidLow & 2147483647L);
-                    ResourceLocation var6 = getTextureLocation(loc, id);
-                    return var6;
-                }
+			try {
+				working = true;
 
-                entity = loc;
-            }
-            finally
-            {
-                working = false;
-            }
+				if (!initialized) {
+					initialize();
+				}
 
-            return entity;
-        }
-    }
+				if (renderGlobal == null) {
+					final ResourceLocation entity1 = loc;
+					return entity1;
+				}
 
-    private static ResourceLocation getTextureLocation(ResourceLocation loc, int randomId)
-    {
-        if (randomId <= 0)
-        {
-            return loc;
-        }
-        else
-        {
-            String name = loc.getResourcePath();
-            ResourceLocation[] texLocs = (ResourceLocation[])((ResourceLocation[])textureVariantsMap.get(name));
+				final Entity entity = renderGlobal.renderedEntity;
 
-            if (texLocs == null)
-            {
-                texLocs = getTextureVariants(loc);
-                textureVariantsMap.put(name, texLocs);
-            }
+				if (entity == null) {
+					name = loc;
+					return name;
+				}
 
-            if (texLocs != null && texLocs.length > 0)
-            {
-                int index = randomId % texLocs.length;
-                ResourceLocation texLoc = texLocs[index];
-                return texLoc;
-            }
-            else
-            {
-                return loc;
-            }
-        }
-    }
+				if (entity instanceof EntityLiving) {
+					final String name1 = loc.getResourcePath();
 
-    private static ResourceLocation[] getTextureVariants(ResourceLocation loc)
-    {
-        TextureUtils.getTexture(loc);
-        ResourceLocation[] texLocs = new ResourceLocation[0];
-        String name = loc.getResourcePath();
-        int pointPos = name.lastIndexOf(46);
+					if (!name1.startsWith("textures/entity/")) {
+						final ResourceLocation uuidLow1 = loc;
+						return uuidLow1;
+					}
 
-        if (pointPos < 0)
-        {
-            return texLocs;
-        }
-        else
-        {
-            String prefix = name.substring(0, pointPos);
-            String suffix = name.substring(pointPos);
-            String texEntStr = "textures/entity/";
+					final long uuidLow = entity.getUniqueID()
+							.getLeastSignificantBits();
+					final int id = (int) (uuidLow & 2147483647L);
+					final ResourceLocation var6 = getTextureLocation(loc, id);
+					return var6;
+				}
 
-            if (!prefix.startsWith(texEntStr))
-            {
-                return texLocs;
-            }
-            else
-            {
-                prefix = prefix.substring(texEntStr.length());
-                prefix = "mcpatcher/mob/" + prefix;
-                int countVariants = getCountTextureVariants(prefix, suffix);
+				name = loc;
+			} finally {
+				working = false;
+			}
 
-                if (countVariants <= 1)
-                {
-                    return texLocs;
-                }
-                else
-                {
-                    texLocs = new ResourceLocation[countVariants];
-                    texLocs[0] = loc;
+			return name;
+		}
+	}
 
-                    for (int i = 1; i < texLocs.length; ++i)
-                    {
-                        int texNum = i + 1;
-                        String texName = prefix + texNum + suffix;
-                        texLocs[i] = new ResourceLocation(loc.getResourceDomain(), texName);
-                        TextureUtils.getTexture(texLocs[i]);
-                    }
+	private static ResourceLocation getTextureLocation(ResourceLocation loc,
+			int randomId) {
+		if (randomId <= 0)
+			return loc;
+		else {
+			final String name = loc.getResourcePath();
+			ResourceLocation[] texLocs = (ResourceLocation[]) textureVariantsMap
+					.get(name);
 
-                    Config.dbg("RandomMobs: " + loc + ", variants: " + texLocs.length);
-                    return texLocs;
-                }
-            }
-        }
-    }
+			if (texLocs == null) {
+				texLocs = getTextureVariants(loc);
+				textureVariantsMap.put(name, texLocs);
+			}
 
-    private static int getCountTextureVariants(String prefix, String suffix)
-    {
-        short maxNum = 1000;
+			if (texLocs != null && texLocs.length > 0) {
+				final int index = randomId % texLocs.length;
+				final ResourceLocation texLoc = texLocs[index];
+				return texLoc;
+			} else
+				return loc;
+		}
+	}
 
-        for (int num = 2; num < maxNum; ++num)
-        {
-            String variant = prefix + num + suffix;
-            ResourceLocation loc = new ResourceLocation(variant);
+	private static ResourceLocation[] getTextureVariants(ResourceLocation loc) {
+		TextureUtils.getTexture(loc);
+		ResourceLocation[] texLocs = new ResourceLocation[0];
+		final String name = loc.getResourcePath();
+		final int pointPos = name.lastIndexOf(46);
 
-            if (!Config.hasResource(loc))
-            {
-                return num - 1;
-            }
-        }
+		if (pointPos < 0)
+			return texLocs;
+		else {
+			String prefix = name.substring(0, pointPos);
+			final String suffix = name.substring(pointPos);
+			final String texEntStr = "textures/entity/";
 
-        return maxNum;
-    }
+			if (!prefix.startsWith(texEntStr))
+				return texLocs;
+			else {
+				prefix = prefix.substring(texEntStr.length());
+				prefix = "mcpatcher/mob/" + prefix;
+				final int countVariants = getCountTextureVariants(prefix,
+						suffix);
 
-    public static void resetTextures()
-    {
-        textureVariantsMap.clear();
+				if (countVariants <= 1)
+					return texLocs;
+				else {
+					texLocs = new ResourceLocation[countVariants];
+					texLocs[0] = loc;
 
-        if (Config.isRandomMobs())
-        {
-            initialize();
-        }
-    }
+					for (int i = 1; i < texLocs.length; ++i) {
+						final int texNum = i + 1;
+						final String texName = prefix + texNum + suffix;
+						texLocs[i] = new ResourceLocation(
+								loc.getResourceDomain(), texName);
+						TextureUtils.getTexture(texLocs[i]);
+					}
 
-    private static void initialize()
-    {
-        renderGlobal = Config.getRenderGlobal();
+					Config.dbg("RandomMobs: " + loc + ", variants: "
+							+ texLocs.length);
+					return texLocs;
+				}
+			}
+		}
+	}
 
-        if (renderGlobal != null)
-        {
-            initialized = true;
-            ArrayList list = new ArrayList();
-            list.add("bat");
-            list.add("blaze");
-            list.add("cat/black");
-            list.add("cat/ocelot");
-            list.add("cat/red");
-            list.add("cat/siamese");
-            list.add("chicken");
-            list.add("cow/cow");
-            list.add("cow/mooshroom");
-            list.add("creeper/creeper");
-            list.add("enderman/enderman");
-            list.add("enderman/enderman_eyes");
-            list.add("ghast/ghast");
-            list.add("ghast/ghast_shooting");
-            list.add("iron_golem");
-            list.add("pig/pig");
-            list.add("sheep/sheep");
-            list.add("sheep/sheep_fur");
-            list.add("silverfish");
-            list.add("skeleton/skeleton");
-            list.add("skeleton/wither_skeleton");
-            list.add("slime/slime");
-            list.add("slime/magmacube");
-            list.add("snowman");
-            list.add("spider/cave_spider");
-            list.add("spider/spider");
-            list.add("spider_eyes");
-            list.add("squid");
-            list.add("villager/villager");
-            list.add("villager/butcher");
-            list.add("villager/farmer");
-            list.add("villager/librarian");
-            list.add("villager/priest");
-            list.add("villager/smith");
-            list.add("wither/wither");
-            list.add("wither/wither_armor");
-            list.add("wither/wither_invulnerable");
-            list.add("wolf/wolf");
-            list.add("wolf/wolf_angry");
-            list.add("wolf/wolf_collar");
-            list.add("wolf/wolf_tame");
-            list.add("zombie_pigman");
-            list.add("zombie/zombie");
-            list.add("zombie/zombie_villager");
+	private static void initialize() {
+		renderGlobal = Config.getRenderGlobal();
 
-            for (int i = 0; i < list.size(); ++i)
-            {
-                String name = (String)list.get(i);
-                String tex = "textures/entity/" + name + ".png";
-                ResourceLocation texLoc = new ResourceLocation(tex);
+		if (renderGlobal != null) {
+			initialized = true;
+			final ArrayList list = new ArrayList();
+			list.add("bat");
+			list.add("blaze");
+			list.add("cat/black");
+			list.add("cat/ocelot");
+			list.add("cat/red");
+			list.add("cat/siamese");
+			list.add("chicken");
+			list.add("cow/cow");
+			list.add("cow/mooshroom");
+			list.add("creeper/creeper");
+			list.add("enderman/enderman");
+			list.add("enderman/enderman_eyes");
+			list.add("ghast/ghast");
+			list.add("ghast/ghast_shooting");
+			list.add("iron_golem");
+			list.add("pig/pig");
+			list.add("sheep/sheep");
+			list.add("sheep/sheep_fur");
+			list.add("silverfish");
+			list.add("skeleton/skeleton");
+			list.add("skeleton/wither_skeleton");
+			list.add("slime/slime");
+			list.add("slime/magmacube");
+			list.add("snowman");
+			list.add("spider/cave_spider");
+			list.add("spider/spider");
+			list.add("spider_eyes");
+			list.add("squid");
+			list.add("villager/villager");
+			list.add("villager/butcher");
+			list.add("villager/farmer");
+			list.add("villager/librarian");
+			list.add("villager/priest");
+			list.add("villager/smith");
+			list.add("wither/wither");
+			list.add("wither/wither_armor");
+			list.add("wither/wither_invulnerable");
+			list.add("wolf/wolf");
+			list.add("wolf/wolf_angry");
+			list.add("wolf/wolf_collar");
+			list.add("wolf/wolf_tame");
+			list.add("zombie_pigman");
+			list.add("zombie/zombie");
+			list.add("zombie/zombie_villager");
 
-                if (!Config.hasResource(texLoc))
-                {
-                    Config.warn("Not found: " + texLoc);
-                }
+			for (int i = 0; i < list.size(); ++i) {
+				final String name = (String) list.get(i);
+				final String tex = "textures/entity/" + name + ".png";
+				final ResourceLocation texLoc = new ResourceLocation(tex);
 
-                getTextureLocation(texLoc, 100);
-            }
-        }
-    }
+				if (!Config.hasResource(texLoc)) {
+					Config.warn("Not found: " + texLoc);
+				}
+
+				getTextureLocation(texLoc, 100);
+			}
+		}
+	}
+
+	public static void resetTextures() {
+		textureVariantsMap.clear();
+
+		if (Config.isRandomMobs()) {
+			initialize();
+		}
+	}
+
+	public static void worldChanged(World oldWorld, World newWorld) {
+		if (newWorld != null) {
+			final List entityList = newWorld.getLoadedEntityList();
+
+			for (int e = 0; e < entityList.size(); ++e) {
+				final Entity entity = (Entity) entityList.get(e);
+				entityLoaded(entity);
+			}
+		}
+	}
 }

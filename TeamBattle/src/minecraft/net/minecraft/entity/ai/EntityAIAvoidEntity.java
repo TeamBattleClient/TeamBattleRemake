@@ -1,6 +1,7 @@
 package net.minecraft.entity.ai;
 
 import java.util.List;
+
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -10,129 +11,123 @@ import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.Vec3;
 
-public class EntityAIAvoidEntity extends EntityAIBase
-{
-    public final IEntitySelector field_98218_a = new IEntitySelector()
-    {
-        private static final String __OBFID = "CL_00001575";
-        public boolean isEntityApplicable(Entity p_82704_1_)
-        {
-            return p_82704_1_.isEntityAlive() && EntityAIAvoidEntity.this.theEntity.getEntitySenses().canSee(p_82704_1_);
-        }
-    };
+public class EntityAIAvoidEntity extends EntityAIBase {
+	private Entity closestLivingEntity;
 
-    /** The entity we are attached to */
-    private EntityCreature theEntity;
-    private double farSpeed;
-    private double nearSpeed;
-    private Entity closestLivingEntity;
-    private float distanceFromEntity;
+	private final float distanceFromEntity;
+	/** The PathEntity of our entity */
+	private PathEntity entityPathEntity;
+	/** The PathNavigate of our entity */
+	private final PathNavigate entityPathNavigate;
+	private final double farSpeed;
+	public final IEntitySelector field_98218_a = new IEntitySelector() {
 
-    /** The PathEntity of our entity */
-    private PathEntity entityPathEntity;
+		@Override
+		public boolean isEntityApplicable(Entity p_82704_1_) {
+			return p_82704_1_.isEntityAlive()
+					&& theEntity.getEntitySenses().canSee(p_82704_1_);
+		}
+	};
 
-    /** The PathNavigate of our entity */
-    private PathNavigate entityPathNavigate;
+	private final double nearSpeed;
 
-    /** The class of the entity we should avoid */
-    private Class targetEntityClass;
-    private static final String __OBFID = "CL_00001574";
+	/** The class of the entity we should avoid */
+	private final Class targetEntityClass;
 
-    public EntityAIAvoidEntity(EntityCreature p_i1616_1_, Class p_i1616_2_, float p_i1616_3_, double p_i1616_4_, double p_i1616_6_)
-    {
-        this.theEntity = p_i1616_1_;
-        this.targetEntityClass = p_i1616_2_;
-        this.distanceFromEntity = p_i1616_3_;
-        this.farSpeed = p_i1616_4_;
-        this.nearSpeed = p_i1616_6_;
-        this.entityPathNavigate = p_i1616_1_.getNavigator();
-        this.setMutexBits(1);
-    }
+	/** The entity we are attached to */
+	private final EntityCreature theEntity;
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        if (this.targetEntityClass == EntityPlayer.class)
-        {
-            if (this.theEntity instanceof EntityTameable && ((EntityTameable)this.theEntity).isTamed())
-            {
-                return false;
-            }
+	public EntityAIAvoidEntity(EntityCreature p_i1616_1_, Class p_i1616_2_,
+			float p_i1616_3_, double p_i1616_4_, double p_i1616_6_) {
+		theEntity = p_i1616_1_;
+		targetEntityClass = p_i1616_2_;
+		distanceFromEntity = p_i1616_3_;
+		farSpeed = p_i1616_4_;
+		nearSpeed = p_i1616_6_;
+		entityPathNavigate = p_i1616_1_.getNavigator();
+		setMutexBits(1);
+	}
 
-            this.closestLivingEntity = this.theEntity.worldObj.getClosestPlayerToEntity(this.theEntity, (double)this.distanceFromEntity);
+	/**
+	 * Returns whether an in-progress EntityAIBase should continue executing
+	 */
+	@Override
+	public boolean continueExecuting() {
+		return !entityPathNavigate.noPath();
+	}
 
-            if (this.closestLivingEntity == null)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            List var1 = this.theEntity.worldObj.selectEntitiesWithinAABB(this.targetEntityClass, this.theEntity.boundingBox.expand((double)this.distanceFromEntity, 3.0D, (double)this.distanceFromEntity), this.field_98218_a);
+	/**
+	 * Resets the task
+	 */
+	@Override
+	public void resetTask() {
+		closestLivingEntity = null;
+	}
 
-            if (var1.isEmpty())
-            {
-                return false;
-            }
+	/**
+	 * Returns whether the EntityAIBase should begin execution.
+	 */
+	@Override
+	public boolean shouldExecute() {
+		if (targetEntityClass == EntityPlayer.class) {
+			if (theEntity instanceof EntityTameable
+					&& ((EntityTameable) theEntity).isTamed())
+				return false;
 
-            this.closestLivingEntity = (Entity)var1.get(0);
-        }
+			closestLivingEntity = theEntity.worldObj.getClosestPlayerToEntity(
+					theEntity, distanceFromEntity);
 
-        Vec3 var2 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.theEntity, 16, 7, Vec3.createVectorHelper(this.closestLivingEntity.posX, this.closestLivingEntity.posY, this.closestLivingEntity.posZ));
+			if (closestLivingEntity == null)
+				return false;
+		} else {
+			final List var1 = theEntity.worldObj.selectEntitiesWithinAABB(
+					targetEntityClass, theEntity.boundingBox.expand(
+							distanceFromEntity, 3.0D, distanceFromEntity),
+					field_98218_a);
 
-        if (var2 == null)
-        {
-            return false;
-        }
-        else if (this.closestLivingEntity.getDistanceSq(var2.xCoord, var2.yCoord, var2.zCoord) < this.closestLivingEntity.getDistanceSqToEntity(this.theEntity))
-        {
-            return false;
-        }
-        else
-        {
-            this.entityPathEntity = this.entityPathNavigate.getPathToXYZ(var2.xCoord, var2.yCoord, var2.zCoord);
-            return this.entityPathEntity == null ? false : this.entityPathEntity.isDestinationSame(var2);
-        }
-    }
+			if (var1.isEmpty())
+				return false;
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean continueExecuting()
-    {
-        return !this.entityPathNavigate.noPath();
-    }
+			closestLivingEntity = (Entity) var1.get(0);
+		}
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.entityPathNavigate.setPath(this.entityPathEntity, this.farSpeed);
-    }
+		final Vec3 var2 = RandomPositionGenerator
+				.findRandomTargetBlockAwayFrom(theEntity, 16, 7, Vec3
+						.createVectorHelper(closestLivingEntity.posX,
+								closestLivingEntity.posY,
+								closestLivingEntity.posZ));
 
-    /**
-     * Resets the task
-     */
-    public void resetTask()
-    {
-        this.closestLivingEntity = null;
-    }
+		if (var2 == null)
+			return false;
+		else if (closestLivingEntity.getDistanceSq(var2.xCoord, var2.yCoord,
+				var2.zCoord) < closestLivingEntity
+				.getDistanceSqToEntity(theEntity))
+			return false;
+		else {
+			entityPathEntity = entityPathNavigate.getPathToXYZ(var2.xCoord,
+					var2.yCoord, var2.zCoord);
+			return entityPathEntity == null ? false : entityPathEntity
+					.isDestinationSame(var2);
+		}
+	}
 
-    /**
-     * Updates the task
-     */
-    public void updateTask()
-    {
-        if (this.theEntity.getDistanceSqToEntity(this.closestLivingEntity) < 49.0D)
-        {
-            this.theEntity.getNavigator().setSpeed(this.nearSpeed);
-        }
-        else
-        {
-            this.theEntity.getNavigator().setSpeed(this.farSpeed);
-        }
-    }
+	/**
+	 * Execute a one shot task or start executing a continuous task
+	 */
+	@Override
+	public void startExecuting() {
+		entityPathNavigate.setPath(entityPathEntity, farSpeed);
+	}
+
+	/**
+	 * Updates the task
+	 */
+	@Override
+	public void updateTask() {
+		if (theEntity.getDistanceSqToEntity(closestLivingEntity) < 49.0D) {
+			theEntity.getNavigator().setSpeed(nearSpeed);
+		} else {
+			theEntity.getNavigator().setSpeed(farSpeed);
+		}
+	}
 }

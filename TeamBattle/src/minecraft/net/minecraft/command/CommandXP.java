@@ -1,110 +1,112 @@
 package net.minecraft.command;
 
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-public class CommandXP extends CommandBase
-{
-    private static final String __OBFID = "CL_00000398";
+public class CommandXP extends CommandBase {
 
-    public String getCommandName()
-    {
-        return "xp";
-    }
+	/**
+	 * Adds the strings available in this command to the given list of tab
+	 * completion options.
+	 */
+	@Override
+	public List addTabCompletionOptions(ICommandSender p_71516_1_,
+			String[] p_71516_2_) {
+		return p_71516_2_.length == 2 ? getListOfStringsMatchingLastWord(
+				p_71516_2_, getAllUsernames()) : null;
+	}
 
-    /**
-     * Return the required permission level for this command.
-     */
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
+	protected String[] getAllUsernames() {
+		return MinecraftServer.getServer().getAllUsernames();
+	}
 
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "commands.xp.usage";
-    }
+	@Override
+	public String getCommandName() {
+		return "xp";
+	}
 
-    public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_)
-    {
-        if (p_71515_2_.length <= 0)
-        {
-            throw new WrongUsageException("commands.xp.usage", new Object[0]);
-        }
-        else
-        {
-            String var4 = p_71515_2_[0];
-            boolean var5 = var4.endsWith("l") || var4.endsWith("L");
+	@Override
+	public String getCommandUsage(ICommandSender p_71518_1_) {
+		return "commands.xp.usage";
+	}
 
-            if (var5 && var4.length() > 1)
-            {
-                var4 = var4.substring(0, var4.length() - 1);
-            }
+	/**
+	 * Return the required permission level for this command.
+	 */
+	@Override
+	public int getRequiredPermissionLevel() {
+		return 2;
+	}
 
-            int var6 = parseInt(p_71515_1_, var4);
-            boolean var7 = var6 < 0;
+	/**
+	 * Return whether the specified command parameter index is a username
+	 * parameter.
+	 */
+	@Override
+	public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_) {
+		return p_82358_2_ == 1;
+	}
 
-            if (var7)
-            {
-                var6 *= -1;
-            }
+	@Override
+	public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_) {
+		if (p_71515_2_.length <= 0)
+			throw new WrongUsageException("commands.xp.usage", new Object[0]);
+		else {
+			String var4 = p_71515_2_[0];
+			final boolean var5 = var4.endsWith("l") || var4.endsWith("L");
 
-            EntityPlayerMP var3;
+			if (var5 && var4.length() > 1) {
+				var4 = var4.substring(0, var4.length() - 1);
+			}
 
-            if (p_71515_2_.length > 1)
-            {
-                var3 = getPlayer(p_71515_1_, p_71515_2_[1]);
-            }
-            else
-            {
-                var3 = getCommandSenderAsPlayer(p_71515_1_);
-            }
+			int var6 = parseInt(p_71515_1_, var4);
+			final boolean var7 = var6 < 0;
 
-            if (var5)
-            {
-                if (var7)
-                {
-                    var3.addExperienceLevel(-var6);
-                    func_152373_a(p_71515_1_, this, "commands.xp.success.negative.levels", new Object[] {Integer.valueOf(var6), var3.getCommandSenderName()});
-                }
-                else
-                {
-                    var3.addExperienceLevel(var6);
-                    func_152373_a(p_71515_1_, this, "commands.xp.success.levels", new Object[] {Integer.valueOf(var6), var3.getCommandSenderName()});
-                }
-            }
-            else
-            {
-                if (var7)
-                {
-                    throw new WrongUsageException("commands.xp.failure.widthdrawXp", new Object[0]);
-                }
+			if (var7) {
+				var6 *= -1;
+			}
 
-                var3.addExperience(var6);
-                func_152373_a(p_71515_1_, this, "commands.xp.success", new Object[] {Integer.valueOf(var6), var3.getCommandSenderName()});
-            }
-        }
-    }
+			EntityPlayerMP var3;
 
-    /**
-     * Adds the strings available in this command to the given list of tab completion options.
-     */
-    public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_)
-    {
-        return p_71516_2_.length == 2 ? getListOfStringsMatchingLastWord(p_71516_2_, this.getAllUsernames()) : null;
-    }
+			if (p_71515_2_.length > 1) {
+				var3 = getPlayer(p_71515_1_, p_71515_2_[1]);
+			} else {
+				var3 = getCommandSenderAsPlayer(p_71515_1_);
+			}
 
-    protected String[] getAllUsernames()
-    {
-        return MinecraftServer.getServer().getAllUsernames();
-    }
+			if (var5) {
+				if (var7) {
+					var3.addExperienceLevel(-var6);
+					func_152373_a(
+							p_71515_1_,
+							this,
+							"commands.xp.success.negative.levels",
+							new Object[] { Integer.valueOf(var6),
+									var3.getCommandSenderName() });
+				} else {
+					var3.addExperienceLevel(var6);
+					func_152373_a(
+							p_71515_1_,
+							this,
+							"commands.xp.success.levels",
+							new Object[] { Integer.valueOf(var6),
+									var3.getCommandSenderName() });
+				}
+			} else {
+				if (var7)
+					throw new WrongUsageException(
+							"commands.xp.failure.widthdrawXp", new Object[0]);
 
-    /**
-     * Return whether the specified command parameter index is a username parameter.
-     */
-    public boolean isUsernameIndex(String[] p_82358_1_, int p_82358_2_)
-    {
-        return p_82358_2_ == 1;
-    }
+				var3.addExperience(var6);
+				func_152373_a(
+						p_71515_1_,
+						this,
+						"commands.xp.success",
+						new Object[] { Integer.valueOf(var6),
+								var3.getCommandSenderName() });
+			}
+		}
+	}
 }

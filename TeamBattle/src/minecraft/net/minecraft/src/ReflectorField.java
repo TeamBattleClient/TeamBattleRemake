@@ -2,72 +2,55 @@ package net.minecraft.src;
 
 import java.lang.reflect.Field;
 
-public class ReflectorField
-{
-    private ReflectorClass reflectorClass = null;
-    private String targetFieldName = null;
-    private boolean checked = false;
-    private Field targetField = null;
+public class ReflectorField {
+	private boolean checked = false;
+	private ReflectorClass reflectorClass = null;
+	private Field targetField = null;
+	private String targetFieldName = null;
 
-    public ReflectorField(ReflectorClass reflectorClass, String targetFieldName)
-    {
-        this.reflectorClass = reflectorClass;
-        this.targetFieldName = targetFieldName;
-        Field f = this.getTargetField();
-    }
+	public ReflectorField(ReflectorClass reflectorClass, String targetFieldName) {
+		this.reflectorClass = reflectorClass;
+		this.targetFieldName = targetFieldName;
+		getTargetField();
+	}
 
-    public Field getTargetField()
-    {
-        if (this.checked)
-        {
-            return this.targetField;
-        }
-        else
-        {
-            this.checked = true;
-            Class cls = this.reflectorClass.getTargetClass();
+	public boolean exists() {
+		return checked ? targetField != null : getTargetField() != null;
+	}
 
-            if (cls == null)
-            {
-                return null;
-            }
-            else
-            {
-                try
-                {
-                    this.targetField = cls.getDeclaredField(this.targetFieldName);
+	public Field getTargetField() {
+		if (checked)
+			return targetField;
+		else {
+			checked = true;
+			final Class cls = reflectorClass.getTargetClass();
 
-                    if (!this.targetField.isAccessible())
-                    {
-                        this.targetField.setAccessible(true);
-                    }
-                }
-                catch (SecurityException var3)
-                {
-                    var3.printStackTrace();
-                }
-                catch (NoSuchFieldException var4)
-                {
-                    Config.log("(Reflector) Field not present: " + cls.getName() + "." + this.targetFieldName);
-                }
+			if (cls == null)
+				return null;
+			else {
+				try {
+					targetField = cls.getDeclaredField(targetFieldName);
 
-                return this.targetField;
-            }
-        }
-    }
+					if (!targetField.isAccessible()) {
+						targetField.setAccessible(true);
+					}
+				} catch (final SecurityException var3) {
+					var3.printStackTrace();
+				} catch (final NoSuchFieldException var4) {
+					Config.log("(Reflector) Field not present: "
+							+ cls.getName() + "." + targetFieldName);
+				}
 
-    public Object getValue()
-    {
-        return Reflector.getFieldValue((Object)null, this);
-    }
+				return targetField;
+			}
+		}
+	}
 
-    public void setValue(Object value)
-    {
-        Reflector.setFieldValue((Object)null, this, value);
-    }
+	public Object getValue() {
+		return Reflector.getFieldValue((Object) null, this);
+	}
 
-    public boolean exists()
-    {
-        return this.checked ? this.targetField != null : this.getTargetField() != null;
-    }
+	public void setValue(Object value) {
+		Reflector.setFieldValue((Object) null, this, value);
+	}
 }

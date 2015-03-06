@@ -1,0 +1,7 @@
+package ml.balen.Balen.event.events;
+
+import ml.balen.Balen.event.Event;
+
+public final class EventHUDDraw extends Event {
+
+}

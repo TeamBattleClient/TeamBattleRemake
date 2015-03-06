@@ -1,81 +1,76 @@
 package net.minecraft.network.play.server;
 
 import java.io.IOException;
+
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
 
-public class S13PacketDestroyEntities extends Packet
-{
-    private int[] field_149100_a;
-    private static final String __OBFID = "CL_00001320";
+public class S13PacketDestroyEntities extends Packet {
+	private int[] field_149100_a;
 
-    public S13PacketDestroyEntities() {}
+	public S13PacketDestroyEntities() {
+	}
 
-    public S13PacketDestroyEntities(int ... p_i45211_1_)
-    {
-        this.field_149100_a = p_i45211_1_;
-    }
+	public S13PacketDestroyEntities(int... p_i45211_1_) {
+		field_149100_a = p_i45211_1_;
+	}
 
-    /**
-     * Reads the raw packet data from the data stream.
-     */
-    public void readPacketData(PacketBuffer p_148837_1_) throws IOException
-    {
-        this.field_149100_a = new int[p_148837_1_.readByte()];
+	public int[] func_149098_c() {
+		return field_149100_a;
+	}
 
-        for (int var2 = 0; var2 < this.field_149100_a.length; ++var2)
-        {
-            this.field_149100_a[var2] = p_148837_1_.readInt();
-        }
-    }
+	@Override
+	public void processPacket(INetHandler p_148833_1_) {
+		this.processPacket((INetHandlerPlayClient) p_148833_1_);
+	}
 
-    /**
-     * Writes the raw packet data to the data stream.
-     */
-    public void writePacketData(PacketBuffer p_148840_1_) throws IOException
-    {
-        p_148840_1_.writeByte(this.field_149100_a.length);
+	public void processPacket(INetHandlerPlayClient p_148833_1_) {
+		p_148833_1_.handleDestroyEntities(this);
+	}
 
-        for (int var2 = 0; var2 < this.field_149100_a.length; ++var2)
-        {
-            p_148840_1_.writeInt(this.field_149100_a[var2]);
-        }
-    }
+	/**
+	 * Reads the raw packet data from the data stream.
+	 */
+	@Override
+	public void readPacketData(PacketBuffer p_148837_1_) throws IOException {
+		field_149100_a = new int[p_148837_1_.readByte()];
 
-    public void processPacket(INetHandlerPlayClient p_148833_1_)
-    {
-        p_148833_1_.handleDestroyEntities(this);
-    }
+		for (int var2 = 0; var2 < field_149100_a.length; ++var2) {
+			field_149100_a[var2] = p_148837_1_.readInt();
+		}
+	}
 
-    /**
-     * Returns a string formatted as comma separated [field]=[value] values. Used by Minecraft for logging purposes.
-     */
-    public String serialize()
-    {
-        StringBuilder var1 = new StringBuilder();
+	/**
+	 * Returns a string formatted as comma separated [field]=[value] values.
+	 * Used by Minecraft for logging purposes.
+	 */
+	@Override
+	public String serialize() {
+		final StringBuilder var1 = new StringBuilder();
 
-        for (int var2 = 0; var2 < this.field_149100_a.length; ++var2)
-        {
-            if (var2 > 0)
-            {
-                var1.append(", ");
-            }
+		for (int var2 = 0; var2 < field_149100_a.length; ++var2) {
+			if (var2 > 0) {
+				var1.append(", ");
+			}
 
-            var1.append(this.field_149100_a[var2]);
-        }
+			var1.append(field_149100_a[var2]);
+		}
 
-        return String.format("entities=%d[%s]", new Object[] {Integer.valueOf(this.field_149100_a.length), var1});
-    }
+		return String.format("entities=%d[%s]",
+				new Object[] { Integer.valueOf(field_149100_a.length), var1 });
+	}
 
-    public int[] func_149098_c()
-    {
-        return this.field_149100_a;
-    }
+	/**
+	 * Writes the raw packet data to the data stream.
+	 */
+	@Override
+	public void writePacketData(PacketBuffer p_148840_1_) throws IOException {
+		p_148840_1_.writeByte(field_149100_a.length);
 
-    public void processPacket(INetHandler p_148833_1_)
-    {
-        this.processPacket((INetHandlerPlayClient)p_148833_1_);
-    }
+		for (final int element : field_149100_a) {
+			p_148840_1_.writeInt(element);
+		}
+	}
 }

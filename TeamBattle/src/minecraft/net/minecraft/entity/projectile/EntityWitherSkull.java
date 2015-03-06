@@ -11,136 +11,135 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class EntityWitherSkull extends EntityFireball
-{
-    private static final String __OBFID = "CL_00001728";
+public class EntityWitherSkull extends EntityFireball {
 
-    public EntityWitherSkull(World p_i1793_1_)
-    {
-        super(p_i1793_1_);
-        this.setSize(0.3125F, 0.3125F);
-    }
+	public EntityWitherSkull(World p_i1793_1_) {
+		super(p_i1793_1_);
+		setSize(0.3125F, 0.3125F);
+	}
 
-    public EntityWitherSkull(World p_i1794_1_, EntityLivingBase p_i1794_2_, double p_i1794_3_, double p_i1794_5_, double p_i1794_7_)
-    {
-        super(p_i1794_1_, p_i1794_2_, p_i1794_3_, p_i1794_5_, p_i1794_7_);
-        this.setSize(0.3125F, 0.3125F);
-    }
+	public EntityWitherSkull(World p_i1795_1_, double p_i1795_2_,
+			double p_i1795_4_, double p_i1795_6_, double p_i1795_8_,
+			double p_i1795_10_, double p_i1795_12_) {
+		super(p_i1795_1_, p_i1795_2_, p_i1795_4_, p_i1795_6_, p_i1795_8_,
+				p_i1795_10_, p_i1795_12_);
+		setSize(0.3125F, 0.3125F);
+	}
 
-    /**
-     * Return the motion factor for this projectile. The factor is multiplied by the original motion.
-     */
-    protected float getMotionFactor()
-    {
-        return this.isInvulnerable() ? 0.73F : super.getMotionFactor();
-    }
+	public EntityWitherSkull(World p_i1794_1_, EntityLivingBase p_i1794_2_,
+			double p_i1794_3_, double p_i1794_5_, double p_i1794_7_) {
+		super(p_i1794_1_, p_i1794_2_, p_i1794_3_, p_i1794_5_, p_i1794_7_);
+		setSize(0.3125F, 0.3125F);
+	}
 
-    public EntityWitherSkull(World p_i1795_1_, double p_i1795_2_, double p_i1795_4_, double p_i1795_6_, double p_i1795_8_, double p_i1795_10_, double p_i1795_12_)
-    {
-        super(p_i1795_1_, p_i1795_2_, p_i1795_4_, p_i1795_6_, p_i1795_8_, p_i1795_10_, p_i1795_12_);
-        this.setSize(0.3125F, 0.3125F);
-    }
+	/**
+	 * Called when the entity is attacked.
+	 */
+	@Override
+	public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
+		return false;
+	}
 
-    /**
-     * Returns true if the entity is on fire. Used by render to add the fire effect on rendering.
-     */
-    public boolean isBurning()
-    {
-        return false;
-    }
+	/**
+	 * Returns true if other Entities should be prevented from moving through
+	 * this Entity.
+	 */
+	@Override
+	public boolean canBeCollidedWith() {
+		return false;
+	}
 
-    public float func_145772_a(Explosion p_145772_1_, World p_145772_2_, int p_145772_3_, int p_145772_4_, int p_145772_5_, Block p_145772_6_)
-    {
-        float var7 = super.func_145772_a(p_145772_1_, p_145772_2_, p_145772_3_, p_145772_4_, p_145772_5_, p_145772_6_);
+	@Override
+	protected void entityInit() {
+		dataWatcher.addObject(10, Byte.valueOf((byte) 0));
+	}
 
-        if (this.isInvulnerable() && p_145772_6_ != Blocks.bedrock && p_145772_6_ != Blocks.end_portal && p_145772_6_ != Blocks.end_portal_frame && p_145772_6_ != Blocks.command_block)
-        {
-            var7 = Math.min(0.8F, var7);
-        }
+	@Override
+	public float func_145772_a(Explosion p_145772_1_, World p_145772_2_,
+			int p_145772_3_, int p_145772_4_, int p_145772_5_, Block p_145772_6_) {
+		float var7 = super.func_145772_a(p_145772_1_, p_145772_2_, p_145772_3_,
+				p_145772_4_, p_145772_5_, p_145772_6_);
 
-        return var7;
-    }
+		if (isInvulnerable() && p_145772_6_ != Blocks.bedrock
+				&& p_145772_6_ != Blocks.end_portal
+				&& p_145772_6_ != Blocks.end_portal_frame
+				&& p_145772_6_ != Blocks.command_block) {
+			var7 = Math.min(0.8F, var7);
+		}
 
-    /**
-     * Called when this EntityFireball hits a block or entity.
-     */
-    protected void onImpact(MovingObjectPosition p_70227_1_)
-    {
-        if (!this.worldObj.isClient)
-        {
-            if (p_70227_1_.entityHit != null)
-            {
-                if (this.shootingEntity != null)
-                {
-                    if (p_70227_1_.entityHit.attackEntityFrom(DamageSource.causeMobDamage(this.shootingEntity), 8.0F) && !p_70227_1_.entityHit.isEntityAlive())
-                    {
-                        this.shootingEntity.heal(5.0F);
-                    }
-                }
-                else
-                {
-                    p_70227_1_.entityHit.attackEntityFrom(DamageSource.magic, 5.0F);
-                }
+		return var7;
+	}
 
-                if (p_70227_1_.entityHit instanceof EntityLivingBase)
-                {
-                    byte var2 = 0;
+	/**
+	 * Return the motion factor for this projectile. The factor is multiplied by
+	 * the original motion.
+	 */
+	@Override
+	protected float getMotionFactor() {
+		return isInvulnerable() ? 0.73F : super.getMotionFactor();
+	}
 
-                    if (this.worldObj.difficultySetting == EnumDifficulty.NORMAL)
-                    {
-                        var2 = 10;
-                    }
-                    else if (this.worldObj.difficultySetting == EnumDifficulty.HARD)
-                    {
-                        var2 = 40;
-                    }
+	/**
+	 * Returns true if the entity is on fire. Used by render to add the fire
+	 * effect on rendering.
+	 */
+	@Override
+	public boolean isBurning() {
+		return false;
+	}
 
-                    if (var2 > 0)
-                    {
-                        ((EntityLivingBase)p_70227_1_.entityHit).addPotionEffect(new PotionEffect(Potion.wither.id, 20 * var2, 1));
-                    }
-                }
-            }
+	/**
+	 * Return whether this skull comes from an invulnerable (aura) wither boss.
+	 */
+	public boolean isInvulnerable() {
+		return dataWatcher.getWatchableObjectByte(10) == 1;
+	}
 
-            this.worldObj.newExplosion(this, this.posX, this.posY, this.posZ, 1.0F, false, this.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing"));
-            this.setDead();
-        }
-    }
+	/**
+	 * Called when this EntityFireball hits a block or entity.
+	 */
+	@Override
+	protected void onImpact(MovingObjectPosition p_70227_1_) {
+		if (!worldObj.isClient) {
+			if (p_70227_1_.entityHit != null) {
+				if (shootingEntity != null) {
+					if (p_70227_1_.entityHit.attackEntityFrom(
+							DamageSource.causeMobDamage(shootingEntity), 8.0F)
+							&& !p_70227_1_.entityHit.isEntityAlive()) {
+						shootingEntity.heal(5.0F);
+					}
+				} else {
+					p_70227_1_.entityHit.attackEntityFrom(DamageSource.magic,
+							5.0F);
+				}
 
-    /**
-     * Returns true if other Entities should be prevented from moving through this Entity.
-     */
-    public boolean canBeCollidedWith()
-    {
-        return false;
-    }
+				if (p_70227_1_.entityHit instanceof EntityLivingBase) {
+					byte var2 = 0;
 
-    /**
-     * Called when the entity is attacked.
-     */
-    public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_)
-    {
-        return false;
-    }
+					if (worldObj.difficultySetting == EnumDifficulty.NORMAL) {
+						var2 = 10;
+					} else if (worldObj.difficultySetting == EnumDifficulty.HARD) {
+						var2 = 40;
+					}
 
-    protected void entityInit()
-    {
-        this.dataWatcher.addObject(10, Byte.valueOf((byte)0));
-    }
+					if (var2 > 0) {
+						((EntityLivingBase) p_70227_1_.entityHit)
+								.addPotionEffect(new PotionEffect(
+										Potion.wither.id, 20 * var2, 1));
+					}
+				}
+			}
 
-    /**
-     * Return whether this skull comes from an invulnerable (aura) wither boss.
-     */
-    public boolean isInvulnerable()
-    {
-        return this.dataWatcher.getWatchableObjectByte(10) == 1;
-    }
+			worldObj.newExplosion(this, posX, posY, posZ, 1.0F, false, worldObj
+					.getGameRules().getGameRuleBooleanValue("mobGriefing"));
+			setDead();
+		}
+	}
 
-    /**
-     * Set whether this skull comes from an invulnerable (aura) wither boss.
-     */
-    public void setInvulnerable(boolean p_82343_1_)
-    {
-        this.dataWatcher.updateObject(10, Byte.valueOf((byte)(p_82343_1_ ? 1 : 0)));
-    }
+	/**
+	 * Set whether this skull comes from an invulnerable (aura) wither boss.
+	 */
+	public void setInvulnerable(boolean p_82343_1_) {
+		dataWatcher.updateObject(10, Byte.valueOf((byte) (p_82343_1_ ? 1 : 0)));
+	}
 }
