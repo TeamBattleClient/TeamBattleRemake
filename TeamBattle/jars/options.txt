@@ -6,7 +6,7 @@ saturation:0.0
 renderDistance:2
 guiScale:2
 particles:2
-bobView:false
+bobView:true
 anaglyph3d:false
 advancedOpengl:true
 maxFps:260

@@ -1,0 +1,12 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.Modules.ModuleBase;
+
+public class Sprint extends ModuleBase {
+
+	public Sprint() {
+		super("Sprint", 0x444553FF);
+		
+	}
+
+}

@@ -1,0 +1,33 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+public class Sprint extends ModuleBase {
+
+	public Sprint() {
+		super("Sprint", 0xFF55FF55);
+		
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+			if(SprintChecks())
+			{
+				mc.thePlayer.setSprinting(true);
+			}
+		}
+		
+	}
+	
+boolean check = mc.thePlayer.getFoodStats().getFoodLevel() > 6F  && !mc.thePlayer.isDead;
+	public boolean SprintChecks()
+	{
+		return check;
+	}
+
+
+}

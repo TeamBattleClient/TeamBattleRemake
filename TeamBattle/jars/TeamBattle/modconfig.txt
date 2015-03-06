@@ -33,6 +33,8 @@ repot:false:NONE:true
 respawn:true:NONE:false
 retard:false:NONE:true
 sneak:true:Z:true
+speed:false:NONE:true
+sprint:true:NONE:true
 step:true:NONE:false
 wallhack:false:B:true
 waypoints:true:NONE:false

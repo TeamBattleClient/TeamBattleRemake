@@ -26,7 +26,6 @@
 <fullyQualifiedTypeName name="net.minecraft.util.AxisAlignedBB"/>
 <fullyQualifiedTypeName name="net.minecraft.util.MathHelper"/>
 <fullyQualifiedTypeName name="net.minecraft.block.BlockAir"/>
-<fullyQualifiedTypeName name="net.minecraft.block.Block"/>
 <fullyQualifiedTypeName name="me.client.modules.Module"/>
 <fullyQualifiedTypeName name="me.client.modules.ModuleCategory"/>
 <fullyQualifiedTypeName name="me.client.events.EventBoundingBox"/>
@@ -39,5 +38,20 @@
 <fullyQualifiedTypeName name="org.lwjgl.input.Keyboard"/>
 <fullyQualifiedTypeName name="me.client.events.EventUpdate"/>
 <fullyQualifiedTypeName name="com.darkmagician6.eventapi.EventManager"/>
+<fullyQualifiedTypeName name="ml.balen.Balen.event.events.EventPacketReceive"/>
+<fullyQualifiedTypeName name="ml.balen.Balen.LateMod"/>
+<fullyQualifiedTypeName name="ml.balen.Balen.event.events.EventPacketSent"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventVelocity.Type"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventWorldLoad"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventTick"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventKeyPressed"/>
+<fullyQualifiedTypeName name="down.TeamBattle.TeamBattleClient"/>
+<fullyQualifiedTypeName name="down.TeamBattle.Modules.ModuleBase"/>
+<fullyQualifiedTypeName name="net.minecraft.block.Block"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.Event"/>
+<fullyQualifiedTypeName name="net.minecraft.util.Timer"/>
 <fullyQualifiedTypeName name="java.lang.Override"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates"/>
+<fullyQualifiedTypeName name="down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates"/>
 </qualifiedTypeNameHistroy>

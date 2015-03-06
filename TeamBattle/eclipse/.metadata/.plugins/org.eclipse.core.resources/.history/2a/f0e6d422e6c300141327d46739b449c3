@@ -1,0 +1,30 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+
+
+public class Criticals extends ModuleBase
+{
+
+	public Criticals() {
+		super("Sprint", 0x44FF8F8F);
+		
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+			if(mc.thePlayer.motionX > 0.0F && mc.thePlayer.motionZ > 0.0F) 
+			{
+				mc.thePlayer.setSprinting(true);
+			}
+		}
+		
+	}
+	
+}

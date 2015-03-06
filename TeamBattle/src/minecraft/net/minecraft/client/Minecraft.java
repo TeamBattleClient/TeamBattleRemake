@@ -457,202 +457,203 @@ public class Minecraft implements IPlayerUsage
      */
     private void startGame() throws LWJGLException
     {
-        this.gameSettings = new GameSettings(this, this.mcDataDir);
+    this.gameSettings = new GameSettings(this, this.mcDataDir);
 
-        if (this.gameSettings.overrideHeight > 0 && this.gameSettings.overrideWidth > 0)
+    if (this.gameSettings.overrideHeight > 0 && this.gameSettings.overrideWidth > 0)
+    {
+        this.displayWidth = this.gameSettings.overrideWidth;
+        this.displayHeight = this.gameSettings.overrideHeight;
+    }
+
+    if (this.fullscreen)
+    {
+        Display.setFullscreen(true);
+        this.displayWidth = Display.getDisplayMode().getWidth();
+        this.displayHeight = Display.getDisplayMode().getHeight();
+
+        if (this.displayWidth <= 0)
         {
-            this.displayWidth = this.gameSettings.overrideWidth;
-            this.displayHeight = this.gameSettings.overrideHeight;
+            this.displayWidth = 1;
+        }
+
+        if (this.displayHeight <= 0)
+        {
+            this.displayHeight = 1;
+        }
+    }
+    else
+    {
+        Display.setDisplayMode(new DisplayMode(this.displayWidth, this.displayHeight));
+    }
+
+    Display.setResizable(true);
+    Display.setTitle("Minecraft 1.7.10");
+    logger.info("LWJGL Version: " + Sys.getVersion());
+    Util.EnumOS var1 = Util.getOSType();
+
+    if (var1 != Util.EnumOS.OSX)
+    {
+        try
+        {
+            InputStream var2 = this.mcDefaultResourcePack.func_152780_c(new ResourceLocation("icons/icon_16x16.png"));
+            InputStream var3 = this.mcDefaultResourcePack.func_152780_c(new ResourceLocation("icons/icon_32x32.png"));
+
+            if (var2 != null && var3 != null)
+            {
+                Display.setIcon(new ByteBuffer[] {this.func_152340_a(var2), this.func_152340_a(var3)});
+            }
+        }
+        catch (IOException var8)
+        {
+            logger.error("Couldn\'t set icon", var8);
+        }
+    }
+
+    try
+    {
+        Display.create((new PixelFormat()).withDepthBits(24));
+    }
+    catch (LWJGLException var7)
+    {
+        logger.error("Couldn\'t set pixel format", var7);
+
+        try
+        {
+            Thread.sleep(1000L);
+        }
+        catch (InterruptedException var6)
+        {
+            ;
         }
 
         if (this.fullscreen)
         {
-            Display.setFullscreen(true);
-            this.displayWidth = Display.getDisplayMode().getWidth();
-            this.displayHeight = Display.getDisplayMode().getHeight();
-
-            if (this.displayWidth <= 0)
-            {
-                this.displayWidth = 1;
-            }
-
-            if (this.displayHeight <= 0)
-            {
-                this.displayHeight = 1;
-            }
-        }
-        else
-        {
-            Display.setDisplayMode(new DisplayMode(this.displayWidth, this.displayHeight));
+            this.updateDisplayMode();
         }
 
-        Display.setResizable(true);
-        Display.setTitle("Minecraft 1.7.10");
-        logger.info("LWJGL Version: " + Sys.getVersion());
-        Util.EnumOS var1 = Util.getOSType();
-
-        if (var1 != Util.EnumOS.OSX)
-        {
-            try
-            {
-                InputStream var2 = this.mcDefaultResourcePack.func_152780_c(new ResourceLocation("icons/icon_16x16.png"));
-                InputStream var3 = this.mcDefaultResourcePack.func_152780_c(new ResourceLocation("icons/icon_32x32.png"));
-
-                if (var2 != null && var3 != null)
-                {
-                    Display.setIcon(new ByteBuffer[] {this.func_152340_a(var2), this.func_152340_a(var3)});
-                }
-            }
-            catch (IOException var8)
-            {
-                logger.error("Couldn\'t set icon", var8);
-            }
-        }
-
-        try
-        {
-            Display.create((new PixelFormat()).withDepthBits(24));
-        }
-        catch (LWJGLException var7)
-        {
-            logger.error("Couldn\'t set pixel format", var7);
-
-            try
-            {
-                Thread.sleep(1000L);
-            }
-            catch (InterruptedException var6)
-            {
-                ;
-            }
-
-            if (this.fullscreen)
-            {
-                this.updateDisplayMode();
-            }
-
-            Display.create();
-        }
-
-        OpenGlHelper.initializeTextures();
-
-        try
-        {
-            this.field_152353_at = new TwitchStream(this, (String)Iterables.getFirst(this.field_152356_J.get("twitch_access_token"), (Object)null));
-        }
-        catch (Throwable var5)
-        {
-            this.field_152353_at = new NullStream(var5);
-            logger.error("Couldn\'t initialize twitch stream");
-        }
-
-        this.mcFramebuffer = new Framebuffer(this.displayWidth, this.displayHeight, true);
-        this.mcFramebuffer.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
-        this.guiAchievement = new GuiAchievement(this);
-        this.metadataSerializer_.registerMetadataSectionType(new TextureMetadataSectionSerializer(), TextureMetadataSection.class);
-        this.metadataSerializer_.registerMetadataSectionType(new FontMetadataSectionSerializer(), FontMetadataSection.class);
-        this.metadataSerializer_.registerMetadataSectionType(new AnimationMetadataSectionSerializer(), AnimationMetadataSection.class);
-        this.metadataSerializer_.registerMetadataSectionType(new PackMetadataSectionSerializer(), PackMetadataSection.class);
-        this.metadataSerializer_.registerMetadataSectionType(new LanguageMetadataSectionSerializer(), LanguageMetadataSection.class);
-        this.saveLoader = new AnvilSaveConverter(new File(this.mcDataDir, "saves"));
-        this.mcResourcePackRepository = new ResourcePackRepository(this.fileResourcepacks, new File(this.mcDataDir, "server-resource-packs"), this.mcDefaultResourcePack, this.metadataSerializer_, this.gameSettings);
-        this.mcResourceManager = new SimpleReloadableResourceManager(this.metadataSerializer_);
-        this.mcLanguageManager = new LanguageManager(this.metadataSerializer_, this.gameSettings.language);
-        this.mcResourceManager.registerReloadListener(this.mcLanguageManager);
-        this.refreshResources();
-        this.renderEngine = new TextureManager(this.mcResourceManager);
-        this.mcResourceManager.registerReloadListener(this.renderEngine);
-        this.field_152350_aA = new SkinManager(this.renderEngine, new File(this.fileAssets, "skins"), this.field_152355_az);
-        this.loadScreen();
-        this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
-        this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
-        this.mcMusicTicker = new MusicTicker(this);
-        this.fontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
-
-        if (this.gameSettings.language != null)
-        {
-            this.fontRenderer.setUnicodeFlag(this.func_152349_b());
-            this.fontRenderer.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
-        }
-
-        this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
-        this.mcResourceManager.registerReloadListener(this.fontRenderer);
-        this.mcResourceManager.registerReloadListener(this.standardGalacticFontRenderer);
-        this.mcResourceManager.registerReloadListener(new GrassColorReloadListener());
-        this.mcResourceManager.registerReloadListener(new FoliageColorReloadListener());
-        RenderManager.instance.itemRenderer = new ItemRenderer(this);
-        this.entityRenderer = new EntityRenderer(this, this.mcResourceManager);
-        this.mcResourceManager.registerReloadListener(this.entityRenderer);
-        AchievementList.openInventory.setStatStringFormatter(new IStatStringFormat()
-        {
-            private static final String __OBFID = "CL_00000639";
-            public String formatString(String p_74535_1_)
-            {
-                try
-                {
-                    return String.format(p_74535_1_, new Object[] {GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode())});
-                }
-                catch (Exception var3)
-                {
-                    return "Error: " + var3.getLocalizedMessage();
-                }
-            }
-        });
-        this.mouseHelper = new MouseHelper();
-        this.checkGLError("Pre startup");
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glClearDepth(1.0D);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthFunc(GL11.GL_LEQUAL);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-        GL11.glCullFace(GL11.GL_BACK);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        this.checkGLError("Startup");
-        this.renderGlobal = new RenderGlobal(this);
-        this.textureMapBlocks = new TextureMap(0, "textures/blocks");
-        this.textureMapBlocks.func_147632_b(this.gameSettings.anisotropicFiltering);
-        this.textureMapBlocks.func_147633_a(this.gameSettings.mipmapLevels);
-        this.renderEngine.loadTextureMap(TextureMap.locationBlocksTexture, this.textureMapBlocks);
-        this.renderEngine.loadTextureMap(TextureMap.locationItemsTexture, new TextureMap(1, "textures/items"));
-        GL11.glViewport(0, 0, this.displayWidth, this.displayHeight);
-        this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
-        this.checkGLError("Post startup");
-        this.ingameGUI = new GuiIngame(this);
-
-        if (this.serverName != null)
-        {
-            this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
-        }
-        else
-        {
-            this.displayGuiScreen(new GuiMainMenu());
-        }
-
-        this.renderEngine.func_147645_c(this.field_152354_ay);
-        this.field_152354_ay = null;
-        this.loadingScreen = new LoadingScreenRenderer(this);
-
-        if (this.gameSettings.fullScreen && !this.fullscreen)
-        {
-            this.toggleFullscreen();
-        }
-        
-        try
-        {
-            Display.setVSyncEnabled(this.gameSettings.enableVsync);
-        }
-        catch (OpenGLException var4)
-        {
-            this.gameSettings.enableVsync = false;
-            this.gameSettings.saveOptions();
-        }
-        //TODO : Client Startup
-        TeamBattleClient.onStartup();
+        Display.create();
     }
+
+    OpenGlHelper.initializeTextures();
+
+    try
+    {
+        this.field_152353_at = new TwitchStream(this, (String)Iterables.getFirst(this.field_152356_J.get("twitch_access_token"), (Object)null));
+    }
+    catch (Throwable var5)
+    {
+        this.field_152353_at = new NullStream(var5);
+        logger.error("Couldn\'t initialize twitch stream");
+    }
+
+    this.mcFramebuffer = new Framebuffer(this.displayWidth, this.displayHeight, true);
+    this.mcFramebuffer.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
+    this.guiAchievement = new GuiAchievement(this);
+    this.metadataSerializer_.registerMetadataSectionType(new TextureMetadataSectionSerializer(), TextureMetadataSection.class);
+    this.metadataSerializer_.registerMetadataSectionType(new FontMetadataSectionSerializer(), FontMetadataSection.class);
+    this.metadataSerializer_.registerMetadataSectionType(new AnimationMetadataSectionSerializer(), AnimationMetadataSection.class);
+    this.metadataSerializer_.registerMetadataSectionType(new PackMetadataSectionSerializer(), PackMetadataSection.class);
+    this.metadataSerializer_.registerMetadataSectionType(new LanguageMetadataSectionSerializer(), LanguageMetadataSection.class);
+    this.saveLoader = new AnvilSaveConverter(new File(this.mcDataDir, "saves"));
+    this.mcResourcePackRepository = new ResourcePackRepository(this.fileResourcepacks, new File(this.mcDataDir, "server-resource-packs"), this.mcDefaultResourcePack, this.metadataSerializer_, this.gameSettings);
+    this.mcResourceManager = new SimpleReloadableResourceManager(this.metadataSerializer_);
+    this.mcLanguageManager = new LanguageManager(this.metadataSerializer_, this.gameSettings.language);
+    this.mcResourceManager.registerReloadListener(this.mcLanguageManager);
+    this.refreshResources();
+    this.renderEngine = new TextureManager(this.mcResourceManager);
+    this.mcResourceManager.registerReloadListener(this.renderEngine);
+    this.field_152350_aA = new SkinManager(this.renderEngine, new File(this.fileAssets, "skins"), this.field_152355_az);
+    this.loadScreen();
+    this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
+    this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
+    this.mcMusicTicker = new MusicTicker(this);
+    this.fontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
+
+    if (this.gameSettings.language != null)
+    {
+        this.fontRenderer.setUnicodeFlag(this.func_152349_b());
+        this.fontRenderer.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
+    }
+
+    this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
+    this.mcResourceManager.registerReloadListener(this.fontRenderer);
+    this.mcResourceManager.registerReloadListener(this.standardGalacticFontRenderer);
+    this.mcResourceManager.registerReloadListener(new GrassColorReloadListener());
+    this.mcResourceManager.registerReloadListener(new FoliageColorReloadListener());
+    RenderManager.instance.itemRenderer = new ItemRenderer(this);
+    this.entityRenderer = new EntityRenderer(this, this.mcResourceManager);
+    this.mcResourceManager.registerReloadListener(this.entityRenderer);
+    AchievementList.openInventory.setStatStringFormatter(new IStatStringFormat()
+    {
+        private static final String __OBFID = "CL_00000639";
+        public String formatString(String p_74535_1_)
+        {
+            try
+            {
+                return String.format(p_74535_1_, new Object[] {GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode())});
+            }
+            catch (Exception var3)
+            {
+                return "Error: " + var3.getLocalizedMessage();
+            }
+        }
+    });
+    this.mouseHelper = new MouseHelper();
+    this.checkGLError("Pre startup");
+    GL11.glEnable(GL11.GL_TEXTURE_2D);
+    GL11.glShadeModel(GL11.GL_SMOOTH);
+    GL11.glClearDepth(1.0D);
+    GL11.glEnable(GL11.GL_DEPTH_TEST);
+    GL11.glDepthFunc(GL11.GL_LEQUAL);
+    GL11.glEnable(GL11.GL_ALPHA_TEST);
+    GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+    GL11.glCullFace(GL11.GL_BACK);
+    GL11.glMatrixMode(GL11.GL_PROJECTION);
+    GL11.glLoadIdentity();
+    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    this.checkGLError("Startup");
+    this.renderGlobal = new RenderGlobal(this);
+    this.textureMapBlocks = new TextureMap(0, "textures/blocks");
+    this.textureMapBlocks.func_147632_b(this.gameSettings.anisotropicFiltering);
+    this.textureMapBlocks.func_147633_a(this.gameSettings.mipmapLevels);
+    this.renderEngine.loadTextureMap(TextureMap.locationBlocksTexture, this.textureMapBlocks);
+    this.renderEngine.loadTextureMap(TextureMap.locationItemsTexture, new TextureMap(1, "textures/items"));
+    GL11.glViewport(0, 0, this.displayWidth, this.displayHeight);
+    this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
+    this.checkGLError("Post startup");
+    this.ingameGUI = new GuiIngame(this);
+
+    if (this.serverName != null)
+    {
+        this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+    }
+    else
+    {
+        this.displayGuiScreen(new GuiMainMenu());
+    }
+
+    this.renderEngine.func_147645_c(this.field_152354_ay);
+    this.field_152354_ay = null;
+    this.loadingScreen = new LoadingScreenRenderer(this);
+
+    if (this.gameSettings.fullScreen && !this.fullscreen)
+    {
+        this.toggleFullscreen();
+    }
+    
+    try
+    {
+        Display.setVSyncEnabled(this.gameSettings.enableVsync);
+    }
+    catch (OpenGLException var4)
+    {
+        this.gameSettings.enableVsync = false;
+        this.gameSettings.saveOptions();
+    }
+    //TODO : Client StartUP
+    TeamBattleClient.onStartup();
+    
+}
 
     public boolean func_152349_b()
     {

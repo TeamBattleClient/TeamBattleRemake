@@ -1,0 +1,33 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+
+
+public class Criticals extends ModuleBase
+{
+
+	public Criticals() {
+		super("Sprint", 0x44FF8F8F);
+		
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+			if(SprintChecks()) 
+			{
+				mc.thePlayer.setSprinting(true);
+			}
+		}
+		
+	}
+	
+	public boolean SprintChecks(){
+		return mc.thePlayer.getFoodStats().getFoodLevel() > 6F  && !mc.thePlayer.isDead;
+	}
+	
+}
