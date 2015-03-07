@@ -19,7 +19,7 @@ public class Sprint extends ModuleBase
 	public void onEvent(Event event) {
 		if(event instanceof EventPreSendMotionUpdates)
 		{
-			if(mc.thePlayer.onGround) 
+			if(mc.thePlayer.getFoodStats().getFoodLevel() > 3 && !mc.thePlayer.isSneaking() && mc.gameSettings.keyBindForward.getIsKeyPressed()) 
 			{
 				mc.thePlayer.setSprinting(true);
 			}

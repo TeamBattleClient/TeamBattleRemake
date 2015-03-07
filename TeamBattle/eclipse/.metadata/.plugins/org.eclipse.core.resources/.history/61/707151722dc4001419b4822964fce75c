@@ -1,0 +1,69 @@
+package down.TeamBattle.Modules.Modules;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+public class Criticals extends ModuleBase{
+
+	public Criticals() {
+		super("Crits", 0x27123FF);
+		// TODO Auto-generated constructor stub
+	}
+	private boolean fauxJumped = false;
+	private boolean preOnGround = false;
+	public boolean doThatShitNextTick = false;
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+					
+				if (this.getCritsPossible()) {
+					if (this.getShouldFauxJump() || doThatShitNextTick) {
+						this.fauxJump();
+					
+					}
+			}else if(event instanceof EventPostSendMotionUpdates)
+
+				if (this.fauxJumped) {
+					this.doThatShitNextTick = false;
+					mc.thePlayer.onGround = this.preOnGround;
+					//mc.thePlayer.boundingBox.offset(0, -0.13, 0);
+					this.fauxJumped = false;
+				}}
+			}
+
+			public void fauxJump() {
+				this.preOnGround = mc.thePlayer.onGround;
+				mc.thePlayer.onGround = false;
+				mc.thePlayer.boundingBox.offset(0, 0.08, 0);
+				this.fauxJumped = true;
+			}
+
+			public boolean getCritsPossible() {
+				EntityPlayer player = mc.thePlayer;
+				return player.onGround && !player.isInWater() && !player.isOnLadder()
+						&& !player.capabilities.isCreativeMode;
+			}
+
+			private boolean getShouldFauxJump() {
+				MovingObjectPosition entityFacing = mc.getMinecraft().objectMouseOver;
+				if (entityFacing != null) {
+					if (entityFacing.typeOfHit == MovingObjectType.ENTITY) {
+						if (entityFacing.entityHit instanceof EntityLivingBase) {
+							if (mc.thePlayer.isSwingInProgress) {
+								return true;
+							}
+						}
+					}
+				}
+
+				return false;
+			}}
+	

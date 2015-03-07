@@ -26,8 +26,11 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventAttack;
 import down.TeamBattle.EventSystem.events.EventBlockBreaking;
 import down.TeamBattle.EventSystem.events.EventBlockClicked;
+import down.TeamBattle.EventSystem.events.EventWorldLoad;
 
 public class PlayerControllerMP {
 	/**
@@ -93,6 +96,15 @@ public class PlayerControllerMP {
 	 * Attacks an entity
 	 */
 	public void attackEntity(EntityPlayer p_78764_1_, Entity p_78764_2_) {
+		//TODO
+		final EventAttack event = new EventAttack(mc.thePlayer, p_78764_1_);
+		TeamBattleClient.getEventManager().call(event);
+		 if (event.isCancelled()) {
+	            try {
+	                Thread.sleep(10L);
+	            }
+	            catch (Exception ex) {}
+	        }
 		syncCurrentPlayItem();
 		netClientHandler.addToSendQueue(new C02PacketUseEntity(p_78764_2_,
 				C02PacketUseEntity.Action.ATTACK));

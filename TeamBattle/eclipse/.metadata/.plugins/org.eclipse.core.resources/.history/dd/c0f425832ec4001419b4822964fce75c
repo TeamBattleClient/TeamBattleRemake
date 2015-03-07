@@ -1,0 +1,59 @@
+package down.TeamBattle.Modules.Modules;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPacketSent;
+import down.TeamBattle.EventSystem.events.EventPostSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventTick;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.BlockHelper;
+
+public class Criticals extends ModuleBase{
+
+	public Criticals() {
+		super("Crits", 0x27123FF);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPacketSent)
+		{
+			final EventPacketSent sent = (EventPacketSent) event;
+			 if (sent.getPacket() instanceof C03PacketPlayer.C04PacketPlayerPosition) {
+		            final C03PacketPlayer.C04PacketPlayerPosition c04PacketPlayerPosition = (C03PacketPlayer.C04PacketPlayerPosition)sent.getPacket();
+		            return;
+		        }
+		        if (sent.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
+		            final C03PacketPlayer.C06PacketPlayerPosLook c06PacketPlayerPosLook = (C03PacketPlayer.C06PacketPlayerPosLook)sent.getPacket();
+		        }
+		    }else if(event instanceof EventTick)
+		    {
+		    	if (mc.thePlayer.onGround) {
+		            
+		            if ((BlockHelper.isOnLiquid())&& (isAttacking())) 
+		            {
+		                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.boundingBox.minY - 1.0E-14, mc.thePlayer.posY - 1.0E-14, mc.thePlayer.posZ, false));
+		            }
+		            else {
+		                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.boundingBox.minY + 1.0E-14, mc.thePlayer.posY + 1.0E-14, mc.thePlayer.posZ, false));
+		                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.boundingBox.minY, mc.thePlayer.posY, mc.thePlayer.posZ, false));
+		            }
+		    }}
+		}
+		
+	
+	
+	
+	private boolean isAttacking() {
+        return (mc.thePlayer.isSwingInProgress && mc.objectMouseOver != null && mc.getMinecraft().objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mc.objectMouseOver.entityHit instanceof EntityLivingBase);
+    }
+
+    }
+
+	

@@ -1,0 +1,80 @@
+---- Minecraft Crash Report ----
+// You should try our sister game, Minceraft!
+
+Time: 3/7/15 12:05 AM
+Description: Unexpected error
+
+java.lang.ClassCastException: down.TeamBattle.EventSystem.events.EventAttack cannot be cast to down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates
+	at down.TeamBattle.Modules.Criticals.onEvent(Criticals.java:39)
+	at down.TeamBattle.Managers.managers.EventManager.call(EventManager.java:20)
+	at net.minecraft.client.multiplayer.PlayerControllerMP.attackEntity(PlayerControllerMP.java:100)
+	at net.minecraft.client.Minecraft.func_147116_af(Minecraft.java:1494)
+	at net.minecraft.client.Minecraft.runTick(Minecraft.java:2064)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1060)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:983)
+	at net.minecraft.client.main.Main.otherMain(Main.java:199)
+	at net.minecraft.client.main.Main.main(Main.java:67)
+	at Start.main(Start.java:11)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at down.TeamBattle.Modules.Criticals.onEvent(Criticals.java:39)
+	at down.TeamBattle.Managers.managers.EventManager.call(EventManager.java:20)
+	at net.minecraft.client.multiplayer.PlayerControllerMP.attackEntity(PlayerControllerMP.java:100)
+	at net.minecraft.client.Minecraft.func_147116_af(Minecraft.java:1494)
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 2 total; [EntityClientPlayerMP['0_____o'/3938446, l='MpServer', x=532.73, y=5.62, z=-46.17], EntityOtherPlayerMP['GQD'/3926375, l='MpServer', x=544.16, y=5.00, z=-57.84]]
+	Chunk stats: MultiplayerChunkCache: 441, 441
+	Level seed: 0
+	Level generator: ID 01 - flat, ver 0. Features enabled: false
+	Level generator options: 
+	Level spawn location: World: (544,6,-65), Chunk: (at 0,0,15 in 34,-5; contains blocks 544,0,-80 to 559,255,-65), Region: (1,-1; contains chunks 32,-32 to 63,-1, blocks 512,0,-512 to 1023,255,-1)
+	Level time: 147025022 game time, 95650152 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: survival (ID 0). Hardcore: false. Cheats: false
+	Forced entities: 42 total; [EntityPig['Pig'/3937188, l='MpServer', x=560.25, y=4.00, z=-46.84], EntityPig['Pig'/3937064, l='MpServer', x=543.52, y=4.00, z=-33.80], EntityOtherPlayerMP['swagmasta420'/3937549, l='MpServer', x=543.75, y=5.72, z=-92.78], EntityPig['Pig'/3939407, l='MpServer', x=541.63, y=4.00, z=-33.59], EntityPig['Pig'/3938033, l='MpServer', x=532.28, y=4.00, z=-43.47], EntityPig['Pig'/3936819, l='MpServer', x=542.16, y=3.00, z=-29.19], EntityPig['Pig'/3936995, l='MpServer', x=528.44, y=4.00, z=-46.84], EntityPig['Pig'/3936807, l='MpServer', x=547.69, y=4.00, z=-34.22], EntityPig['Pig'/3937138, l='MpServer', x=558.53, y=4.00, z=-33.59], EntityPig['Pig'/3937473, l='MpServer', x=559.47, y=4.00, z=-48.53], EntityPig['Pig'/3937142, l='MpServer', x=560.38, y=4.00, z=-38.75], EntityItem['item.item.porkchopRaw'/3939243, l='MpServer', x=532.84, y=4.13, z=-32.16], EntityPig['Pig'/3937210, l='MpServer', x=528.47, y=4.00, z=-41.22], EntityPig['Pig'/3937075, l='MpServer', x=530.63, y=4.00, z=-48.53], EntityPig['Pig'/3939281, l='MpServer', x=530.34, y=4.00, z=-33.47], EntityOtherPlayerMP['GQD'/3926375, l='MpServer', x=544.16, y=5.00, z=-57.84], EntityPig['Pig'/3939280, l='MpServer', x=531.41, y=4.00, z=-35.34], EntityPig['Pig'/3937222, l='MpServer', x=530.47, y=4.00, z=-47.47], EntityPig['Pig'/3939365, l='MpServer', x=530.38, y=4.00, z=-37.88], EntityPig['Pig'/3938184, l='MpServer', x=536.84, y=4.00, z=-37.41], EntityPig['Pig'/3937528, l='MpServer', x=532.16, y=4.00, z=-87.06], EntityClientPlayerMP['0_____o'/3938446, l='MpServer', x=532.73, y=5.62, z=-46.17], EntityPig['Pig'/3936681, l='MpServer', x=530.06, y=4.00, z=-45.97], EntityPig['Pig'/3936790, l='MpServer', x=529.19, y=4.00, z=-42.34], EntityPig['Pig'/3937165, l='MpServer', x=541.78, y=4.00, z=-38.53], EntityPig['Pig'/3938178, l='MpServer', x=540.03, y=4.00, z=-32.50], EntityOtherPlayerMP['BlackCracker'/3926458, l='MpServer', x=543.50, y=4.50, z=-82.59], EntityPig['Pig'/3937230, l='MpServer', x=534.38, y=4.00, z=-41.28], EntityOtherPlayerMP['swagmasta420'/3937549, l='MpServer', x=533.88, y=1.16, z=-91.25], EntityPig['Pig'/3936991, l='MpServer', x=557.17, y=4.00, z=-42.47], EntityOtherPlayerMP['Gino0507'/3928715, l='MpServer', x=538.16, y=5.75, z=-107.75], EntityPig['Pig'/3937092, l='MpServer', x=556.16, y=4.00, z=-48.38], EntityOtherPlayerMP['Gino0507'/3928715, l='MpServer', x=539.53, y=5.22, z=-88.59], EntityPig['Pig'/3937796, l='MpServer', x=534.50, y=4.00, z=-40.38], EntityPig['Pig'/3936962, l='MpServer', x=538.34, y=4.00, z=-33.22], EntityOtherPlayerMP['GQD'/3926375, l='MpServer', x=544.16, y=5.00, z=-57.84], EntityPig['Pig'/3937170, l='MpServer', x=557.78, y=4.00, z=-32.47], EntityPig['Pig'/3937051, l='MpServer', x=528.47, y=4.00, z=-36.31], EntityPig['Pig'/3937513, l='MpServer', x=559.78, y=4.00, z=-37.09], EntityPig['Pig'/3937107, l='MpServer', x=555.03, y=4.00, z=-47.53], EntityPig['Pig'/3937985, l='MpServer', x=556.41, y=4.00, z=-32.69], EntityPig['Pig'/3937509, l='MpServer', x=555.84, y=4.00, z=-43.36]]
+	Retry entities: 0 total; []
+	Server brand: Spigot
+	Server type: Non-integrated multiplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:103)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2671)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:1012)
+	at net.minecraft.client.main.Main.otherMain(Main.java:199)
+	at net.minecraft.client.main.Main.main(Main.java:67)
+	at Start.main(Start.java:11)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Windows 8 (amd64) version 6.2
+	Java Version: 1.7.0_75, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 698831608 bytes (666 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 12, tallocated: 102
+	Launched Version: mcp
+	LWJGL: 2.9.1
+	OpenGL: Intel(R) HD Graphics 3000 GL version 3.1.0 - Build 9.17.10.3347, Intel
+	GL Caps: Using GL 1.3 multitexturing.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Anisotropic filtering is supported and maximum anisotropy is 16.
+Shaders are available because OpenGL 2.1 is supported.
+
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: []
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Anisotropic Filtering: Off (1)

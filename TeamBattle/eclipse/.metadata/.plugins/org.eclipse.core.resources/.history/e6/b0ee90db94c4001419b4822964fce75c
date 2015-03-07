@@ -1,0 +1,14 @@
+package down.TeamBattle.EventSystem;
+
+public abstract class Event {
+	  protected final Object source;
+	    
+	    public final Object getSource() {
+	        return this.source;
+	    }
+	    
+	    public Event(final Object a) {
+	        super();
+	        this.source = a;
+	    }
+}

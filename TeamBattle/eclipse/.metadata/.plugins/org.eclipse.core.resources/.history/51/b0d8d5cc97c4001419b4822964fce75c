@@ -1,0 +1,97 @@
+package ml.tehneon.lib.event.handlers;
+
+import java.util.concurrent.*;
+import ml.tehneon.lib.event.*;
+import java.lang.reflect.*;
+import java.util.stream.*;
+import java.util.function.*;
+import ml.tehneon.lib.annotations.*;
+import java.util.*;
+import java.lang.annotation.*;
+
+public class EventManager
+{
+    private final ConcurrentHashMap<Object, Map<Class<? extends EventBase>, List<Method>>> listeners;
+    private static EventManager instance;
+    
+    private EventManager() {
+        super();
+        this.listeners = new ConcurrentHashMap<Object, Map<Class<? extends EventBase>, List<Method>>>();
+    }
+    
+    public void registerListener(final Object listener) {
+        final Class<?> listenerClass = listener.getClass();
+        final List<Method> methodsWithAnnotation = new ArrayList<Method>();
+        Arrays.stream(listenerClass.getDeclaredMethods()).filter(EventManager::lambda$registerListener$20).sequential().forEach(methodsWithAnnotation::add);
+        final Set<Class<? extends EventBase>> eventClasses = new HashSet<Class<? extends EventBase>>();
+        for (final Method method : methodsWithAnnotation) {
+            final EventListener annotation = method.getDeclaredAnnotation(EventListener.class);
+            final Class<? extends EventBase> eventClass = (Class<? extends EventBase>)annotation.event();
+            if (!eventClasses.contains(eventClass)) {
+                eventClasses.add(eventClass);
+            }
+        }
+        synchronized (this.listeners) {
+            this.listeners.put(listener, new ConcurrentHashMap<Class<? extends EventBase>, List<Method>>());
+        }
+        for (final Class<? extends EventBase> eventClass2 : eventClasses) {
+            final List<Method> methodsForEvent = new ArrayList<Method>();
+            methodsWithAnnotation.stream().filter(EventManager::lambda$registerListener$21).sequential().forEach(methodsForEvent::add);
+            synchronized (this.listeners) {
+                this.listeners.get(listener).put(eventClass2, methodsForEvent);
+            }
+        }
+    }
+    
+    public void unregisterListener(final Object listener) {
+        synchronized (this.listeners) {
+            this.listeners.remove(listener);
+        }
+    }
+    
+    public Map<Object, Map<Class<? extends EventBase>, List<Method>>> getListeners() {
+        synchronized (this.listeners) {
+            return this.listeners;
+        }
+    }
+    
+    public <T extends EventBase> void fire(final T event) {
+        synchronized (this.listeners.entrySet()) {
+            synchronized (this.listeners) {
+                for (final Map.Entry<Object, Map<Class<? extends EventBase>, List<Method>>> entry : this.listeners.entrySet()) {
+                    for (final Map.Entry<Class<? extends EventBase>, List<Method>> en : entry.getValue().entrySet()) {
+                        if (en.getKey().equals(event.getClass())) {
+                            for (final Method m : en.getValue()) {
+                                m.setAccessible(true);
+                                try {
+                                    if (m.getParameterCount() == 0) {
+                                        m.invoke(entry.getKey(), new Object[0]);
+                                    }
+                                    if (m.getParameterCount() == 1) {
+                                        m.invoke(entry.getKey(), event);
+                                    }
+                                }
+                                catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                m.setAccessible(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public static EventManager getInstance() {
+        return (EventManager.instance == null) ? (EventManager.instance = new EventManager()) : EventManager.instance;
+    }
+    
+    private static boolean lambda$registerListener$21(final Class clazz, final Method m) {
+        return m.getDeclaredAnnotation(EventListener.class).event().equals(clazz);
+    }
+    
+    private static boolean lambda$registerListener$20(final Method m) {
+        return m.isAnnotationPresent(EventListener.class);
+    }
+}

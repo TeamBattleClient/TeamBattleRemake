@@ -1,0 +1,17 @@
+package ml.tehneon.lib.event.enums;
+
+public enum EnumEventPriority
+{
+    HIGH("HIGH", 3), 
+    NORMAL("NORMAL", 2), 
+    HIGHEST("HIGHEST", 4), 
+    LOW("LOW", 1);
+    
+    private static final EnumEventPriority[] $VALUES;
+    
+    LOWEST("LOWEST", 0);
+    
+    static {
+        $VALUES = new EnumEventPriority[] { EnumEventPriority.LOWEST, EnumEventPriority.LOW, EnumEventPriority.NORMAL, EnumEventPriority.HIGH, EnumEventPriority.HIGHEST };
+    }
+}

@@ -1,0 +1,25 @@
+package ml.tehneon.client.events.action;
+
+import ml.tehneon.lib.event.*;
+import net.minecraft.entity.player.*;
+import net.minecraft.entity.*;
+
+public class EventAttack extends EventCancellable
+{
+    EntityPlayer player;
+    Entity entity;
+    
+    public EntityPlayer getPlayer() {
+        return this.player;
+    }
+    
+    public Entity getEntity() {
+        return this.entity;
+    }
+    
+    public EventAttack(final Object a, final EntityPlayer a, final Entity a) {
+        super(a);
+        this.player = a;
+        this.entity = a;
+    }
+}

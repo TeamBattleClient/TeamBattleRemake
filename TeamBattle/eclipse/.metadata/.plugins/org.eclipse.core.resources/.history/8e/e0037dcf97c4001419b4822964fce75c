@@ -1,0 +1,15 @@
+package down.TeamBattle.EventSystem;
+
+public abstract class EventBase
+{
+    private final Object source;
+    
+    public final Object getSource() {
+        return this.source;
+    }
+    
+    public EventBase(final Object a) {
+        super();
+        this.source = a;
+    }
+}

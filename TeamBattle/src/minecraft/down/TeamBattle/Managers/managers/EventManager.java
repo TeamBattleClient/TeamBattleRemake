@@ -31,4 +31,6 @@ public final class EventManager extends ListManager<Listener> {
 	public void setup() {
 		contents = new CopyOnWriteArrayList<Listener>();
 	}
+	
+	
 }

@@ -1,0 +1,27 @@
+package down.TeamBattle.EventSystem.events;
+
+import down.TeamBattle.EventSystem.Cancellable;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.EventBase;
+import net.minecraft.entity.player.*;
+import net.minecraft.entity.*;
+
+public class EventAttack extends EventBase
+{
+    EntityPlayer player;
+    Entity entity;
+    
+    public EntityPlayer getPlayer() {
+        return this.player;
+    }
+    
+    public Entity getEntity() {
+        return this.entity;
+    }
+    
+    public EventAttack(final Object a, final EntityPlayer b, final Entity e) {
+        super(a);
+        this.player = b;
+        this.entity = e;
+    }
+}

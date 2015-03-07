@@ -1,1 +1,2 @@
 dg:X
+say /summon Cow:M

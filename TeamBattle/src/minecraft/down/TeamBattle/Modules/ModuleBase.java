@@ -22,6 +22,22 @@ public abstract class ModuleBase implements Listener {
 	public ModuleBase(String name, int color) {
 		this(name, 0, color);
 	}
+	public double X()
+	{
+		return mc.thePlayer.posX;
+	}
+	public double Y()
+	{
+		return mc.thePlayer.posY;
+	}
+		public double Z()
+		{
+			return mc.thePlayer.posZ;
+		}
+		public double YY()
+		{
+			return mc.thePlayer.boundingBox.minY;
+		}
 
 	public ModuleBase(String name, int keybind, int color) {
 		this.name = name;

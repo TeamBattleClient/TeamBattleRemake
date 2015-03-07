@@ -1,0 +1,21 @@
+package down.TeamBattle.EventSystem;
+
+public abstract class Cancellable extends EventBase  {
+	
+	    private boolean isCancelled;
+	    
+	    public Cancellable(final Object a) {
+	    	super(a);
+	        final boolean isCancelled = false;
+	        this.isCancelled = isCancelled;
+	    }
+	    
+	    public void cancel() {
+	        this.isCancelled = true;
+	    }
+	    
+	    public boolean getCancelled() {
+	        return this.isCancelled;
+	    }
+	}
+

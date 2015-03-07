@@ -6,7 +6,7 @@ import down.TeamBattle.EventSystem.Cancellable;
 import down.TeamBattle.EventSystem.Event;
 import down.TeamBattle.Utils.Logger;
 
-public final class EventChatSent extends Event implements Cancellable {
+public final class EventChatSent extends Event implements Cancellable  {
 	private boolean cancel;
 	private String message;
 
