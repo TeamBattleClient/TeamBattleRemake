@@ -19,7 +19,7 @@ public class Reset extends Command {
 		TeamBattleClient.getEventManager().setup();
 		TeamBattleClient.getFriendManager().setup();
 		TeamBattleClient.getValueManager().setup();
-		Logger.logChat("Latemod configurations have been reset.");
+		Logger.logChat("TeamBattle configurations have been reset.");
 	}
 
 }

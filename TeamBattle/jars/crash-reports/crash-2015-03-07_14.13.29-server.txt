@@ -1,0 +1,92 @@
+---- Minecraft Crash Report ----
+// Quite honestly, I wouldn't worry myself about that.
+
+Time: 3/7/15 2:13 PM
+Description: Ticking entity
+
+java.lang.NullPointerException: Ticking entity
+	at down.TeamBattle.Utils.BlockHelper.isInLiquid(BlockHelper.java:54)
+	at down.TeamBattle.Modules.Modules.Jesus.onEvent(Jesus.java:31)
+	at down.TeamBattle.Managers.managers.EventManager.call(EventManager.java:20)
+	at net.minecraft.block.Block.addCollisionBoxesToList(Block.java:1053)
+	at net.minecraft.world.World.func_147461_a(World.java:1149)
+	at net.minecraft.entity.Entity.func_145771_j(Entity.java:603)
+	at net.minecraft.entity.item.EntityXPOrb.onUpdate(EntityXPOrb.java:212)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:3686)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:1036)
+	at net.minecraft.world.World.updateEntity(World.java:3658)
+	at net.minecraft.src.WorldServerOF.updateEntity(WorldServerOF.java:342)
+	at net.minecraft.world.World.updateEntities(World.java:3544)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:1017)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:1242)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:1160)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:385)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:935)
+	at net.minecraft.server.MinecraftServer$5.run(MinecraftServer.java:1103)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at down.TeamBattle.Utils.BlockHelper.isInLiquid(BlockHelper.java:54)
+	at down.TeamBattle.Modules.Modules.Jesus.onEvent(Jesus.java:31)
+	at down.TeamBattle.Managers.managers.EventManager.call(EventManager.java:20)
+	at net.minecraft.block.Block.addCollisionBoxesToList(Block.java:1053)
+	at net.minecraft.world.World.func_147461_a(World.java:1149)
+	at net.minecraft.entity.Entity.func_145771_j(Entity.java:603)
+	at net.minecraft.entity.item.EntityXPOrb.onUpdate(EntityXPOrb.java:212)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:3686)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:1036)
+	at net.minecraft.world.World.updateEntity(World.java:3658)
+	at net.minecraft.src.WorldServerOF.updateEntity(WorldServerOF.java:342)
+
+-- Entity being ticked --
+Details:
+	Entity Type: XPOrb (net.minecraft.entity.item.EntityXPOrb)
+	Entity ID: 148
+	Entity Name: Experience Orb
+	Entity's Exact location: 620.12, 63.13, 84.67
+	Entity's Block location: World: (620,63,84), Chunk: (at 12,3,4 in 38,5; contains blocks 608,0,80 to 623,255,95), Region: (1,0; contains chunks 32,0 to 63,31, blocks 512,0,0 to 1023,255,511)
+	Entity's Momentum: 0.00, -0.03, -0.00
+Stacktrace:
+	at net.minecraft.world.World.updateEntities(World.java:3544)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:1017)
+
+-- Affected level --
+Details:
+	Level name: mcpworld
+	All players: 1 total; [EntityPlayerMP['Player531'/309, l='mcpworld', x=594.17, y=70.00, z=132.67]]
+	Chunk stats: ServerChunkCache: 277 Drop: 0
+	Level seed: -1587754402
+	Level generator: ID 02 - largeBiomes, ver 0. Features enabled: true
+	Level generator options: 
+	Level spawn location: World: (584,64,166), Chunk: (at 8,4,6 in 36,10; contains blocks 576,0,160 to 591,255,175), Region: (1,0; contains chunks 32,0 to 63,31, blocks 512,0,0 to 1023,255,511)
+	Level time: 250950 game time, 89268 day time
+	Level dimension: 0
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 13521 (now: true), thunder time: 7826 (now: true)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:1242)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:1160)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:385)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:935)
+	at net.minecraft.server.MinecraftServer$5.run(MinecraftServer.java:1103)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Windows 8 (amd64) version 6.2
+	Java Version: 1.7.0_75, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 972817640 bytes (927 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 103
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Player Count: 1 / 8; [EntityPlayerMP['Player531'/309, l='mcpworld', x=594.17, y=70.00, z=132.67]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Very likely; Jar signature invalidated

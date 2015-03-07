@@ -7,6 +7,7 @@ import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
 import down.TeamBattle.ModuleValues.Value;
 import down.TeamBattle.Modules.ModuleBase;
 import down.TeamBattle.Utils.Logger;
+import net.minecraft.block.material.Material;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -66,7 +67,7 @@ public final class Zoot extends ModuleBase {
 				}
 			}
 
-			if (fire.getValue() && mc.thePlayer.isBurning()) {
+			if (fire.getValue() && mc.thePlayer.isBurning() && !mc.thePlayer.isInsideOfMaterial(Material.fire)) {
 				for (int index = 0; index < 120; index++) {
 					mc.getNetHandler().addToSendQueue(
 							new C03PacketPlayer(mc.thePlayer.onGround));

@@ -3,10 +3,9 @@ package down.TeamBattle.Managers.managers;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
+import net.minecraft.util.StringUtils;
 import down.TeamBattle.TeamBattleClient;
 import down.TeamBattle.Managers.MapManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.StringUtils;
 
 public final class FriendManager extends MapManager<String, String> {
 
@@ -23,11 +22,11 @@ public final class FriendManager extends MapManager<String, String> {
 	}
 
 	public String replaceNames(String message, boolean color) {
-		if (!message.startsWith("\247r\2473[LM]\247f")) {
+		if (!message.startsWith("\247r\2473[TeamBattle]\247f")) {
 			for (final String name : contents.keySet()) {
 				message = message.replaceAll("(?i)" + name, Matcher
 						.quoteReplacement(color ? (TeamBattleClient.getModManager()
-								.getModByName("latechat").isEnabled() ? "\247g"
+								.getModByName("TeamChat").isEnabled() ? "\247g"
 								: "\2473") + contents.get(name) + "\247f"
 								: contents.get(name)));
 			}

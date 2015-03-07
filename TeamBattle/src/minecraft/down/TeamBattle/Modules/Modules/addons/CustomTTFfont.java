@@ -14,7 +14,7 @@ import down.TeamBattle.gUI.NahrFont;
 import down.TeamBattle.gUI.NahrFont.FontType;
 
 public final class CustomTTFfont extends GuiNewChat {
-	private final NahrFont font = new NahrFont("Verdana", 26);
+	private final NahrFont font = new NahrFont("Verdana", 18);
 	private final Minecraft mc;
 	private int y1;
 

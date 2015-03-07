@@ -1,0 +1,78 @@
+---- Minecraft Crash Report ----
+// I blame Dinnerbone.
+
+Time: 3/7/15 2:20 PM
+Description: Unexpected error
+
+java.lang.NullPointerException: Unexpected error
+	at down.TeamBattle.Managers.managers.FriendManager.replaceNames(FriendManager.java:29)
+	at net.minecraft.client.gui.GuiNewChat.func_146230_a(GuiNewChat.java:137)
+	at net.minecraft.client.gui.GuiIngame.renderGameOverlay(GuiIngame.java:830)
+	at net.minecraft.client.renderer.EntityRenderer.updateCameraAndRender(EntityRenderer.java:1933)
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1087)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:983)
+	at net.minecraft.client.main.Main.otherMain(Main.java:199)
+	at net.minecraft.client.main.Main.main(Main.java:67)
+	at Start.main(Start.java:11)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Stacktrace:
+	at down.TeamBattle.Managers.managers.FriendManager.replaceNames(FriendManager.java:29)
+	at net.minecraft.client.gui.GuiNewChat.func_146230_a(GuiNewChat.java:137)
+	at net.minecraft.client.gui.GuiIngame.renderGameOverlay(GuiIngame.java:830)
+
+-- Affected level --
+Details:
+	Level name: MpServer
+	All players: 15 total; [EntityClientPlayerMP['0_____o'/866921, l='MpServer', x=545.50, y=41.62, z=-22.50], EntityOtherPlayerMP['Andy214'/866592, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['P42d4'/804938, l='MpServer', x=549.59, y=40.00, z=-19.44], EntityOtherPlayerMP['Suschi13'/866803, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['hunterwol01'/866508, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['Vaculino'/866894, l='MpServer', x=559.75, y=41.00, z=-19.56], EntityOtherPlayerMP['Mickey1703'/866910, l='MpServer', x=552.47, y=40.00, z=-23.13], EntityOtherPlayerMP['Endertje4'/866901, l='MpServer', x=550.00, y=40.00, z=-18.44], EntityOtherPlayerMP['ParadoxLemur'/866372, l='MpServer', x=571.03, y=64.00, z=-11.66], EntityOtherPlayerMP['CWedebye'/866817, l='MpServer', x=548.82, y=40.00, z=-2.42], EntityOtherPlayerMP['mangole_HD'/866896, l='MpServer', x=553.42, y=41.06, z=-5.60], EntityOtherPlayerMP['Claire_Baggins'/866908, l='MpServer', x=536.34, y=40.00, z=-30.69], EntityOtherPlayerMP['Timdecoole1'/866914, l='MpServer', x=547.09, y=39.34, z=-49.33], EntityOtherPlayerMP['hugobest5'/866862, l='MpServer', x=556.34, y=50.70, z=1.63], EntityOtherPlayerMP['Iolks_MC'/866892, l='MpServer', x=561.77, y=49.65, z=-13.77]]
+	Chunk stats: MultiplayerChunkCache: 255, 255
+	Level seed: 0
+	Level generator: ID 00 - default, ver 1. Features enabled: false
+	Level generator options: 
+	Level spawn location: World: (545,54,-23), Chunk: (at 1,3,9 in 34,-2; contains blocks 544,0,-32 to 559,255,-17), Region: (1,-1; contains chunks 32,-32 to 63,-1, blocks 512,0,-512 to 1023,255,-1)
+	Level time: 453265914 game time, 29853776326 day time
+	Level dimension: 0
+	Level storage version: 0x00000 - Unknown?
+	Level weather: Rain time: 0 (now: false), thunder time: 0 (now: false)
+	Level game mode: Game mode: survival (ID 0). Hardcore: false. Cheats: false
+	Forced entities: 50 total; [EntityClientPlayerMP['0_____o'/866921, l='MpServer', x=545.50, y=41.62, z=-22.50], EntityHorse['§aFactions PvP'/0, l='MpServer', x=545.47, y=96.48, z=-47.56], EntityOtherPlayerMP['Andy214'/866592, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityWitherSkull['entity.WitherSkull.name'/1, l='MpServer', x=545.47, y=96.25, z=-47.56], EntityOtherPlayerMP['P42d4'/804938, l='MpServer', x=549.59, y=40.00, z=-19.44], EntityHorse['§aCreative'/2, l='MpServer', x=563.19, y=96.48, z=-40.31], EntityOtherPlayerMP['Suschi13'/866803, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityWitherSkull['entity.WitherSkull.name'/3, l='MpServer', x=563.19, y=96.25, z=-40.31], EntityHorse['§aPrison'/4, l='MpServer', x=570.41, y=96.48, z=-22.53], EntityOtherPlayerMP['hunterwol01'/866508, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityWitherSkull['entity.WitherSkull.name'/5, l='MpServer', x=570.41, y=96.25, z=-22.53], EntityOtherPlayerMP['Vaculino'/866894, l='MpServer', x=559.75, y=41.00, z=-19.56], EntityHorse['§aSkywars & Capture the Flag'/6, l='MpServer', x=563.19, y=96.48, z=-4.84], EntityOtherPlayerMP['Mickey1703'/866910, l='MpServer', x=552.47, y=40.00, z=-23.13], EntityWitherSkull['entity.WitherSkull.name'/7, l='MpServer', x=563.19, y=96.25, z=-4.84], EntityOtherPlayerMP['Endertje4'/866901, l='MpServer', x=550.00, y=40.00, z=-18.44], EntityHorse['§aSkyblock'/8, l='MpServer', x=545.50, y=96.48, z=2.50], EntityWitherSkull['entity.WitherSkull.name'/9, l='MpServer', x=545.50, y=96.25, z=2.50], EntityOtherPlayerMP['CWedebye'/866817, l='MpServer', x=548.82, y=40.00, z=-2.42], EntityHorse['§aKitPvP & OPPvP'/10, l='MpServer', x=527.59, y=96.48, z=-4.66], EntityWitherSkull['entity.WitherSkull.name'/11, l='MpServer', x=527.59, y=96.25, z=-4.66], EntityHorse['§aEconomy Survival'/12, l='MpServer', x=520.53, y=96.48, z=-22.50], EntityOtherPlayerMP['ParadoxLemur'/866372, l='MpServer', x=571.03, y=64.00, z=-11.66], EntityWitherSkull['entity.WitherSkull.name'/13, l='MpServer', x=520.53, y=96.25, z=-22.50], EntityHorse['§aHunger Games'/14, l='MpServer', x=527.63, y=96.48, z=-40.41], EntityOtherPlayerMP['CWedebye'/866817, l='MpServer', x=548.82, y=40.00, z=-2.42], EntityWitherSkull['entity.WitherSkull.name'/15, l='MpServer', x=527.63, y=96.25, z=-40.41], EntityOtherPlayerMP['mangole_HD'/866896, l='MpServer', x=553.42, y=41.06, z=-5.60], EntityWitherSkull['entity.WitherSkull.name'/17, l='MpServer', x=538.06, y=100.41, z=-22.63], EntityHorse['§aUse your §dCompass §aor the §dPortals §ato join a server.'/16, l='MpServer', x=538.06, y=100.64, z=-22.63], EntityWitherSkull['entity.WitherSkull.name'/19, l='MpServer', x=537.81, y=101.16, z=-22.41], EntityHorse['§d§k:; §aWelcome to DesiredCraft §d§k;:'/18, l='MpServer', x=537.81, y=101.39, z=-22.41], EntityOtherPlayerMP['ttff56789'/866916, l='MpServer', x=516.47, y=45.88, z=-56.16], EntityOtherPlayerMP['Claire_Baggins'/866908, l='MpServer', x=536.34, y=40.00, z=-30.69], EntityOtherPlayerMP['P42d4'/804938, l='MpServer', x=549.59, y=40.00, z=-19.44], EntityOtherPlayerMP['Timdecoole1'/866914, l='MpServer', x=547.09, y=39.34, z=-49.33], EntityOtherPlayerMP['hugobest5'/866862, l='MpServer', x=556.34, y=50.70, z=1.63], EntityOtherPlayerMP['Andy214'/866592, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['hugobest5'/866862, l='MpServer', x=556.34, y=50.70, z=1.63], EntityOtherPlayerMP['Suschi13'/866803, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['Vaculino'/866894, l='MpServer', x=559.75, y=41.00, z=-19.56], EntityOtherPlayerMP['Iolks_MC'/866892, l='MpServer', x=561.77, y=49.65, z=-13.77], EntityOtherPlayerMP['Iolks_MC'/866892, l='MpServer', x=561.77, y=49.65, z=-13.77], EntityOtherPlayerMP['Mickey1703'/866910, l='MpServer', x=552.47, y=40.00, z=-23.13], EntityOtherPlayerMP['Claire_Baggins'/866908, l='MpServer', x=536.34, y=40.00, z=-30.69], EntityOtherPlayerMP['Endertje4'/866901, l='MpServer', x=550.00, y=40.00, z=-18.44], EntityOtherPlayerMP['mangole_HD'/866896, l='MpServer', x=553.42, y=41.06, z=-5.60], EntityOtherPlayerMP['hunterwol01'/866508, l='MpServer', x=545.50, y=40.00, z=-22.50], EntityOtherPlayerMP['ParadoxLemur'/866372, l='MpServer', x=571.03, y=64.00, z=-11.66], EntityOtherPlayerMP['Timdecoole1'/866914, l='MpServer', x=547.09, y=39.34, z=-49.33]]
+	Retry entities: 0 total; []
+	Server brand: Spigot
+	Server type: Non-integrated multiplayer server
+Stacktrace:
+	at net.minecraft.client.multiplayer.WorldClient.addWorldInfoToCrashReport(WorldClient.java:103)
+	at net.minecraft.client.Minecraft.addGraphicsAndWorldToCrashReport(Minecraft.java:2671)
+	at net.minecraft.client.Minecraft.run(Minecraft.java:1012)
+	at net.minecraft.client.main.Main.otherMain(Main.java:199)
+	at net.minecraft.client.main.Main.main(Main.java:67)
+	at Start.main(Start.java:11)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.7.10
+	Operating System: Windows 8 (amd64) version 6.2
+	Java Version: 1.7.0_75, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 956152056 bytes (911 MB) / 1038876672 bytes (990 MB) up to 1038876672 bytes (990 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	AABB Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	IntCache: cache: 0, tcache: 0, allocated: 13, tallocated: 95
+	Launched Version: mcp
+	LWJGL: 2.9.1
+	OpenGL: Intel(R) HD Graphics 3000 GL version 3.1.0 - Build 9.17.10.3347, Intel
+	GL Caps: Using GL 1.3 multitexturing.
+Using framebuffer objects because OpenGL 3.0 is supported and separate blending is supported.
+Anisotropic filtering is supported and maximum anisotropy is 16.
+Shaders are available because OpenGL 2.1 is supported.
+
+	Is Modded: Very likely; Jar signature invalidated
+	Type: Client (map_client.txt)
+	Resource Packs: []
+	Current Language: English (US)
+	Profiler Position: N/A (disabled)
+	Vec3 Pool Size: 0 (0 bytes; 0 MB) allocated, 0 (0 bytes; 0 MB) used
+	Anisotropic Filtering: Off (1)

@@ -142,7 +142,7 @@ public final class AutoPot extends ModuleBase {
 					&& time.hasReached(delay.getValue())) {
 				if (doesHotbarHavePots()) {
 					potting = true;
-					pre.setPitch(35);
+					pre.setPitch(90);
 				}
 			}
 		} else if (event instanceof EventPostSendMotionUpdates) {
@@ -174,7 +174,7 @@ public final class AutoPot extends ModuleBase {
 				potting = true;
 				mc.getNetHandler().addToSendQueue(
 						new C03PacketPlayer.C05PacketPlayerLook(
-								mc.thePlayer.rotationYaw, 90,
+								mc.thePlayer.rotationYaw, 111,
 								mc.thePlayer.onGround));
 				mc.getNetHandler().addToSendQueue(
 						new C09PacketHeldItemChange(index - 36));

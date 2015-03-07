@@ -1,0 +1,280 @@
+package down.TeamBattle.Modules.Modules;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StringUtils;
+
+import org.lwjgl.opengl.GL11;
+
+import down.TeamBattle.TeamBattleClient;
+import down.TeamBattle.CommandSystem.Command;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventRender3D;
+import down.TeamBattle.ModuleValues.Value;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.Logger;
+
+public final class Nametags extends ModuleBase {
+	private final Value<Boolean> armor = new Value<Boolean>("nametag_armor",
+			true);
+	private final Value<Boolean> health = new Value<Boolean>("nametag_health",
+			true);
+	private final RenderItem itemRender = new RenderItem();
+	private final Value<Float> scale = new Value<Float>("nametag_scale", 3.0F);
+
+	public Nametags() {
+		super("Nametags");
+		setEnabled(true);
+		setVisible(false);
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("nametagscale", "<scale>", "ntscale", "nts") {
+					@Override
+					public void run(String message) {
+						if (message.split(" ")[1].equalsIgnoreCase("-d")) {
+							scale.setValue(scale.getDefaultValue());
+						} else {
+							scale.setValue(Float.parseFloat(message.split(" ")[1]));
+						}
+
+						if (scale.getValue() < 1.0F) {
+							scale.setValue(1.0F);
+						}
+						Logger.logChat("Nametag Scale set to: "
+								+ scale.getValue());
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("nametagarmor", "none", "ntarmor", "nta") {
+					@Override
+					public void run(String message) {
+						armor.setValue(!armor.getValue());
+						Logger.logChat("Nametags will "
+								+ (armor.getValue() ? "now" : "no longer")
+								+ " render other player's armor.");
+					}
+				});
+
+		TeamBattleClient.getCommandManager().getContents()
+				.add(new Command("nametaghealth", "none", "nthealth", "nth") {
+					@Override
+					public void run(String message) {
+						health.setValue(!health.getValue());
+						Logger.logChat("Nametags will "
+								+ (health.getValue() ? "now" : "no longer")
+								+ " render other player's health.");
+					}
+				});
+	}
+
+	private String getHealthColor(int health) {
+		String color;
+		if (health > 75) {
+			color = "2";
+		} else if (health > 50) {
+			color = "e";
+		} else if (health > 25) {
+			color = "6";
+		} else {
+			color = "4";
+		}
+		return color;
+	}
+
+	private int getNametagColor(EntityPlayer player) {
+		int color = 0xFFFFFFFF;
+		if (TeamBattleClient.getFriendManager().isFriend(player.getCommandSenderName())) {
+			color = 0xFF5ABDFC;
+		} else if (TeamBattleClient.getAdminManager().isAdmin(
+				player.getCommandSenderName())) {
+			color = 0xFF5ABDFC;
+		} else if (mc.thePlayer.getDistanceToEntity(player) > 64) {
+			color = 0xFF00FC00;
+		} else if (player.isInvisible()) {
+			color = 0xFFFFCC00;
+		} else if ((mc.thePlayer.isSneaking() || TeamBattleClient.getModManager()
+				.getModByName("sneak") != null
+				&& TeamBattleClient.getModManager().getModByName("sneak").isEnabled())
+				&& !player.canEntityBeSeen(mc.thePlayer)) {
+			color = 0xFF00FF00;
+		} else if (player.isSneaking()) {
+			color = 0xFFFC0000;
+		}
+		return color;
+	}
+
+	private String getNametagName(EntityPlayer player) {
+		String name = player.func_145748_c_().getFormattedText();
+		if (TeamBattleClient.getFriendManager().isFriend(
+				StringUtils.stripControlCodes(player.getCommandSenderName()))) {
+			name = StringUtils.stripControlCodes(player.getCommandSenderName());
+			name = StringUtils.stripControlCodes(TeamBattleClient.getFriendManager()
+					.replaceNames(name, false));
+		}
+
+		if (getNametagColor(player) != 0xFFFFFFFF) {
+			name = StringUtils.stripControlCodes(name);
+		}
+
+		if (health.getValue()) {
+			final int health = Math.round(100 * (player.getHealth() / player
+					.getMaxHealth()));
+			name = name + " \247" + getHealthColor(health) + health + "%";
+		}
+
+		return name;
+	}
+
+	private float getNametagSize(EntityPlayer player) {
+		final float dist = mc.thePlayer.getDistanceToEntity(player)
+				/ scale.getValue();
+		return dist <= 2 ? 2 : dist;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof EventRender3D) {
+			if (!Minecraft.isGuiEnabled())
+				return;
+			final EventRender3D render = (EventRender3D) event;
+			for (final EntityPlayer player : (List<EntityPlayer>) mc.theWorld.playerEntities) {
+				if (player == null || player == mc.thePlayer
+						|| !player.isEntityAlive()) {
+					continue;
+				}
+				final double posX = player.lastTickPosX
+						+ (player.posX - player.lastTickPosX)
+						* render.getPartialTicks() - RenderManager.renderPosX;
+				final double posY = player.lastTickPosY
+						+ (player.posY - player.lastTickPosY)
+						* render.getPartialTicks() - RenderManager.renderPosY;
+				final double posZ = player.lastTickPosZ
+						+ (player.posZ - player.lastTickPosZ)
+						* render.getPartialTicks() - RenderManager.renderPosZ;
+				renderNametag(player, posX, posY, posZ);
+			}
+		}
+	}
+
+	protected void renderNametag(EntityPlayer player, double x, double y,
+			double z) {
+		final String name = getNametagName(player);
+		final FontRenderer var12 = mc.fontRenderer;
+		final float var13 = getNametagSize(player);
+		final float var14 = 0.016666668F * var13;
+		GL11.glPushMatrix();
+		mc.entityRenderer.disableLightmap(1.0);
+		GL11.glTranslatef((float) x, (float) y + player.height + 0.5F,
+				(float) z);
+		GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(RenderManager.instance.playerViewX, 1.0F, 0.0F, 0.0F);
+		GL11.glScalef(-var14, -var14, var14);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDepthMask(false);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_BLEND);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		final Tessellator var15 = Tessellator.instance;
+		byte var16 = 0;
+		if (player.isSneaking()) {
+			var16 = 4;
+		}
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		var15.startDrawingQuads();
+		final int var17 = var12.getStringWidth(name) / 2;
+		var15.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.25F);
+		var15.addVertex(-var17 - 2, -2 + var16, 0.0D);
+		var15.addVertex(-var17 - 2, 9 + var16, 0.0D);
+		var15.addVertex(var17 + 2, 9 + var16, 0.0D);
+		var15.addVertex(var17 + 2, -2 + var16, 0.0D);
+		var15.draw();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		var12.drawStringWithShadow(name, -var12.getStringWidth(name) / 2,
+				var16, getNametagColor(player));
+		if (armor.getValue()) {
+			final List<ItemStack> items = new ArrayList<ItemStack>();
+			if (player.getCurrentEquippedItem() != null) {
+				items.add(player.getCurrentEquippedItem());
+			}
+
+			for (int index = 3; index >= 0; index--) {
+				final ItemStack stack = player.inventory.armorInventory[index];
+				if (stack != null) {
+					items.add(stack);
+				}
+			}
+
+			final int offset = var17 - (items.size() - 1) * 9 - 9;
+			int xPos = 0;
+			for (final ItemStack stack : items) {
+				itemRender.renderItemAboveHead(mc.getTextureManager(), stack,
+						-var17 + offset + xPos, var16 - 20);
+				itemRender.renderItemOverlayAboveHead(mc.fontRenderer,
+						mc.getTextureManager(), stack, -var17 + offset + xPos,
+						var16 - 20);
+				final NBTTagList enchants = stack.getEnchantmentTagList();
+
+				GL11.glPushMatrix();
+				GL11.glDisable(GL11.GL_LIGHTING);
+				GL11.glScalef(0.50F, 0.50F, 0.50F);
+				if (stack.getItem() == Items.golden_apple && stack.hasEffect()) {
+					mc.fontRenderer.drawStringWithShadow("god", (-var17
+							+ offset + xPos) * 2, (var16 - 20) * 2, 0xFFFF0000);
+				} else if (enchants != null) {
+					int ency = 0;
+					if (enchants.tagCount() >= 6) {
+						mc.fontRenderer.drawStringWithShadow("god", (-var17
+								+ offset + xPos) * 2, (var16 - 20) * 2,
+								0xFFFF0000);
+					} else {
+						for (int index = 0; index < enchants.tagCount(); ++index) {
+							final short id = enchants.getCompoundTagAt(index)
+									.getShort("id");
+							final short level = enchants
+									.getCompoundTagAt(index).getShort("lvl");
+
+							if (Enchantment.enchantmentsList[id] != null) {
+								final Enchantment enc = Enchantment.enchantmentsList[id];
+								String encName = enc.getTranslatedName(level)
+										.substring(0, 1).toLowerCase();
+								if (level > 10) {
+									encName = encName + "10+";
+								} else {
+									encName = encName + level;
+								}
+								mc.fontRenderer.drawStringWithShadow(encName,
+										(-var17 + offset + xPos) * 2,
+										(var16 - 20 + ency) * 2, 0xFFAAAAAA);
+								ency += mc.fontRenderer.FONT_HEIGHT / 2;
+							}
+						}
+					}
+				}
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glPopMatrix();
+				xPos += 18;
+			}
+		}
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDepthMask(true);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.entityRenderer.enableLightmap(1.0);
+		GL11.glPopMatrix();
+	}
+}

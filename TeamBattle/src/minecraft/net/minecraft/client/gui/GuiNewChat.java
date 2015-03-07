@@ -143,10 +143,10 @@ public class GuiNewChat extends Gui {
 										var16 - 9,
 										var15
 												+ var8
-												+ (var17.startsWith("\247r\2473[LM]\247f") ? 0
+												+ (var17.startsWith("\247r\2473[TeamBattle]\247f") ? 0
 														: 4), var16,
 										var14 / 2 << 24);
-								if (var17.startsWith("\247r\2473[LM]\247f")) {
+								if (var17.startsWith("\247r\2473[TeamBattle]\247f")) {
 									drawRect(var15 + var8, var16 - 9, var15
 											+ var8 + 4, var16, 0x8000AAAA);
 								}

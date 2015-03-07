@@ -384,10 +384,10 @@ public class GuiChat extends GuiScreen implements GuiYesNoCallback {
 	protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) {
 		mc.ingameGUI.persistantChatGUI.mouseClicked(p_73864_1_, p_73864_2_,
 				p_73864_3_);
-		final boolean latechat = TeamBattleClient.getModManager().getModByName(
-				"LateChat") != null
-				&& TeamBattleClient.getModManager().getModByName("LateChat").isEnabled();
-		if (p_73864_3_ == 0 && mc.gameSettings.chatLinks && !latechat) {
+		final boolean Teamchat = TeamBattleClient.getModManager().getModByName(
+				"TeamChat") != null
+				&& TeamBattleClient.getModManager().getModByName("TeamChat").isEnabled();
+		if (p_73864_3_ == 0 && mc.gameSettings.chatLinks && !Teamchat) {
 			final IChatComponent var4 = mc.ingameGUI.getChatGUI()
 					.func_146236_a(Mouse.getX(), Mouse.getY());
 

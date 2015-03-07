@@ -1,0 +1,28 @@
+package ml.latematt.latemod.mod.mods;
+
+import ml.latematt.latemod.event.Event;
+import ml.latematt.latemod.mod.Mod;
+import ml.latematt.latemod.mod.mods.addons.LateModNewChat;
+import net.minecraft.client.gui.GuiNewChat;
+
+public class LateChat extends Mod {
+	public LateChat() {
+		super("LateChat");
+		setEnabled(true);
+	}
+
+	@Override
+	public void onDisabled() {
+		mc.ingameGUI.persistantChatGUI = new GuiNewChat(mc);
+	}
+
+	@Override
+	public void onEnabled() {
+		mc.ingameGUI.persistantChatGUI = new LateModNewChat(mc);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+
+	}
+}
