@@ -1,2 +1,3 @@
 dg:X
 say /summon Cow:M
+speednocheat:Z

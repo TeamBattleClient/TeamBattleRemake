@@ -1,0 +1,76 @@
+package down.TeamBattle.Modules.Modules;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+public class FlyBypass extends ModuleBase{
+	 private float speed;
+	  private float height;
+	  private double pitch;
+	  private double yaw;
+	  private boolean setLoc;
+	  public static boolean mode = false;
+	public FlyBypass() {
+		super("FLyBypass", 0x55FF99FF);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+		      if (this.mc.gameSettings.keyBindJump.pressed)
+		        this.mc.thePlayer.motionY = 0.5D;
+		      else if (this.mc.gameSettings.keyBindSneak.pressed)
+		        this.mc.thePlayer.motionY = -0.5D;
+		      if ((!getUnderneathBlock()) && (!this.mc.gameSettings.keyBindJump.pressed) && (!this.mc.gameSettings.keyBindSneak.pressed)) {
+		        this.mc.thePlayer.motionY = -0.03D;
+		        Block highBlock = this.mc.theWorld.getBlock((int)Math.round(mc.thePlayer.posX), (int)Math.round(mc.thePlayer.boundingBox.minY - 1.5D), (int)Math.round(mc.thePlayer.posZ));
+		        if (!(highBlock instanceof BlockAir)) {
+		          this.setLoc = true;
+		        } else {
+		          this.setLoc = false;
+		          this.height = 0.6F;
+		        }
+		      } else if ((this.setLoc) && (getUnderneathBlock()) && (this.height >= 0.11D)) {
+		        this.height = (float)(this.height - 0.005D);
+		        System.out.println(this.height);
+		      }
+		    } else {
+		      this.mc.thePlayer.capabilities.allowFlying = false;
+		      this.mc.thePlayer.motionY = 0.0D;
+		      this.mc.thePlayer.motionX = 0.0D;
+		      this.mc.thePlayer.motionZ = 0.0D;
+		      this.mc.thePlayer.jumpMovementFactor = (this.speed / 3.0F);
+		      this.mc.thePlayer.landMovementFactor = (this.speed / 3.0F);
+		      if ((this.mc.gameSettings.keyBindJump.pressed) && (this.mc.inGameHasFocus)) {
+		        if (this.mc.thePlayer.isOnLadder())
+		          this.mc.thePlayer.motionY += 0.28D;
+		        else
+		          this.mc.thePlayer.motionY += this.speed / 4.0F;
+		      }
+		      else if ((this.mc.gameSettings.keyBindSneak.pressed) && (this.mc.inGameHasFocus))
+		        this.mc.thePlayer.motionY -= this.speed / 4.0F;
+		    }
+		  }else if(event instanceof EventLocation)  
+		   {
+		    double x = this.mc.thePlayer.posX;
+		    double y = this.mc.thePlayer.posY;
+		    double z = this.mc.thePlayer.posZ;
+		    if (this.setLoc)
+		      event.setLoctaion(x, y + this.height, z, false);
+		   }
+
+ public void onDisable()
+ {
+	  super.onDisabled();
+   this.mc.thePlayer.capabilities.allowFlying = false;
+ }
+ public boolean getUnderneathBlock(){
+	 
+	 Block block = mc.theWorld.getBlock((int)mc.thePlayer.posX, (int)(mc.thePlayer.posY - 0.01), (int)mc.thePlayer.posZ);
+	 return block instanceof BlockAir && !block.isCollidable();
+ }
+

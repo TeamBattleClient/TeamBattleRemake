@@ -1,0 +1,5 @@
+package down.TeamBattle.EventSystem.events;
+
+public class EventLocation {
+
+}

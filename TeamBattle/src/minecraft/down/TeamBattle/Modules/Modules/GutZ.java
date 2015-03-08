@@ -10,6 +10,7 @@ import down.TeamBattle.EventSystem.events.EventTick;
 import down.TeamBattle.Modules.ModuleBase;
 import down.TeamBattle.Utils.TimeHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -39,9 +40,9 @@ public class GutZ extends ModuleBase{
 				 mc.thePlayer.motionY -= 5.0F;
 			 }
 				 
-	if(!mc.thePlayer.isInWater()){ 
+	if(!mc.thePlayer.isInWater() ){ 
 		
-		mc.thePlayer.motionY *= 0.08;
+		mc.thePlayer.motionY *= 0.04;
 		
 	}
 	
@@ -54,6 +55,10 @@ public class GutZ extends ModuleBase{
 			
 	
 	}
-	
+	public boolean isairborne(){
+		 
+		 Block block = mc.theWorld.getBlock((int)mc.thePlayer.posX, (int)(mc.thePlayer.posY - 0.01), (int)mc.thePlayer.posZ);
+		 return block instanceof BlockAir && !block.isCollidable();
+	 }
 	
 }

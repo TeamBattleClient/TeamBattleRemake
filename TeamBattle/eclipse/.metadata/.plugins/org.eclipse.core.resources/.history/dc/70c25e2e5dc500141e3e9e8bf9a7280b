@@ -1,0 +1,32 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventAttack;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+import down.TeamBattle.Utils.BlockHelper;
+
+public class CivDig extends ModuleBase {
+
+	public CivDig() {
+		super("Ez", 0x55ff55ff);
+		
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+			if(BlockHelper.isOnLiquid())
+			{
+			mc.thePlayer.motionY =+ 0.1;
+			}else if(event instanceof EventAttack)
+			{
+				mc.thePlayer.motionY =+ 1;
+			}
+		}
+		
+	}
+	
+
+}

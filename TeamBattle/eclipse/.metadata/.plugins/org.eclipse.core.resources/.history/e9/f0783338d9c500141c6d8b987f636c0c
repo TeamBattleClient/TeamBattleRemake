@@ -1,0 +1,26 @@
+package down.TeamBattle.Modules.Modules;
+
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventLocation;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.EventSystem.events.EventRightClick;
+import down.TeamBattle.EventSystem.events.EventTick;
+import down.TeamBattle.Modules.ModuleBase;
+
+public class FastFall extends ModuleBase {
+
+	public FastFall() {
+		super("FastFall", 0xFFC63E);
+	
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventRightClick)
+		{
+			mc.thePlayer.motionY *=1F;
+		}
+		
+	}
+
+}

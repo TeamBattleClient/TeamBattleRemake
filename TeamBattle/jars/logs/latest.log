@@ -1,81 +1,433 @@
-[14:42:19] [main/INFO]: Setting user: Player125
-[14:42:19] [main/INFO]: (Session ID is token:0:Player125)
-[14:42:20] [Client thread/INFO]: LWJGL Version: 2.9.1
-[14:42:20] [Client thread/ERROR]: Couldn't initialize twitch stream
-[14:42:20] [Client thread/INFO]: Reloading ResourceManager: Default
-[14:42:21] [Sound Library Loader/INFO]: Sound engine started
-[14:42:21] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
-[14:42:21] [Client thread/INFO]: Created: 256x256 textures/items-atlas
-[14:42:25] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
-[14:42:25] [Server thread/INFO]: Generating keypair
-[14:42:25] [Server thread/INFO]: Preparing start region for level 0
-[14:42:26] [Server thread/INFO]: Player125[local:E:9f9f8b7c] logged in with entity id 268 at (594.1690875475409, 70.0, 132.67026618714013)
-[14:42:26] [Server thread/INFO]: Player125 joined the game
-[14:42:26] [Server thread/INFO]: Changing view distance to 2, from 10
-[14:42:29] [Server thread/INFO]: <Player125> lol
-[14:42:29] [Client thread/INFO]: [CHAT] <Player125> lol
-[14:42:32] [Client thread/INFO]: [CHAT] Unknown command. Try /help for a list of commands
-[14:42:32] [Server thread/INFO]: Saving and pausing game...
-[14:42:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:42:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:42:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:42:38] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "TeamCha" was not found!
-[14:42:39] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "TeamChat" was toggled off.
-[14:42:43] [Server thread/INFO]: <Player125> Hello nigga
-[14:42:43] [Client thread/INFO]: [CHAT] <Player125> Hello nigga
-[14:42:57] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "TeamChat" was toggled on.
-[14:43:04] [Server thread/INFO]: <Player125> Hello latematt here
-[14:43:04] [Client thread/INFO]: [CHAT] <Player125> Hello latematt here
-[14:43:45] [Server thread/INFO]: Saving and pausing game...
-[14:43:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:43:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:43:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:43:49] [Client thread/INFO]: [CHAT] [TeamBattle] Invalid arguments! add <name> <alias>
-[14:43:56] [Client thread/INFO]: [CHAT] [TeamBattle] Friend "§gBalen" added.
-[14:43:57] [Server thread/INFO]: Saving and pausing game...
-[14:43:58] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:43:58] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:43:58] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:46:57] [Client thread/INFO]: [CHAT] [TeamBattle] Invalid arguments! del <name>
-[14:47:00] [Client thread/INFO]: [CHAT] [TeamBattle] Friend "balen" removed.
-[14:47:02] [Server thread/INFO]: <Player125> fl
-[14:47:02] [Client thread/INFO]: [CHAT] <Player125> fl
-[14:47:09] [Client thread/INFO]: [CHAT] [TeamBattle] Friend "Player125" removed.
-[14:47:11] [Server thread/INFO]: <Player125> lol
-[14:47:11] [Client thread/INFO]: [CHAT] <Player125> lol
-[14:47:41] [Server thread/INFO]: Saving and pausing game...
-[14:47:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:47:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:47:41] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:47:44] [Server thread/INFO]: Changing view distance to 8, from 2
-[14:47:44] [Server thread/INFO]: Saving and pausing game...
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:47:44] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:47:45] [Server thread/INFO]: Stopping server
-[14:47:45] [Server thread/INFO]: Saving players
-[14:47:45] [Server thread/INFO]: Saving worlds
-[14:47:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
-[14:47:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
-[14:47:45] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
-[14:47:47] [Alt Login Thread/INFO]: Logging in with username & password
-[14:47:53] [Client thread/INFO]: Connecting to mc.desiredcraft.net, 25565
-[14:47:56] [Client thread/INFO]: [CHAT] [Hub] You have been teleported to spawn!
-[14:47:56] [Client thread/INFO]: [CHAT] ---------------------------------------
-[14:47:56] [Client thread/INFO]: [CHAT] 
-[14:47:56] [Client thread/INFO]: [CHAT]            Choose a server Portal
-[14:47:56] [Client thread/INFO]: [CHAT] 
-[14:47:56] [Client thread/INFO]: [CHAT] ---------------------------------------
-[14:48:19] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Support the Server by purchasing VIP, Kits, and/or Items.     Purchase at DesiredCraft.net/shop                                 -----------------------------------------------------
-[14:48:37] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Go through a server Portal to start playing!                      -----------------------------------------------------
-[14:48:46] [Client thread/INFO]: [CHAT] [Broadcast] Regarding name changes: Anyone changing their name before we confirm it's safe WILL lose their data.
-[14:48:49] [Client thread/INFO]: [CHAT] You don't have permission to chat in this region!
-[14:48:50] [Client thread/INFO]: [CHAT] You don't have permission to chat in this region!
-[14:48:50] [Client thread/INFO]: [CHAT] * Your message contained an excessive use of CAPS and has been cancelled
-[14:48:53] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Support the Server by purchasing VIP, Kits, and/or Items.     Purchase at DesiredCraft.net/shop                                 -----------------------------------------------------
-[14:49:02] [Client thread/INFO]: [CHAT] [TeamBattle] Friend "§gJohn" added.
-[14:49:13] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Go through a server Portal to start playing!                      -----------------------------------------------------
-[14:49:33] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Support the Server by purchasing VIP, Kits, and/or Items.     Purchase at DesiredCraft.net/shop                                 -----------------------------------------------------
-[14:49:46] [Client thread/INFO]: [CHAT] [Broadcast] Regarding name changes: Anyone changing their name before we confirm it's safe WILL lose their data.
-[14:49:53] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Go through a server Portal to start playing!                      -----------------------------------------------------
-[14:50:13] [Client thread/INFO]: [CHAT] -------------------------[DC]------------------------- Support the Server by purchasing VIP, Kits, and/or Items.     Purchase at DesiredCraft.net/shop                                 -----------------------------------------------------
+[14:23:12] [main/INFO]: Setting user: Player515
+[14:23:12] [main/INFO]: (Session ID is token:0:Player515)
+[14:23:12] [Client thread/INFO]: LWJGL Version: 2.9.1
+[14:23:12] [Client thread/ERROR]: Couldn't initialize twitch stream
+[14:23:12] [Client thread/INFO]: Reloading ResourceManager: Default
+[14:23:13] [Sound Library Loader/INFO]: Sound engine started
+[14:23:13] [Client thread/INFO]: Created: 512x256 textures/blocks-atlas
+[14:23:14] [Client thread/INFO]: Created: 256x256 textures/items-atlas
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:15] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:15] [Client thread/ERROR]: @ Post render
+[14:23:15] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:16] [Client thread/ERROR]: ########## GL ERROR ##########
+[14:23:16] [Client thread/ERROR]: @ Post render
+[14:23:16] [Client thread/ERROR]: 1286: Invalid framebuffer operation
+[14:23:18] [Server thread/INFO]: Starting integrated minecraft server version 1.7.10
+[14:23:18] [Server thread/INFO]: Generating keypair
+[14:23:18] [Server thread/INFO]: Preparing start region for level 0
+[14:23:19] [Server thread/INFO]: Changing view distance to 6, from 10
+[14:23:19] [Server thread/INFO]: Player515[local:E:ac660038] logged in with entity id 181 at (608.7182889454463, 67.0, 164.81979505914782)
+[14:23:19] [Server thread/INFO]: Player515 joined the game
+[14:23:32] [Server thread/INFO]: Saving and pausing game...
+[14:23:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:23:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:23:32] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:23:43] [Client thread/WARN]: Failed to load texture: minecraft:textures/TeamBattleClient/cape.png
+java.io.FileNotFoundException: minecraft:textures/TeamBattleClient/cape.png
+	at net.minecraft.client.resources.FallbackResourceManager.getResource(FallbackResourceManager.java:85) ~[bin/:?]
+	at net.minecraft.client.resources.SimpleReloadableResourceManager.getResource(SimpleReloadableResourceManager.java:60) ~[bin/:?]
+	at net.minecraft.client.renderer.texture.SimpleTexture.loadTexture(SimpleTexture.java:31) ~[bin/:?]
+	at net.minecraft.client.renderer.texture.TextureManager.loadTexture(TextureManager.java:95) [bin/:?]
+	at net.minecraft.client.renderer.texture.TextureManager.bindTexture(TextureManager.java:49) [bin/:?]
+	at net.minecraft.client.renderer.entity.Render.bindTexture(Render.java:123) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderPlayer.renderEquippedItems(RenderPlayer.java:311) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderPlayer.renderEquippedItems(RenderPlayer.java:467) [bin/:?]
+	at net.minecraft.client.renderer.entity.RendererLivingEntity.doRender(RendererLivingEntity.java:218) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderPlayer.doRender(RenderPlayer.java:84) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderPlayer.doRender(RenderPlayer.java:103) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderManager.func_147939_a(RenderManager.java:305) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderManager.func_147936_a(RenderManager.java:240) [bin/:?]
+	at net.minecraft.client.renderer.entity.RenderManager.func_147937_a(RenderManager.java:245) [bin/:?]
+	at net.minecraft.client.renderer.RenderGlobal.renderEntities(RenderGlobal.java:2307) [bin/:?]
+	at net.minecraft.client.renderer.EntityRenderer.renderWorld(EntityRenderer.java:1245) [bin/:?]
+	at net.minecraft.client.renderer.EntityRenderer.updateCameraAndRender(EntityRenderer.java:1913) [bin/:?]
+	at net.minecraft.client.Minecraft.runGameLoop(Minecraft.java:1087) [bin/:?]
+	at net.minecraft.client.Minecraft.run(Minecraft.java:983) [bin/:?]
+	at net.minecraft.client.main.Main.otherMain(Main.java:199) [bin/:?]
+	at net.minecraft.client.main.Main.main(Main.java:67) [bin/:?]
+	at Start.main(Start.java:11) [bin/:?]
+[14:23:52] [Server thread/INFO]: Saving and pausing game...
+[14:23:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:23:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:23:52] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:26:38] [Server thread/INFO]: Saving and pausing game...
+[14:26:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:26:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:26:38] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:27:05] [Server thread/INFO]: Saving and pausing game...
+[14:27:05] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:27:05] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:27:05] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:27:06] [Server thread/INFO]: Stopping server
+[14:27:06] [Server thread/INFO]: Saving players
+[14:27:06] [Server thread/INFO]: Saving worlds
+[14:27:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Overworld
+[14:27:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/Nether
+[14:27:06] [Server thread/INFO]: Saving chunks for level 'mcpworld'/The End
+[14:27:08] [Alt Login Thread/INFO]: Logging in with username & password
+[14:27:11] [Alt Login Thread/INFO]: Logging in with username & password
+[14:27:14] [Client thread/INFO]: Connecting to ncp.odiegaming.com, 25565
+[14:27:17] [Client thread/INFO]: [CHAT]                                      
+[14:27:17] [Client thread/INFO]: [CHAT] PvPLogging prevented by JackProehl's [CombatLog] plugin.
+[14:27:17] [Client thread/INFO]: [CHAT] IIIR4V3NIII joined the game.
+[14:27:23] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 15 (+15)
+[14:27:23] [Client thread/INFO]: [CHAT] [Developer] GQD: what u do now?
+[14:27:23] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 34.022 (+19.022)
+[14:27:24] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 74.729 (+40.707)
+[14:27:30] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 15 (+15) Ticks[Lag]: 1@1.02 5@1.016 10@1.018 20@1.019 1200@1.001
+[14:27:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 6.721 (+4.229)
+[14:27:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 10.461 (+3.74)
+[14:27:35] [Client thread/INFO]: [CHAT] [Developer] xboy4000: i don't have one
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 102.729 (+1)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 15.689 (+15.609)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 103.729 (+1)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 104.729 (+1)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 105.729 (+1)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 106.729 (+1)
+[14:27:41] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 107.729 (+1)
+[14:27:42] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 107.652 (+1)
+[14:27:43] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 13.477 (+0.025)
+[14:27:43] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 17.217 (+3.74)
+[14:27:44] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 107.575 (+1)
+[14:27:44] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 108.575 (+1)
+[14:27:44] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 109.575 (+1)
+[14:27:45] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 110.575 (+1)
+[14:27:45] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 36.587 (+19.37)
+[14:27:46] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 111.575 (+1)
+[14:27:46] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 112.575 (+1)
+[14:27:47] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 113.575 (+1)
+[14:27:47] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 114.575 (+1)
+[14:27:47] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 115.575 (+1)
+[14:27:48] [Client thread/INFO]: [CHAT] [Developer] xboy4000: it bugs out a lot
+[14:27:52] [Client thread/INFO]: [CHAT] [Developer] xboy4000: but i check for free space around a block
+[14:27:56] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 115.419 (+1)
+[14:27:56] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 116.419 (+1)
+[14:27:56] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 117.419 (+1)
+[14:27:57] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "Speed" was toggled on.
+[14:27:58] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[14:27:59] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 1.285 (+1)
+[14:27:59] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 97.038 (+1)
+[14:27:59] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 15 (+15)
+[14:27:59] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 2.285 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 90.541 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 91.541 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 91.626 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 92.626 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 93.626 (+1)
+[14:28:00] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 94.626 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 95.626 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 95.67 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 96.67 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 97.67 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 97.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TeamBattle] Start Gliding
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 98.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 99.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 100.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 101.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 102.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 103.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 104.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 105.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 106.693 (+1)
+[14:28:01] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 107.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 3.285 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 108.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 109.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 110.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 111.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 112.693 (+1)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 32.46 (+23.928)
+[14:28:02] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_NOFALL vl 46 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 113.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 114.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 115.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 116.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TeamBattle] Speed will no longer go extra fast on NoCheat.
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 117.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 118.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 119.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 120.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 121.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 122.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 123.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 124.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 125.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 126.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 127.693 (+1)
+[14:28:03] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 128.693 (+1)
+[14:28:04] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 129.693 (+1)
+[14:28:04] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 130.693 (+1)
+[14:28:04] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 131.693 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 121.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 122.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 123.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 124.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 125.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 126.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 127.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 128.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 129.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 130.304 (+1)
+[14:28:05] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 131.304 (+1)
+[14:28:06] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 132.304 (+1)
+[14:28:07] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 133.304 (+1)
+[14:28:07] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 134.304 (+1)
+[14:28:07] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 135.304 (+1)
+[14:28:08] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 136.304 (+1)
+[14:28:08] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 137.304 (+1)
+[14:28:08] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 138.304 (+1)
+[14:28:08] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 139.304 (+1)
+[14:28:08] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 140.304 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 141.304 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 142.304 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 143.304 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 4.252 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 1 (+1)
+[14:28:09] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 144.304 (+1)
+[14:28:10] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 145.304 (+1)
+[14:28:10] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 146.304 (+1)
+[14:28:10] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 147.304 (+1)
+[14:28:11] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 145.372 (+1)
+[14:28:11] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 146.372 (+1)
+[14:28:11] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 147.372 (+1)
+[14:28:12] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 142.565 (+1)
+[14:28:13] [Client thread/INFO]: [CHAT] [TestNCP] GQD BLOCKINTERACT_VISIBLE vl 139.331 (+1)
+[14:28:19] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 4.021 (+1)
+[14:28:19] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 2 (+1)
+[14:28:19] [Client thread/INFO]: [CHAT] [Developer] GQD: :(
+[14:28:20] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 4.981 (+1)
+[14:28:20] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 3 (+1)
+[14:28:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 4 (+1)
+[14:28:29] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_SURVIVALFLY vl 15 (+15)
+[14:28:29] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_NOFALL vl 47 (+1)
+[14:28:34] [Client thread/INFO]: [CHAT] [Developer] xboy4000: ./fly
+[14:28:36] [Client thread/INFO]: [CHAT] [PrisonMine] Mine netherrackmine has been reset!
+[14:28:38] [Client thread/INFO]: [CHAT] [Developer] xboy4000: or that
+[14:28:39] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_CRITICAL vl 1 (+1)
+[14:28:39] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_CRITICAL vl 2 (+1)
+[14:28:40] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_CRITICAL vl 3 (+1)
+[14:28:41] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "Crits" was toggled off.
+[14:28:43] [Client thread/INFO]: [CHAT] [Developer] GQD: lel
+[14:28:44] [Client thread/INFO]: [CHAT] [TeamBattle] Command ".killauramovs" was not found!
+[14:28:48] [Client thread/INFO]: [CHAT] [TeamBattle] Kill Aura will now aim at animals.
+[14:28:48] [Client thread/INFO]: [CHAT] [Developer] xboy4000: i made a survivalcontrol too
+[14:28:54] [Client thread/INFO]: [CHAT] [Developer] xboy4000: but it aims clientside for walking towards shit
+[14:29:05] [Client thread/INFO]: [CHAT] [Developer] xboy4000: i had this before devin
+[14:29:19] [Client thread/INFO]: [CHAT] [Nobody] IIIR4V3NIII: xenon had this before u all
+[14:29:24] [Client thread/INFO]: [CHAT] [Developer] xboy4000: trye
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_DIRECTION vl 3.169 (+3.169)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 1.527 (+1.527)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_DIRECTION vl 4.99 (+2.455)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 2.276 (+1.054)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_DIRECTION vl 3.717 (+2.409)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 2.143 (+2.143)
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 3.924 (+39.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:24] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 3.89 (+2.143)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 8.89 (+5)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 16.747 (+7.857)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 27.462 (+10.714)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 41.033 (+13.571)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 57.462 (+16.429)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 10.247 (+63.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 76.747 (+19.286)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 16.971 (+67.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 23.895 (+69.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 31.018 (+71.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 38.342 (+73.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 45.866 (+75.237) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 64.72 (+2.143)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 69.72 (+5)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 70.236 (+0.516)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 71.252 (+1.016)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 72.768 (+1.517)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 74.786 (+2.017)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 77.303 (+2.518)
+[14:29:25] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 80.321 (+3.018)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 82.839 (+2.518)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 85.857 (+3.018)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 32.907 (+40) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 87.373 (+1.517)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 37.307 (+44) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 89.39 (+2.017)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 42.107 (+48) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 91.908 (+2.518)
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 47.307 (+52) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 52.707 (+54) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 58.307 (+56) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:26] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 64.107 (+58) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 70.107 (+60) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 76.307 (+62) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [Developer] xboy4000: true nighthawk
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_DIRECTION vl 3.047 (+2.268)
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 82.707 (+64) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 89.307 (+66) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 96.107 (+68) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 103.107 (+70) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 110.307 (+72) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:28] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 117.707 (+74) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:28] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 49.972 (+2.143)
+[14:29:28] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 125.707 (+80) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true
+[14:29:29] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 0.513 (+0.472)
+[14:29:30] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 0.607 (+0.094)
+[14:29:30] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 0.925 (+0.318)
+[14:29:33] [Client thread/INFO]: [CHAT] [ClearLag] Warning Ground items will be removed in 60 seconds!
+[14:29:33] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 0.347 (+0.321) Ticks[Lag]: 1200@1.017
+[14:29:33] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_REACH vl 0.417 (+0.07) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_DIRECTION vl 2.836 (+2.834) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 14.116 (+2.143) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 19.116 (+5) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII COMBINED_IMPROBABLE vl 29.49 (+38.573) Details: BLOCK_ID=[blockid] BLOCK_TYPE=[blocktype] DISTANCE=[distance] FALL_DISTANCE=[falldistance] FOOD=[food] LIMIT=[limit] LOCATION_FROM=[locationfrom] LOCATION_TO=[locationto] PACKETS=[packets] PLAYER_DISPLAY_NAME=[Nobody] IIIR4V3NIII PLAYER_NAME=IIIR4V3NIII REACH_DISTANCE=[reachdistance] TAGS=fight.speed UUID=5266250b-0e39-4563-9c9d-95321616fc15 WORLD=[world] cancel=true Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 17.73 (+2.143) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 22.73 (+5) Ticks[Lag]: 1200@1.017
+[14:29:34] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII FIGHT_SPEED vl 30.587 (+7.857) Ticks[Lag]: 1200@1.017
+[14:29:39] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 61.285 (+61.285) Ticks[Lag]: 1200@1.001
+[14:29:54] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 42.004 (+42)
+[14:29:57] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 41.627 (+16.477)
+[14:29:59] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 58.104 (+16.477)
+[14:30:01] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 130.38 (+93.76)
+[14:30:02] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 218.88 (+88.5)
+[14:30:03] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 308.38 (+89.5)
+[14:30:04] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 350.38 (+42)
+[14:30:13] [Client thread/INFO]: [CHAT] [ClearLag] Warning Ground items will be removed in 20 seconds!
+[14:30:13] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 1.186 (+1)
+[14:30:13] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 5 (+1)
+[14:30:15] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_PASSABLE vl 2.174 (+1)
+[14:30:15] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_NOFALL vl 6 (+1)
+[14:30:21] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 15.063 (+15)
+[14:30:27] [Client thread/INFO]: [CHAT] You don't have permission for this area.
+[14:30:28] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII BLOCKBREAK_NOSWING vl 1 (+1)
+[14:30:28] [Client thread/INFO]: [CHAT] You don't have permission for this area.
+[14:30:28] [Client thread/INFO]: [CHAT] You don't have permission for this area.
+[14:30:29] [Client thread/INFO]: [CHAT] You don't have permission for this area.
+[14:30:33] [Client thread/INFO]: [CHAT] [ClearLag] Removed 8 Entities!
+[14:30:35] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII MOVING_SURVIVALFLY vl 7 (+7)
+[14:30:37] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 0.149 (+0.149)
+[14:30:38] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 0.349 (+0.2)
+[14:30:39] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 0.549 (+0.2)
+[14:30:40] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 0.749 (+0.2)
+[14:30:41] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 0.949 (+0.2)
+[14:30:42] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 1.199 (+0.25)
+[14:30:43] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 1.399 (+0.2)
+[14:30:44] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 1.599 (+0.2)
+[14:30:45] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 1.848 (+0.249)
+[14:30:45] [Client thread/INFO]: [CHAT] * [Developer] capsars is now AFK.
+[14:30:46] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 2.049 (+0.201)
+[14:30:47] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 2.249 (+0.2)
+[14:30:48] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 BLOCKBREAK_FASTBREAK vl 2.399 (+0.15)
+[14:30:49] [Client thread/INFO]: [CHAT] [Developer] xboy4000: fuck diamond blocks omg
+[14:30:55] [Client thread/INFO]: [CHAT] [Developer] xboy4000: and now i'm suck
+[14:30:56] [Client thread/INFO]: [CHAT] [Developer] xboy4000: :c
+[14:30:59] [Client thread/INFO]: [CHAT] [Nobody] IIIR4V3NIII: bad survival control
+[14:31:00] [Client thread/INFO]: [CHAT] You are in a no-PvP area.
+[14:31:02] [Client thread/INFO]: [CHAT] You are in a no-PvP area.
+[14:31:03] [Client thread/INFO]: [CHAT] [Developer] xboy4000: ikr
+[14:31:13] [Client thread/INFO]: [CHAT] swagmasta420 joined the game.
+[14:31:19] [Client thread/INFO]: [CHAT] [TestNCP] swagmasta420 FIGHT_REACH vl 0.362 (+0.362)
+[14:31:22] [Client thread/INFO]: [CHAT] [TeamBattle] Mod "speedmine" was not found!
+[14:31:26] [Client thread/INFO]: [CHAT] VendettaHF joined the game.
+[14:31:27] [Client thread/INFO]: [CHAT] [TestNCP] IIIR4V3NIII BLOCKINTERACT_VISIBLE vl 1 (+1)
+[14:31:28] [Client thread/INFO]: [CHAT] [TestNCP] swagmasta420 MOVING_SURVIVALFLY vl 1.54 (+1.54)
+[14:31:31] [Client thread/INFO]: [CHAT] [TestNCP] VendettaHF FIGHT_FASTHEAL vl 33.932 (+0.451)
+[14:31:39] [Client thread/INFO]: [CHAT] [TestNCP] VendettaHF FIGHT_FASTHEAL vl 32.623 (+0.049)
+[14:31:42] [Client thread/INFO]: [CHAT] [TestNCP] swagmasta420 FIGHT_DIRECTION vl 3.398 (+3.396)
+[14:31:53] [Client thread/INFO]: [CHAT] [TestNCP] xboy4000 MOVING_PASSABLE vl 1.185 (+1)
+[14:31:58] [Client thread/INFO]: [CHAT] [Swaggy] swagmasta420: who can spawn lots of animals
+[14:31:59] [Client thread/INFO]: [CHAT] [TestNCP] swagmasta420 FIGHT_DIRECTION vl 3.743 (+3.723)
+[14:32:01] [Client thread/INFO]: [CHAT] VendettaHF left the game.
+[14:32:04] [Client thread/INFO]: [CHAT] [Developer] xboy4000: caps is afk
+[14:32:11] [Client thread/INFO]: Stopping!

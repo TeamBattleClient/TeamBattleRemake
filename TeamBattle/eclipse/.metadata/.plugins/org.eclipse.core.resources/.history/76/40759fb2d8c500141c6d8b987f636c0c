@@ -1,0 +1,24 @@
+package down.TeamBattle.EventSystem.events;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.client.Minecraft;
+import down.TeamBattle.EventSystem.Event;
+
+public class EventFalling extends Event{
+	final Minecraft mc = Minecraft.getMinecraft();
+	public boolean isairborne(){
+		 
+		 Block block = mc.theWorld.getBlock((int)mc.thePlayer.posX, (int)(mc.thePlayer.posY - 0.01), (int)mc.thePlayer.posZ);
+		 return block instanceof BlockAir && !block.isCollidable();
+	 }
+	boolean isfalling = isairborne() && !mc.thePlayer.onGround && mc.thePlayer.fallDistance > 0.001F;
+	
+	public boolean Isfalling() {
+		return isfalling;
+	}
+	public void setIsfalling(boolean isfalling) {
+		this.isfalling = isfalling;
+	}
+	
+}

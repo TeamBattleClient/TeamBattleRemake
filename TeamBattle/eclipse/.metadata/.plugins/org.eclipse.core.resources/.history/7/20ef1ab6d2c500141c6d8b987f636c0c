@@ -1,0 +1,42 @@
+package down.TeamBattle.Modules.Modules;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import down.TeamBattle.EventSystem.Event;
+import down.TeamBattle.EventSystem.events.EventPreSendMotionUpdates;
+import down.TeamBattle.Modules.ModuleBase;
+
+public class FlyBypass extends ModuleBase{
+
+	public FlyBypass() {
+		super("FLyBypass", 0x55FF99FF);
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if(event instanceof EventPreSendMotionUpdates)
+		{
+			int nextick = -1;
+			if(getUnderneathBlock())
+			{
+				mc.thePlayer.motionY *= 0.04F;
+				nextick--;
+			}
+			if(nextick == -2)
+			{
+				mc.thePlayer.motionY *= 0.99F;
+			}else 
+			{
+				mc.thePlayer.motionY =- 0.01F;
+			}
+
+		}
+		
+	}
+ public boolean getUnderneathBlock(){
+	 
+	 Block block = mc.theWorld.getBlock((int)mc.thePlayer.posX, (int)(mc.thePlayer.posY - 0.01), (int)mc.thePlayer.posZ);
+	 return block instanceof BlockAir && !block.isCollidable();
+ }
+
+}

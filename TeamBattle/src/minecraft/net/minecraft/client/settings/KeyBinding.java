@@ -68,7 +68,7 @@ public class KeyBinding implements Comparable {
 	private final String keyDescription;
 
 	/** because _303 wanted me to call it that(Caironater) */
-	private boolean pressed;
+	public boolean pressed;
 
 	private int presses;
 

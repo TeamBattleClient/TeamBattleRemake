@@ -114,7 +114,7 @@ public abstract class EntityLivingBase extends Entity {
 	 * is walking on land. Adjusted by speed, and slipperiness of the current
 	 * block.
 	 */
-	private float landMovementFactor;
+	public float landMovementFactor;
 
 	private EntityLivingBase lastAttacker;
 
